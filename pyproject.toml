@@ -12,6 +12,7 @@ dependencies = [
     "just>=0.8.162",
     "numpy>=2.2.4",
     "pandas>=2.2.3",
+    "pytest-mock>=3.14.0",
     "ruff>=0.11.2",
     "scikit-learn>=1.6.1",
     "uvicorn[standard]>=0.34.0",
@@ -23,7 +24,6 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "pylint>=3.3.6",
     "pytest>=8.3.5",
     "ruff>=0.11.2",
 ]
