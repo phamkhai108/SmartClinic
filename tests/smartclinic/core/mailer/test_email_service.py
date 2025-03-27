@@ -2,11 +2,11 @@ import datetime
 
 from pytest_mock import MockerFixture
 
-from smartclinic.core.mailer import EmailResponselDto, EmailService
+from smartclinic.core.mailer import EmailResponse, EmailService
 
 
 def test_send_verification_email(mocker: MockerFixture) -> None:
-    mock_response = EmailResponselDto(
+    mock_response = EmailResponse(
         email="dummy_email",
         code_verify="dummy_code",
         received_time=datetime.datetime.utcnow(),

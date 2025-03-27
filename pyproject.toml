@@ -12,6 +12,7 @@ dependencies = [
     "just>=0.8.162",
     "numpy>=2.2.4",
     "pandas>=2.2.3",
+    "pydantic-settings>=2.8.1",
     "pytest-mock>=3.14.0",
     "ruff>=0.11.2",
     "scikit-learn>=1.6.1",
