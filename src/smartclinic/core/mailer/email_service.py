@@ -4,7 +4,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from smartclinic.core.mailer.emaiil_dto import EmailResponselDto
+from smartclinic.core.mailer.emaiil_dto import EmailResponse
 
 
 class EmailService:
@@ -12,7 +12,7 @@ class EmailService:
         self.sender_email = sender_email
         self.sender_password = sender_password
 
-    def send_verification_email(self, receiver_email: str) -> EmailResponselDto:
+    def send_verification_email(self, receiver_email: str) -> EmailResponse:
         code_verify = f"{random.randint(000000, 999999):06d}"
 
         message = MIMEMultipart()
@@ -87,15 +87,15 @@ class EmailService:
                     msg=content_msg,
                 )
 
-            code_verify = EmailResponselDto(
+            code_verify = EmailResponse(
                 email=receiver_email,
                 code_verify=code_verify,
                 received_time=datetime.datetime.now(),
             )
             return code_verify
 
-        except Exception:
-            return EmailResponselDto(
+        except smtplib.SMTPException:
+            return EmailResponse(
                 email=None,
                 code_verify=None,
                 received_time=datetime.datetime.utcnow(),
