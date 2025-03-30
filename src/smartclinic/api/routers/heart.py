@@ -27,7 +27,7 @@ def predict(
     try:
         input_data = PredictData(
             Age=Age,
-            Sex=Sex,
+            Sex=Sex.name,
             ChestPainType=ChestPainType,
             RestingBP=RestingBP,
             Cholesterol=Cholesterol,

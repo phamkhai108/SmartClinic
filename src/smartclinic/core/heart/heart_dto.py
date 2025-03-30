@@ -1,34 +1,58 @@
 # Định nghĩa các Enum cho các trường phân loại
-from enum import IntEnum
+from enum import Enum, IntEnum
 
 from pydantic import BaseModel
 
 
-class SexEnum(IntEnum):
-    M = 0
-    F = 1
+class SexEnum(str, Enum):
+    M = "M"
+    F = "F"
 
-class ChestPainTypeEnum(IntEnum):
-    TA = 4
-    ATA = 3
-    NAP = 2
-    ASY = 1
+    @property
+    def numeric(self):
+        mapping = {"M": 0, "F": 1}
+        return mapping[self.value]
 
-class RestingECGEnum(IntEnum):
-    Normal = 0
-    ST = 1
-    LVH = 2
+class ChestPainTypeEnum(str, Enum):
+    TA = "TA"
+    ATA = "ATA"
+    NAP = "NAP"
+    ASY = "ASY"
 
-class ExerciseAnginaEnum(IntEnum):
-    Y = 1
-    N = 0
+    @property
+    def numeric(self):
+        mapping = {"TA": 4, "ATA": 3, "NAP": 2, "ASY": 1}
+        return mapping[self.value]
 
-class STSlopeEnum(IntEnum):
-    Up = 1
-    Flat = 2
-    Down = 3
+class RestingECGEnum(str, Enum):
+    Normal = "Normal"
+    ST = "ST"
+    LVH = "LVH"
 
-# Sửa lại PredictData sử dụng Enum để Swagger hiển thị dropdown
+    @property
+    def numeric(self):
+        mapping = {"Normal": 0, "ST": 1, "LVH": 2}
+        return mapping[self.value]
+
+class ExerciseAnginaEnum(str, Enum):
+    Y = "Y"
+    N = "N"
+
+    @property
+    def numeric(self):
+        mapping = {"Y": 1, "N": 0}
+        return mapping[self.value]
+
+class STSlopeEnum(str, Enum):
+    Up = "Up"
+    Flat = "Flat"
+    Down = "Down"
+
+    @property
+    def numeric(self):
+        mapping = {"Up": 1, "Flat": 2, "Down": 3}
+        return mapping[self.value]
+
 class PredictData(BaseModel):
     Age: int
     Sex: SexEnum
