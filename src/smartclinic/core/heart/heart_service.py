@@ -11,7 +11,7 @@ loaded_model = joblib.load(model_path)
 def process_prediction(data: PredictData):
     feature_vector = [
         data.Age,
-        data.Sex.value,
+        data.Sex.name,
         data.ChestPainType.value,
         data.RestingBP,
         data.Cholesterol,

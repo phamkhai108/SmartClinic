@@ -5,7 +5,6 @@ from smartclinic.core.mailer.email_controller import handel_mail
 
 router = APIRouter(prefix="/send_mail", tags=["Mail"])
 
-
 @router.get(
     "",
     summary="Send email",
