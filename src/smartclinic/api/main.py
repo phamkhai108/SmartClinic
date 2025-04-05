@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from smartclinic.api.routers import heart, mail, lung
+from smartclinic.api.routers import heart, mail, lung, chat
 
 app = FastAPI(
     title="AISP API",
@@ -21,6 +21,7 @@ app.add_middleware(
 app.include_router(mail.router)
 app.include_router(heart.router)
 app.include_router(lung.router)
+app.include_router(chat.router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)
