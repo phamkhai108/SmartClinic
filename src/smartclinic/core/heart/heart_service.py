@@ -1,4 +1,3 @@
-# Đường dẫn tới file mô hình đã lưu
 import joblib
 import numpy as np
 
