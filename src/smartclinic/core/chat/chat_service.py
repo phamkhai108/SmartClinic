@@ -1,5 +1,3 @@
-# app/service.py
-
 import random
 import uuid
 from datetime import datetime
