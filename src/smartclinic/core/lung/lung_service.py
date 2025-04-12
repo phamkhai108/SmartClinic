@@ -3,8 +3,8 @@ import numpy as np
 
 from smartclinic.core.lung.lung_dto import PredictLung
 
-scaler_path = r"models/model_normalize/ScalerUngThuPhoi12.pkl"
-model_path = r'models/model_predict/KNNUngThuPhoi12.pkl'
+scaler_path = r"models/model_normalize/lung_cancer.pkl"
+model_path = r'models/model_predict/lung_cancer.pkl'
 
 loaded_model = joblib.load(model_path)
 scaler = joblib.load(scaler_path)

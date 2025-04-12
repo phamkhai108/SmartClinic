@@ -1,0 +1,19 @@
+services:
+    milvus:
+        image: milvusdb/milvus:v2.5.7
+        container_name: milvus-standalone
+        restart: always
+        ports:
+            - "19530:19530"
+            - "2379:2379"
+            - "9091:9091"
+        environment:
+            - COMMON_STORAGETYPE=local
+            - ETCD_USE_EMBED=true
+            - ETCD_DATA_DIR=/var/lib/milvus/etcd
+            - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
+        volumes:
+            - ./embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
+            - ./user.yaml:/milvus/configs/user.yaml
+            - ./volumes/milvus:/var/lib/milvus
+        command: ["milvus", "run", "standalone"]

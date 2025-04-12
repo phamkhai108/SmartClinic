@@ -1,26 +1,25 @@
-# Đường dẫn tới file mô hình đã lưu
 import joblib
 import numpy as np
 
-from smartclinic.core.heart.heart_dto import PredictData
+from smartclinic.core.heart.heart_dto import PredictHeartRequestDto
 
-model_path = r'models/model_predict/heart_failure.pkl'
+model_path = r"models/model_predict/heart_failure.pkl"
 loaded_model = joblib.load(model_path)
 
 
-def process_prediction(data: PredictData):
+def process_prediction(data: PredictHeartRequestDto):
     feature_vector = [
         data.Age,
-        data.Sex.name,
-        data.ChestPainType.value,
+        data.Sex.numeric,
+        data.ChestPainType.numeric,
         data.RestingBP,
         data.Cholesterol,
         data.FastingBS,
-        data.RestingECG.value,
+        data.RestingECG.numeric,
         data.MaxHR,
-        data.ExerciseAngina.value,
+        data.ExerciseAngina.numeric,
         data.Oldpeak,
-        data.ST_Slope.value
+        data.ST_Slope.numeric,
     ]
     input_data = np.array([feature_vector])
     y_pred = loaded_model.predict(input_data)

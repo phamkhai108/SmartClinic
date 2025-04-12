@@ -1,0 +1,22 @@
+services:
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.17.4
+        container_name: elasticsearch
+        environment:
+            - discovery.type=single-node
+            - ES_JAVA_OPTS=-Xms512m -Xmx512m # Tùy chỉnh bộ nhớ JVM nếu cần
+            - xpack.security.enabled=false # Tắt bảo mật nếu không cần authentication
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        volumes:
+            - esdata:/usr/share/elasticsearch/data
+        networks:
+            - elasticnet
+
+volumes:
+    esdata:
+
+networks:
+    elasticnet:
+        driver: bridge

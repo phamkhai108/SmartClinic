@@ -8,10 +8,13 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "elasticsearch>=8.17.2",
     "fastapi[standard]>=0.115.11",
     "just>=0.8.162",
     "numpy>=2.2.4",
+    "openai>=1.72.0",
     "pandas>=2.2.3",
+    "pillow>=11.1.0",
     "pydantic-settings>=2.8.1",
     "pytest-mock>=3.14.0",
     "ruff>=0.11.2",

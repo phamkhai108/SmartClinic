@@ -1,5 +1,5 @@
 # Định nghĩa các Enum cho các trường phân loại
-from enum import Enum, IntEnum
+from enum import Enum
 
 from pydantic import BaseModel
 
@@ -13,6 +13,7 @@ class SexEnum(str, Enum):
         mapping = {"M": 0, "F": 1}
         return mapping[self.value]
 
+
 class ChestPainTypeEnum(str, Enum):
     TA = "TA"
     ATA = "ATA"
@@ -24,6 +25,7 @@ class ChestPainTypeEnum(str, Enum):
         mapping = {"TA": 4, "ATA": 3, "NAP": 2, "ASY": 1}
         return mapping[self.value]
 
+
 class RestingECGEnum(str, Enum):
     Normal = "Normal"
     ST = "ST"
@@ -34,6 +36,7 @@ class RestingECGEnum(str, Enum):
         mapping = {"Normal": 0, "ST": 1, "LVH": 2}
         return mapping[self.value]
 
+
 class ExerciseAnginaEnum(str, Enum):
     Y = "Y"
     N = "N"
@@ -42,6 +45,7 @@ class ExerciseAnginaEnum(str, Enum):
     def numeric(self):
         mapping = {"Y": 1, "N": 0}
         return mapping[self.value]
+
 
 class STSlopeEnum(str, Enum):
     Up = "Up"
@@ -53,7 +57,8 @@ class STSlopeEnum(str, Enum):
         mapping = {"Up": 1, "Flat": 2, "Down": 3}
         return mapping[self.value]
 
-class PredictData(BaseModel):
+
+class PredictHeartRequestDto(BaseModel):
     Age: int
     Sex: SexEnum
     ChestPainType: ChestPainTypeEnum
@@ -65,3 +70,8 @@ class PredictData(BaseModel):
     ExerciseAngina: ExerciseAnginaEnum
     Oldpeak: float
     ST_Slope: STSlopeEnum
+
+
+class PredictResponseDto(BaseModel):
+    prediction: int
+    message: str
