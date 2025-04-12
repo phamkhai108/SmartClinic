@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 
-class EmbeddingModel:
+class LLMModel:
     def __init__(self, openai_api_url: str, openai_api_key: str, model_id: str) -> None:
         self.model_id = model_id
 
@@ -26,13 +26,13 @@ class EmbeddingModel:
         return completion.choices[0].message.content
 
 
-ollama_nomic = EmbeddingModel(
-    openai_api_url="http://localhost:11434/v1",
-    openai_api_key="111",
-    model_id="nomic-embed-text:latest",
-)
-ollama_bge = EmbeddingModel(
-    openai_api_url="http://localhost:11434/v1",
-    openai_api_key="111",
-    model_id="bge-m3:latest",
-)
+# ollama_nomic = EmbeddingModel(
+#     openai_api_url="http://localhost:11434/v1",
+#     openai_api_key="111",
+#     model_id="nomic-embed-text:latest",
+# )
+# ollama_bge = EmbeddingModel(
+#     openai_api_url="http://localhost:11434/v1",
+#     openai_api_key="111",
+#     model_id="bge-m3:latest",
+# )

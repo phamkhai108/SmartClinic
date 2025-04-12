@@ -1,6 +1,6 @@
 from sklearn.metrics.pairwise import cosine_similarity
 
-from smartclinic.core.llm.llm_embedding_service import ollama_bge, ollama_nomic
+from smartclinic.core.llm.llm_service import ollama_bge, ollama_nomic
 
 a = "Trời hôm nay thật đẹp và dễ chịu."
 

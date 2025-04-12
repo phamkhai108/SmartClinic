@@ -10,6 +10,11 @@ class BaseConfig(BaseSettings):
     )
     sender_email: str
     sender_password: str
+    es_host: str
+    openai_api_url: str
+    openai_api_key: str
+    model_llm_id: str
+    model_embed_id: str
 
 
 AppConfig = BaseConfig()
