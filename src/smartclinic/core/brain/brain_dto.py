@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
-class PredictResponse(BaseModel):
+
+class PredictBrainResponse(BaseModel):
     predicted_class: str
     confidence: float
