@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kết Quả Dự Đoán Ung Thư Phổi</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../static/home/images/logoicon.webp"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+            body {
+                font-family: "Roboto", sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100">
+        <!-- ✅ Topbar -->
+        <header class="bg-white shadow-md">
+            <div
+                class="container mx-auto px-4 py-3 flex justify-between items-center"
+            >
+                <a href="main.html" class="text-2xl font-bold text-blue-600">
+                    SmartClinic
+                </a>
+                <nav
+                    class="hidden md:flex space-x-4 items-center justify-center flex-1"
+                >
+                    <a href="#" class="text-gray-600 hover:text-blue-600"
+                        >Trang chủ</a
+                    >
+                    <div class="relative group">
+                        <a href="#" class="text-gray-600 hover:text-blue-600"
+                            >Dịch vụ</a
+                        >
+                        <div
+                            class="absolute hidden group-hover:block bg-white shadow-lg w-64 z-10"
+                        >
+                            <a
+                                href="test_UngThu.html"
+                                class="block px-4 py-2 text-gray-600 hover:bg-blue-100"
+                                >Chuẩn đoán ung thư phổi</a
+                            >
+                            <a
+                                href="../core/turmo_brain.html"
+                                class="block px-4 py-2 text-gray-600 hover:bg-blue-100"
+                                >Phân loại khối U não</a
+                            >
+                            <a
+                                href="tramcam.html"
+                                class="block px-4 py-2 text-gray-600 hover:bg-blue-100"
+                                >Dự đoán bệnh trầm cảm</a
+                            >
+                            <a
+                                href="suytim.html"
+                                class="block px-4 py-2 text-gray-600 hover:bg-blue-100"
+                                >Dự đoán bệnh suy tim</a
+                            >
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <a href="#" class="text-gray-600 hover:text-blue-600"
+                            >Tư vấn sức khỏe</a
+                        >
+                        <div
+                            class="absolute hidden group-hover:block bg-white shadow-lg w-64 z-10"
+                        >
+                            <a
+                                href="tu-van-chuyen-sau.html"
+                                class="block px-4 py-2 text-gray-600 hover:bg-blue-100"
+                                >Tư vấn chuyên sâu với bác sỹ</a
+                            >
+                            <a
+                                href="tu-van-ai.html"
+                                class="block px-4 py-2 text-gray-600 hover:bg-blue-100"
+                                >Tư vấn với bác sỹ AI</a
+                            >
+                        </div>
+                    </div>
+                    <a href="#" class="text-gray-600 hover:text-blue-600"
+                        >Liên hệ</a
+                    >
+                    <a
+                        href="about.html"
+                        class="text-gray-600 hover:text-blue-600"
+                        >Về chúng tôi</a
+                    >
+                </nav>
+            </div>
+        </header>
+
+        <!-- ✅ Nội dung chính -->
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow rounded-4 border-0">
+                        <div class="card-body p-5 text-center">
+                            <div class="mb-4">
+                                <i class="fas fa-lungs fa-3x text-primary"></i>
+                            </div>
+                            <h2 class="mb-3">Kết Quả Dự Đoán</h2>
+                            <div
+                                id="resultMessage"
+                                class="fs-5 mb-4 text-dark"
+                            ></div>
+                            <div id="recommendation" class="alert d-none"></div>
+                            <a
+                                href="lung_cancer_form.html"
+                                class="btn btn-outline-primary mt-3"
+                                >Quay lại</a
+                            >
+                        </div>
+                    </div>
+                    <p class="text-center text-muted mt-3 small">
+                        © 2025 Hệ thống hỗ trợ chẩn đoán y tế - Thông tin chỉ
+                        mang tính tham khảo
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const prediction = parseInt(urlParams.get("prediction"));
+            const message = urlParams.get("message");
+
+            const resultMessage = document.getElementById("resultMessage");
+            const recommendation = document.getElementById("recommendation");
+
+            if (message) {
+                resultMessage.innerText = decodeURIComponent(message);
+            }
+
+            if (prediction === 1) {
+                recommendation.classList.remove("d-none");
+                recommendation.classList.add("alert-success");
+                recommendation.innerHTML = `<strong>Kết luận:</strong> Khả năng bị ung thư thấp. Hãy tiếp tục theo dõi và kiểm tra sức khỏe định kỳ.`;
+            } else if (prediction === 2) {
+                recommendation.classList.remove("d-none");
+                recommendation.classList.add("alert-warning");
+                recommendation.innerHTML = `<strong>Cảnh báo:</strong> Có dấu hiệu ung thư mức độ vừa phải. Nên thực hiện kiểm tra chuyên sâu.`;
+            } else if (prediction === 3) {
+                recommendation.classList.remove("d-none");
+                recommendation.classList.add("alert-danger");
+                recommendation.innerHTML = `<strong>Nguy hiểm:</strong> Khả năng cao mắc bệnh ung thư phổi. Cần đến cơ sở y tế để khám và điều trị sớm.`;
+            } else {
+                recommendation.classList.remove("d-none");
+                recommendation.classList.add("alert-secondary");
+                recommendation.innerHTML = `<strong>Thông báo:</strong> Không thể xác định kết quả dự đoán. Vui lòng kiểm tra lại thông tin nhập vào.`;
+            }
+        </script>
+    </body>
+</html>

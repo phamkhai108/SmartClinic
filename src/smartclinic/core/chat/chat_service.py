@@ -11,13 +11,11 @@ from smartclinic.core.chat.chat_dto import (
     choiceMessage,
 )
 from smartclinic.core.llm.llm_service import LLMModel
-from smartclinic.core.search.search_service import search_fulltext
-
-chat_histories: dict[str, list[choiceMessage]] = {}
+from smartclinic.core.search.search_service import search_vector_cosine
 
 
-def context_rag(client: Elasticsearch, query: str) -> str:
-    list_chunks = search_fulltext(client, query, size=3)
+def context_rag(client: Elasticsearch, query: str, embedding_model: LLMModel) -> str:
+    list_chunks = search_vector_cosine(client, embedding_model, query, size=4)
 
     combined_content = ""
 
@@ -27,33 +25,43 @@ def context_rag(client: Elasticsearch, query: str) -> str:
     return combined_content.strip()
 
 
+chat_histories: dict[str, list[choiceMessage]] = {}
+
+
 def process_chat(
     chat_dto: ChatMessageDto,
+    llm_model: LLMModel,
     embedding_model: LLMModel,
     client: Elasticsearch,
 ) -> ChatResponseDto:
     user_id = chat_dto.user_id
+    session_id = chat_dto.session_id
     user_messages = chat_dto.messages
 
     context = context_rag(
         client=client,
         query=user_messages[-1].content,
+        embedding_model=embedding_model,
     )
 
+    session_history = chat_histories.get(session_id, [])
+
     context_messages: list[dict] = []
-    if user_id in chat_histories:
-        for past_choice in chat_histories[user_id]:
-            for msg in past_choice.messages:
-                context_messages.append({"role": msg.role, "content": msg.content})
 
-    current_messages = [
+    context_messages.append(
         {"role": "system", "content": SYSTEM_PROMPT.format(context=context)}
-    ]
-    current_messages.extend({"role": m.role, "content": m.content} for m in user_messages)
+    )
 
-    context_messages += current_messages
+    for past_choice in session_history:
+        for msg in past_choice.messages:
+            context_messages.append({"role": msg.role, "content": msg.content})
 
-    bot_content = embedding_model.chat(context_messages)
+    context_messages.extend({"role": m.role, "content": m.content} for m in user_messages)
+
+    # print("Final context_messages for LLM:")
+    # pprint.pprint(context_messages)
+
+    bot_content = llm_model.chat(context_messages)
 
     bot_reply = Message(role="assistant", content=bot_content)
 
@@ -64,14 +72,12 @@ def process_chat(
         finish_reason="stop",
     )
 
-    if user_id not in chat_histories:
-        chat_histories[user_id] = []
-    chat_histories[user_id].append(new_choice)
+    chat_histories.setdefault(session_id, []).append(new_choice)
 
     return ChatResponseDto(
         user_id=user_id,
         choice=new_choice,
-        history=chat_histories[user_id],
+        history=chat_histories[session_id],
         reference=["ref-doc-1", "ref-doc-2"],
         time_at=datetime.now(),
     )

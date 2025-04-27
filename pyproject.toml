@@ -8,17 +8,22 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "bcrypt>=4.3.0",
     "elasticsearch>=8.17.2",
     "fastapi[standard]>=0.115.11",
+    "fitz>=0.0.1.dev2",
     "just>=0.8.162",
     "numpy>=2.2.4",
     "openai>=1.72.0",
     "pandas>=2.2.3",
     "pillow>=11.1.0",
     "pydantic-settings>=2.8.1",
+    "pymupdf>=1.25.5",
     "pytest-mock>=3.14.0",
+    "python-docx>=1.1.2",
     "ruff>=0.11.2",
     "scikit-learn>=1.6.1",
+    "sqlalchemy>=2.0.40",
     "uvicorn[standard]>=0.34.0",
 ]
 

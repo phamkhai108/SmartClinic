@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 
 def create_chunk_index(client: Elasticsearch) -> None:
     index_name = "chunks"
-    vector_dims = 1024
+    vector_dims = 384
 
     mapping = {
         "mappings": {

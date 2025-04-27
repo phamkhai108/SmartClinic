@@ -1,6 +1,3 @@
-from datetime import datetime
-from uuid import uuid4
-
 from elasticsearch import Elasticsearch
 
 from smartclinic.vectordb.elasticsearch.es_model import Chunk
