@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dự đoán Ung Thư Phổi</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body class="bg-light">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow rounded-4 border-0">
+                        <div class="card-body p-5">
+                            <h2 class="text-center mb-4">
+                                Dự đoán Ung Thư Phổi
+                            </h2>
+                            <form id="lungForm">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Tuổi</label>
+                                        <input
+                                            type="number"
+                                            name="Age"
+                                            class="form-control"
+                                            min="1"
+                                            max="120"
+                                            value="45"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Giới tính (0 = Nam, 1 = Nữ)</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Gender"
+                                            class="form-control"
+                                            min="0"
+                                            max="1"
+                                            value="0"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Ô nhiễm không khí</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Air_Pollution"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="6"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Sử dụng rượu</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Alcohol_use"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="4"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Nguy cơ nghề nghiệp</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="OccuPational_Hazards"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="5"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Nguy cơ di truyền</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Genetic_Risk"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="3"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Bệnh phổi mãn tính</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="chronic_Lung_Disease"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="2"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Hút thuốc</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Smoking"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="7"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Hút thuốc thụ động</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Passive_Smoker"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="5"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Đau ngực</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Chest_Pain"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="4"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Ho ra máu</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Coughing_of_Blood"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="1"
+                                            required
+                                        />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label"
+                                            >Ngón tay dùi trống</label
+                                        >
+                                        <input
+                                            type="number"
+                                            name="Clubbing_of_Finger_Nails"
+                                            class="form-control"
+                                            min="0"
+                                            max="10"
+                                            value="0"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div class="mt-4 text-center">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary px-5"
+                                    >
+                                        Dự đoán
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="text-center text-muted mt-3 small">
+                        © 2025 Hệ thống hỗ trợ chẩn đoán y tế - Thông tin chỉ
+                        mang tính tham khảo
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById("lungForm");
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const jsonData = {};
+                formData.forEach((value, key) => {
+                    jsonData[key] = Number(value);
+                });
+
+                try {
+                    const response = await fetch(
+                        "http://localhost:8000/predict/lung_cancer",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Accept: "application/json",
+                            },
+                            body: JSON.stringify(jsonData),
+                        }
+                    );
+
+                    const result = await response.json();
+                    window.location.href = `lung_result.html?prediction=${
+                        result.prediction
+                    }&message=${encodeURIComponent(result.message)}`;
+                } catch (err) {
+                    alert("Lỗi khi gửi dữ liệu: " + err.message);
+                }
+            });
+        </script>
+    </body>
+</html>

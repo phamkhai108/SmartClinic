@@ -26,13 +26,13 @@ class LLMModel:
         return completion.choices[0].message.content
 
 
-# ollama_nomic = EmbeddingModel(
+# ollama_nomic = LLMModel(
 #     openai_api_url="http://localhost:11434/v1",
 #     openai_api_key="111",
-#     model_id="nomic-embed-text:latest",
+#     model_id="karuniaperjuangan/multilingual-e5-small:latest",
 # )
-# ollama_bge = EmbeddingModel(
+# ollama_bge = LLMModel(
 #     openai_api_url="http://localhost:11434/v1",
 #     openai_api_key="111",
-#     model_id="bge-m3:latest",
+#     model_id="yxchia/multilingual-e5-base:Q8_0",
 # )

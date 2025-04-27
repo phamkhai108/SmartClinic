@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kết Quả Dự Đoán Suy Tim</title>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+    </head>
+    <body class="bg-light">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card shadow rounded-4 border-0">
+                        <div class="card-body p-5 text-center">
+                            <div class="mb-4">
+                                <i
+                                    class="fas fa-heartbeat fa-3x text-danger"
+                                ></i>
+                            </div>
+                            <h2 class="mb-3">Kết Quả Dự Đoán</h2>
+                            <div
+                                id="resultMessage"
+                                class="fs-5 mb-4 text-dark"
+                            ></div>
+                            <div
+                                id="recommendation"
+                                class="alert alert-info d-none"
+                            ></div>
+                            <a
+                                href="heart_failure_form.html"
+                                class="btn btn-outline-danger mt-3"
+                                >Quay lại</a
+                            >
+                        </div>
+                    </div>
+                    <p class="text-center text-muted mt-3 small">
+                        © 2025 Hệ thống hỗ trợ chẩn đoán y tế - Thông tin chỉ
+                        mang tính tham khảo
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const prediction = urlParams.get("prediction");
+            const message = urlParams.get("message");
+
+            const resultMessage = document.getElementById("resultMessage");
+            const recommendation = document.getElementById("recommendation");
+
+            if (message) {
+                resultMessage.innerText = decodeURIComponent(message);
+            }
+
+            if (prediction === "1") {
+                recommendation.classList.remove("d-none");
+                recommendation.innerHTML = `
+                <strong>Cảnh báo:</strong> Hệ thống phát hiện <strong>nguy cơ suy tim</strong>. Vui lòng đến bệnh viện để kiểm tra và điều trị sớm.
+            `;
+            } else if (prediction === "0") {
+                recommendation.classList.remove("d-none");
+                recommendation.classList.replace("alert-info", "alert-success");
+                recommendation.innerHTML = `
+                <strong>Tốt!</strong> Dữ liệu hiện tại cho thấy bạn <strong>không có dấu hiệu suy tim</strong>. Hãy tiếp tục duy trì lối sống lành mạnh.
+            `;
+            }
+        </script>
+    </body>
+</html>

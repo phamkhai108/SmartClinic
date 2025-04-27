@@ -8,12 +8,25 @@ services:
             - "2379:2379"
             - "9091:9091"
         environment:
-            - COMMON_STORAGETYPE=local
-            - ETCD_USE_EMBED=true
-            - ETCD_DATA_DIR=/var/lib/milvus/etcd
-            - ETCD_CONFIG_PATH=/milvus/configs/embedEtcd.yaml
-        volumes:
-            - ./embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
-            - ./user.yaml:/milvus/configs/user.yaml
-            - ./volumes/milvus:/var/lib/milvus
+            COMMON_STORAGETYPE: local
+            ETCD_USE_EMBED: "true"
+            ETCD_DATA_DIR: /var/lib/milvus/etcd
         command: ["milvus", "run", "standalone"]
+        networks:
+            - milvus_network
+
+    attu:
+        image: zilliz/attu:v2.5
+        container_name: attu
+        ports:
+            - "8800:3000"
+        environment:
+            MILVUS_URL: milvus-standalone:19530
+        depends_on:
+            - milvus
+        networks:
+            - milvus_network
+
+networks:
+    milvus_network:
+        driver: bridge

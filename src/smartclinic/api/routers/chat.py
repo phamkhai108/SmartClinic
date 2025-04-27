@@ -1,12 +1,13 @@
-# app/router.py
-
 from datetime import datetime
 
 from elasticsearch import Elasticsearch
 from fastapi import APIRouter, Depends, HTTPException
 
-from smartclinic.api.dependencies import get_elasticsearch_client
-from smartclinic.common import AppConfig
+from smartclinic.api.dependencies import (
+    get_elasticsearch_client,
+    get_embedding_model,
+    get_llm_model,
+)
 from smartclinic.core.chat.chat_dto import (
     ChatHistoryResponseDto,
     ChatMessageDto,
@@ -17,19 +18,15 @@ from smartclinic.core.llm.llm_service import LLMModel
 
 router = APIRouter(prefix="/chat_all", tags=["API Chat"])
 
-embedding_model = LLMModel(
-    openai_api_url=AppConfig.openai_api_url,
-    openai_api_key=AppConfig.openai_api_key,
-    model_id=AppConfig.model_llm_id,
-)
-
 
 @router.post("/chat", response_model=ChatResponseDto)
 async def chat_endpoint(
     payload: ChatMessageDto,
+    llm_model: LLMModel = Depends(get_llm_model),  # noqa: B008
+    embedding_model: LLMModel = Depends(get_embedding_model),  # noqa: B008
     client: Elasticsearch = Depends(get_elasticsearch_client),  # noqa: B008
 ) -> ChatResponseDto:
-    return process_chat(payload, embedding_model, client=client)
+    return process_chat(payload, llm_model, embedding_model, client)
 
 
 @router.get("/history/{user_id}", response_model=ChatHistoryResponseDto)

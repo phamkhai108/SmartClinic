@@ -1,0 +1,15 @@
+// Glioma (0)
+// ➤ Mức độ: Cao
+// U ác tính, phát triển nhanh, có thể gây tổn thương nghiêm trọng cho não.
+
+// Meningioma (1)
+// ➤ Mức độ: Trung bình
+// Thường lành tính, nhưng nếu lớn có thể gây áp lực lên não và gây triệu chứng.
+
+// Notumor (2)
+// ➤ Mức độ: Không có
+// Không phát hiện u não, kết quả bình thường.
+
+// Pituitary (3)
+// ➤ Mức độ: Trung bình đến Cao
+// U tuyến yên, có thể ảnh hưởng đến hormone và các chức năng cơ thể, nhưng thường lành tính.

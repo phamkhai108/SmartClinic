@@ -7,6 +7,7 @@ class Message(BaseModel):
     role: str
     content: str
 
+
 class choiceMessage(BaseModel):
     messages: list[Message]
     message_id: str
@@ -14,9 +15,9 @@ class choiceMessage(BaseModel):
     finish_reason: str
 
 
-
 class ChatMessageDto(BaseModel):
     user_id: str
+    session_id: str
     messages: list[Message]
 
 
@@ -26,6 +27,7 @@ class ChatResponseDto(BaseModel):
     history: list[choiceMessage]
     reference: list[str]
     time_at: datetime
+
 
 class ChatHistoryResponseDto(BaseModel):
     user_id: str
