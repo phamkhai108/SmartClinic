@@ -1,8 +1,8 @@
-from datetime import datetime
+import uuid
 
 import bcrypt
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, create_engine
-from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from sqlalchemy import Column, DateTime, ForeignKey, String
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -10,7 +10,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     user_name = Column(String(50), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
@@ -29,8 +29,8 @@ class User(Base):
 class File(Base):
     __tablename__ = "files"
 
-    id = Column(String, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
     file_name = Column(String, nullable=False)
     status = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False)
@@ -39,36 +39,36 @@ class File(Base):
 
 
 # Khởi tạo database (ví dụ sqlite)
-if __name__ == "__main__":
-    engine = create_engine("sqlite:///example.db")
-    Base.metadata.create_all(engine)
+# if __name__ == "__main__":
+#     engine = create_engine("sqlite:///example.db")
+#     Base.metadata.create_all(engine)
 
-    Session = sessionmaker(bind=engine)
-    session = Session()
+#     Session = sessionmaker(bind=engine)
+#     session = Session()
 
-    new_user = User(user_name="test_user", email="test@example.com", role="admin")
-    new_user.set_password("securepassword123")
-    session.add(new_user)
-    session.commit()
+#     new_user = User(user_name="test_user", email="test@example.com", role="admin")
+#     new_user.set_password("securepassword123")
+#     session.add(new_user)
+#     session.commit()
 
-    print(f"User {new_user.user_name} created with ID {new_user.id}")
+#     print(f"User {new_user.user_name} created with ID {new_user.id}")
 
-    file1 = File(
-        id="file1",
-        user_id=new_user.id,
-        file_name="photo.jpg",
-        status="pending",
-        created_at=datetime(2024, 12, 1, 12, 0, 0),
-    )
-    file2 = File(
-        id="file2",
-        user_id=new_user.id,
-        file_name="report.docx",
-        status="active",
-        created_at=datetime(2023, 10, 1, 12, 0, 0),
-    )
+#     file1 = File(
+#         id="file1",
+#         user_id=new_user.id,
+#         file_name="photo.jpg",
+#         status="pending",
+#         created_at=datetime(2024, 12, 1, 12, 0, 0),
+#     )
+#     file2 = File(
+#         id="file2",
+#         user_id=new_user.id,
+#         file_name="report.docx",
+#         status="active",
+#         created_at=datetime(2023, 10, 1, 12, 0, 0),
+#     )
 
-    session.add_all([file1, file2])
-    session.commit()
+#     session.add_all([file1, file2])
+#     session.commit()
 
-    print("Multiple files added successfully.")
+#     print("Multiple files added successfully.")

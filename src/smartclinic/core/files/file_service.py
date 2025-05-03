@@ -4,25 +4,34 @@ from datetime import UTC, datetime
 
 import fitz
 from docx import Document
-from fastapi import UploadFile
+from fastapi import HTTPException, UploadFile
+from sqlalchemy.orm import Session
 
-# ollama_nomic = LLMModel(
 from smartclinic.core.llm.llm_service import LLMModel
+from smartclinic.sql.setup_db import File, User
 from smartclinic.vectordb.elasticsearch.es_model import Chunk
 from smartclinic.vectordb.elasticsearch.es_service import Chunker
 
 
-class FileProcessingService:
-    def __init__(self, chunker: Chunker, embedding_model: LLMModel):
+class UploadFileNProcessChunk:
+    def __init__(self, chunker: Chunker, embedding_model: LLMModel, db_session: Session):
         self.chunker = chunker
         self.embedding_model = embedding_model.embed
+        self.db_session = db_session
 
-    async def process_and_store_file(self, file: UploadFile) -> int:
+    async def process_and_store_file(self, file: UploadFile, user_id: str) -> File:
+        object_meta_file = File(
+            id=str(uuid.uuid4()),
+            user_id=user_id,
+            file_name=file.filename,
+            status="pending",
+            created_at=datetime.now(tz=UTC),
+        )
+        self.db_session.add(object_meta_file)
+        self.db_session.commit()
+
         content = await self._extract_text_from_file(file)
-
         chunks = self._split_text_to_chunks(content)
-
-        now = datetime.now(tz=UTC)
 
         for chunk_text in chunks:
             chunk = Chunk(
@@ -31,12 +40,12 @@ class FileProcessingService:
                 vector_content=self.embedding_model(chunk_text),
                 status="pending",
                 source=file.filename,
-                created_at=now,
-                updated_at=now,
+                created_at=datetime.now(tz=UTC),
+                updated_at=datetime.now(tz=UTC),
             )
             self.chunker.put(chunk)
 
-        return len(chunks)
+        return object_meta_file
 
     async def _extract_text_from_file(self, file: UploadFile) -> str:
         suffix = file.filename.lower().split(".")[-1]
@@ -64,7 +73,7 @@ class FileProcessingService:
         return "\n".join([p.text for p in doc.paragraphs])
 
     def _split_text_to_chunks(
-        self, text: str, max_words: int = 300, overlap: int = 70
+        self, text: str, max_words: int = 300, overlap: int = 50
     ) -> list[str]:
         words = text.split()
         chunks = []
@@ -74,3 +83,13 @@ class FileProcessingService:
             chunks.append(" ".join(chunk_words))
             i += max_words - overlap
         return chunks
+
+    def list_files_by_user(self, user_id: str) -> list[File]:
+        if user_id == "all":
+            return self.db_session.query(File).all()
+
+        user = self.db_session.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return self.db_session.query(File).filter(File.user_id == user_id).all()

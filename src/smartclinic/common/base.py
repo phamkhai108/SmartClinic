@@ -15,6 +15,7 @@ class BaseConfig(BaseSettings):
     openai_api_key: str
     model_llm_id: str
     model_embed_id: str
+    database_url: str
 
 
 AppConfig = BaseConfig()
