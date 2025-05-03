@@ -27,6 +27,6 @@ app.include_router(chat.router)
 app.include_router(mail.router)
 app.include_router(files.router)
 app.include_router(search.router)
-# create_chunk_index(client=get_elasticsearch_client())
+create_chunk_index(client=get_elasticsearch_client())
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)

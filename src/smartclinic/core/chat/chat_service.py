@@ -1,3 +1,4 @@
+import re
 import uuid
 from datetime import datetime
 
@@ -63,6 +64,8 @@ def process_chat(
 
     bot_content = llm_model.chat(context_messages)
 
+    bot_content = clean_think_block(bot_content)  # clean think block
+
     bot_reply = Message(role="assistant", content=bot_content)
 
     new_choice = choiceMessage(
@@ -81,3 +84,8 @@ def process_chat(
         reference=["ref-doc-1", "ref-doc-2"],
         time_at=datetime.now(),
     )
+
+
+def clean_think_block(text: str) -> str:
+    cleaned_text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    return cleaned_text
