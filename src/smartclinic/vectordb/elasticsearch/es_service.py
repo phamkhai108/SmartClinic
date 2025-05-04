@@ -19,6 +19,14 @@ class Chunker:
     def delete(self, chunk: Chunk) -> None:
         self.client.delete(index=self.index_name, id=str(chunk.id_chunk))
 
+    def delete_by_source(self, source_value: str) -> dict:
+        query = {"query": {"term": {"source": source_value}}}
+
+        response = self.client.delete_by_query(
+            index=self.index_name, body=query, refresh=True, conflicts="proceed"
+        )
+        return response
+
 
 # client = Elasticsearch(hosts="http://localhost:9200", request_timeout=30, max_retries=2)
 

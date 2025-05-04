@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartClinic.AI - Tải lên tệp tin</title>
+    <link rel="icon" type="image/x-icon" href="../../static/home/images/logoicon.webp" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#3b82f6",
+                        secondary: "#64748b",
+                        success: "#10b981",
+                        warning: "#f59e0b",
+                        danger: "#ef4444",
+                        info: "#06b6d4",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+        }
+
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: var(--light-color);
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            position: fixed;
+            height: 100vh;
+            background-color: white;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .admin-content {
+            margin-left: 280px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-collapsed .admin-sidebar {
+            width: 80px;
+        }
+
+        .sidebar-collapsed .admin-content {
+            margin-left: 80px;
+        }
+
+        .sidebar-collapsed .sidebar-text,
+        .sidebar-collapsed .sidebar-arrow {
+            display: none;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            color: var(--secondary-color);
+            border-radius: 0.5rem;
+            margin: 0.25rem 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .sidebar-icon {
+            font-size: 1.25rem;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        .card-admin {
+            transition: all 0.3s ease;
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-admin:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Upload area styles */
+        .upload-area {
+            border: 2px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background-color: white;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--primary-color);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.7;
+            margin-bottom: 1rem;
+        }
+
+        /* File preview area */
+        .file-preview-area {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .file-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .file-icon {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+
+        .file-pdf {
+            color: var(--danger-color);
+        }
+
+        .file-image {
+            color: var(--primary-color);
+        }
+
+        .file-doc {
+            color: var(--info-color);
+        }
+
+        .file-xls {
+            color: var(--success-color);
+        }
+
+        .file-details h5 {
+            margin-bottom: 0.25rem;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast/notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            z-index: 1100;
+            max-width: 350px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification.success {
+            background-color: var(--success-color);
+        }
+
+        .notification.error {
+            background-color: var(--danger-color);
+        }
+
+        .notification.info {
+            background-color: var(--info-color);
+        }
+
+        /* Upload progress */
+        .upload-progress {
+            margin-top: 1.5rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        /* PDF Preview */
+        .pdf-preview {
+            width: 100%;
+            height: 500px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        /* Image Preview */
+        .image-preview {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 0.5rem;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Upload complete animation */
+        @keyframes uploadComplete {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .upload-complete {
+            animation: uploadComplete 0.5s ease;
+        }
+        
+        /* Breadcrumb */
+        .custom-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .custom-breadcrumb a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .custom-breadcrumb a:hover {
+            color: var(--primary-color);
+        }
+
+        .custom-breadcrumb .separator {
+            color: var(--secondary-color);
+            opacity: 0.5;
+        }
+
+        .custom-breadcrumb .current {
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Notification element -->
+    <div id="notification" class="notification">
+        <span id="notificationMessage"></span>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+        <div class="d-flex align-items-center justify-content-between p-4 border-bottom">
+            <div class="d-flex align-items-center">
+                <img src="../../static/home/images/logoicon.webp" alt="Logo" width="40" height="40" class="me-3" />
+                <h5 class="mb-0 sidebar-text">SmartClinic.AI</h5>
+            </div>
+            <button id="toggleSidebar" class="btn btn-sm btn-light rounded-circle">
+                <i class="fas fa-chevron-left sidebar-arrow"></i>
+                <i class="fas fa-bars d-none"></i>
+            </button>
+        </div>
+        <div class="mt-4">
+            <a href="index.html" class="text-decoration-none">
+                <div class="sidebar-item">
+                    <i class="fas fa-tachometer-alt sidebar-icon"></i>
+                    <span class="sidebar-text">Bảng điều khiển</span>
+                </div>
+            </a>
+            <a href="files.html" class="text-decoration-none">
+                <div class="sidebar-item">
+                    <i class="fas fa-file sidebar-icon"></i>
+                    <span class="sidebar-text">Quản lý tệp tin</span>
+                </div>
+            </a>
+            <a href="upload.html" class="text-decoration-none">
+                <div class="sidebar-item active">
+                    <i class="fas fa-cloud-upload-alt sidebar-icon"></i>
+                    <span class="sidebar-text">Tải lên tệp tin</span>
+                </div>
+            </a>
+            <div class="sidebar-item">
+                <i class="fas fa-user sidebar-icon"></i>
+                <span class="sidebar-text">Người dùng</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-cog sidebar-icon"></i>
+                <span class="sidebar-text">Cài đặt</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                <span class="sidebar-text">Đăng xuất</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="admin-content">
+        <!-- Breadcrumb and title -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <div class="custom-breadcrumb mb-2">
+                    <a href="index.html">Dashboard</a>
+                    <span class="separator"><i class="fas fa-chevron-right"></i></span>
+                    <span class="current">Tải lên tệp tin</span>
+                </div>
+                <h3 class="mb-0 fw-bold">Tải lên tệp tin mới</h3>
+            </div>
+            <div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle me-2"></i>Admin
+                    </button>
+                    <ul class="dropdown-menu shadow border-0" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Hồ sơ</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload instructions -->
+        <div class="card-admin mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle me-3">
+                        <i class="fas fa-info-circle text-primary"></i>
+                    </div>
+                    <h5 class="mb-0 fw-bold">Hướng dẫn tải lên</h5>
+                </div>
+                <ul class="mb-0">
+                    <li class="mb-2">Hỗ trợ tất cả các loại tệp tin, tối đa 100MB.</li>
+                    <li class="mb-2">Định dạng được hỗ trợ tốt nhất: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG.</li>
+                    <li class="mb-2">Bạn có thể kéo thả tệp tin hoặc nhấp vào khu vực để chọn tệp tin.</li>
+                    <li>Sau khi tải lên, bạn có thể xem danh sách tất cả tệp tin tại <a href="files.html" class="text-primary">Quản lý tệp tin</a>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Left column - upload area -->
+            <div class="col-lg-6">
+                <div class="card-admin h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Khu vực tải lên</h5>
+                        <div class="upload-area" id="uploadArea">
+                            <input type="file" id="fileInput" class="d-none" />
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h5 class="mb-2">Kéo thả tệp tin vào đây</h5>
+                            <p class="text-secondary mb-3">hoặc</p>
+                            <button class="btn btn-primary rounded-pill px-4" id="browseButton">Chọn tệp tin</button>
+                            <p class="text-secondary mt-3">Hỗ trợ tất cả các loại tệp tin, tối đa 100MB</p>
+                        </div>
+
+                        <!-- Upload progress -->
+                        <div id="uploadProgressContainer" class="upload-progress d-none">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span id="uploadFileName">file.pdf</span>
+                                <span id="uploadPercent">0%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right column - file preview -->
+            <div class="col-lg-6">
+                <div class="card-admin h-100">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Xem trước tệp tin</h5>
+                        
+                        <!-- No file selected state -->
+                        <div id="noFileContainer" class="text-center py-5">
+                            <div class="text-secondary mb-3">
+                                <i class="fas fa-file fa-4x opacity-50"></i>
+                            </div>
+                            <h5>Không có tệp tin nào được chọn</h5>
+                            <p class="text-secondary">Vui lòng chọn tệp tin để xem trước.</p>
+                        </div>
+
+                        <!-- File preview state -->
+                        <div id="filePreviewContainer" class="d-none">
+                            <div class="file-preview-header">
+                                <div class="file-info">
+                                    <div id="fileIconContainer" class="file-icon">
+                                        <i class="far fa-file-pdf file-pdf"></i>
+                                    </div>
+                                    <div class="file-details">
+                                        <h5 id="previewFileName">document.pdf</h5>
+                                        <p class="text-secondary mb-0">
+                                            <span id="previewFileSize">2.4 MB</span> • 
+                                            <span id="previewFileType">PDF Document</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="file-actions">
+                                    <button id="cancelUploadBtn" class="btn btn-outline-secondary rounded-pill">
+                                        <i class="fas fa-times me-2"></i>Hủy
+                                    </button>
+                                    <button id="confirmUploadBtn" class="btn btn-primary rounded-pill ms-2">
+                                        <i class="fas fa-upload me-2"></i>Tải lên
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Content preview area -->
+                            <div id="previewContentContainer" class="mt-4">
+                                <!-- Preview content will be injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Upload complete state -->
+                        <div id="uploadCompleteContainer" class="text-center py-5 d-none">
+                            <div class="bg-success bg-opacity-10 p-4 rounded-circle mx-auto mb-4" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-check-circle text-success fa-4x"></i>
+                            </div>
+                            <h4 class="mb-3">Tải lên thành công!</h4>
+                            <p class="text-secondary mb-4">Tệp tin đã được tải lên thành công.</p>
+                            <div class="d-flex justify-content-center gap-3">
+                                <button id="uploadAnotherBtn" class="btn btn-outline-primary rounded-pill px-4">
+                                    <i class="fas fa-plus me-2"></i>Tải lên tệp tin khác
+                                </button>
+                                <a href="files.html" class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-list me-2"></i>Xem danh sách tệp tin
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle sidebar
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const body = document.body;
+            toggleBtn.addEventListener('click', function() {
+                body.classList.toggle('sidebar-collapsed');
+                const icons = toggleBtn.querySelectorAll('i');
+                icons.forEach(icon => icon.classList.toggle('d-none'));
+            });
+
+            // Upload functionality
+            const fileInput = document.getElementById('fileInput');
+            const browseButton = document.getElementById('browseButton');
+            const uploadArea = document.getElementById('uploadArea');
+            const uploadProgressContainer = document.getElementById('uploadProgressContainer');
+            const uploadFileName = document.getElementById('uploadFileName');
+            const uploadPercent = document.getElementById('uploadPercent');
+            const uploadProgressBar = document.getElementById('uploadProgressBar');
+
+            // Preview containers
+            const noFileContainer = document.getElementById('noFileContainer');
+            const filePreviewContainer = document.getElementById('filePreviewContainer');
+            const uploadCompleteContainer = document.getElementById('uploadCompleteContainer');
+            const previewFileName = document.getElementById('previewFileName');
+            const previewFileSize = document.getElementById('previewFileSize');
+            const previewFileType = document.getElementById('previewFileType');
+            const fileIconContainer = document.getElementById('fileIconContainer');
+            const previewContentContainer = document.getElementById('previewContentContainer');
+
+            // Buttons
+            const cancelUploadBtn = document.getElementById('cancelUploadBtn');
+            const confirmUploadBtn = document.getElementById('confirmUploadBtn');
+            const uploadAnotherBtn = document.getElementById('uploadAnotherBtn');
+
+            let selectedFile = null;
+
+            // Browse button click
+            browseButton.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // File input change
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    processSelectedFile(fileInput.files[0]);
+                }
+            });
+
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    processSelectedFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            // Cancel upload
+            cancelUploadBtn.addEventListener('click', function() {
+                resetUploadUI();
+            });
+
+            // Upload another file
+            uploadAnotherBtn.addEventListener('click', function() {
+                resetUploadUI();
+            });
+
+            // Confirm upload
+            confirmUploadBtn.addEventListener('click', function() {
+                if (selectedFile) {
+                    uploadFile(selectedFile);
+                }
+            });
+
+            // Process selected file
+            function processSelectedFile(file) {
+                selectedFile = file;
+                
+                // Update UI to show preview
+                noFileContainer.classList.add('d-none');
+                filePreviewContainer.classList.remove('d-none');
+                uploadCompleteContainer.classList.add('d-none');
+                
+                // Update file info
+                previewFileName.textContent = file.name;
+                previewFileSize.textContent = formatFileSize(file.size);
+                previewFileType.textContent = getFileType(file.name);
+                
+                // Update file icon
+                fileIconContainer.innerHTML = getFileIcon(file.name);
+                
+                // Generate preview
+                generateFilePreview(file);
+            }
+
+            // Generate file preview
+            function generateFilePreview(file) {
+                const fileType = file.type.split('/')[0];
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                
+                // Clear previous preview
+                previewContentContainer.innerHTML = '';
+                
+                if (fileType === 'image') {
+                    // Image preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewContentContainer.innerHTML = `
+                            <img src="${e.target.result}" alt="${file.name}" class="image-preview">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                } else if (fileExtension === 'pdf') {
+                    // PDF preview
+                    previewContentContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="far fa-file-pdf text-danger" style="font-size: 5rem;"></i>
+                            </div>
+                            <h5 class="mb-2">${file.name}</h5>
+                            <p class="text-secondary">Xem trước nội dung PDF sẽ được hiển thị tại đây.</p>
+                            <p class="text-secondary small">Trong môi trường thực tế, chúng tôi sẽ tải nội dung PDF và hiển thị bằng PDF.js.</p>
+                        </div>
+                    `;
+                    
+                    // Note: In a real implementation, you would load the PDF using PDF.js
+                    // and render it into an iframe or canvas element.
+                } else if (['doc', 'docx'].includes(fileExtension)) {
+                    // Word document preview
+                    previewContentContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="far fa-file-word text-primary" style="font-size: 5rem;"></i>
+                            </div>
+                            <h5 class="mb-2">${file.name}</h5>
+                            <p class="text-secondary">Tài liệu Word không thể hiển thị xem trước.</p>
+                        </div>
+                    `;
+                } else if (['xls', 'xlsx'].includes(fileExtension)) {
+                    // Excel spreadsheet preview
+                    previewContentContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="far fa-file-excel text-success" style="font-size: 5rem;"></i>
+                            </div>
+                            <h5 class="mb-2">${file.name}</h5>
+                            <p class="text-secondary">Bảng tính Excel không thể hiển thị xem trước.</p>
+                        </div>
+                    `;
+                } else {
+                    // Generic file preview
+                    previewContentContainer.innerHTML = `
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="far fa-file text-secondary" style="font-size: 5rem;"></i>
+                            </div>
+                            <h5 class="mb-2">${file.name}</h5>
+                            <p class="text-secondary">Không thể hiển thị xem trước cho loại tệp tin này.</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // Upload file
+            function uploadFile(file) {
+                // Show progress
+                uploadProgressContainer.classList.remove('d-none');
+                uploadFileName.textContent = file.name;
+                uploadProgressBar.style.width = '0%';
+                uploadPercent.textContent = '0%';
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'http://localhost:8000/files/upload_flow?user_id=hello', true);
+
+                // Progress handler
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = Math.round((e.loaded / e.total) * 100);
+                        uploadProgressBar.style.width = percentComplete + '%';
+                        uploadPercent.textContent = percentComplete + '%';
+                    }
+                });
+
+                // Load handler
+                xhr.addEventListener('load', function() {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            
+                            // Complete the progress bar
+                            uploadProgressBar.style.width = '100%';
+                            uploadPercent.textContent = '100%';
+                            uploadProgressBar.classList.remove('progress-bar-animated');
+                            
+                            // Show success UI
+                            setTimeout(function() {
+                                noFileContainer.classList.add('d-none');
+                                filePreviewContainer.classList.add('d-none');
+                                uploadProgressContainer.classList.add('d-none');
+                                uploadCompleteContainer.classList.remove('d-none');
+                                uploadCompleteContainer.classList.add('upload-complete');
+                            }, 500);
+                            
+                            showNotification('Tệp tin đã được tải lên thành công!', 'success');
+                        } catch (e) {
+                            showNotification('Lỗi khi xử lý phản hồi từ máy chủ.', 'error');
+                            resetUploadUI();
+                        }
+                    } else {
+                        showNotification('Lỗi khi tải lên tệp tin. Vui lòng thử lại.', 'error');
+                        resetUploadUI();
+                    }
+                });
+
+                // Error handler
+                xhr.addEventListener('error', function() {
+                    showNotification('Lỗi kết nối. Vui lòng kiểm tra kết nối mạng và thử lại.', 'error');
+                    resetUploadUI();
+                });
+
+                xhr.send(formData);
+            }
+
+            // Reset UI
+            function resetUploadUI() {
+                selectedFile = null;
+                fileInput.value = '';
+                noFileContainer.classList.remove('d-none');
+                filePreviewContainer.classList.add('d-none');
+                uploadCompleteContainer.classList.add('d-none');
+                uploadProgressContainer.classList.add('d-none');
+                uploadProgressBar.style.width = '0%';
+                uploadPercent.textContent = '0%';
+                uploadProgressBar.classList.add('progress-bar-animated');
+            }
+
+            // Helper functions
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            function getFileType(filename) {
+                const extension = filename.split('.').pop().toLowerCase();
+                const types = {
+                    'pdf': 'PDF Document',
+                    'doc': 'Word Document',
+                    'docx': 'Word Document',
+                    'xls': 'Excel Spreadsheet',
+                    'xlsx': 'Excel Spreadsheet',
+                    'jpg': 'JPEG Image',
+                    'jpeg': 'JPEG Image',
+                    'png': 'PNG Image',
+                    'gif': 'GIF Image',
+                    'txt': 'Text Document',
+                    'zip': 'ZIP Archive',
+                    'rar': 'RAR Archive'
+                };
+                
+                return types[extension] || 'Unknown File Type';
+            }
+
+            function getFileIcon(filename) {
+                const extension = filename.split('.').pop().toLowerCase();
+                
+                if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'].includes(extension)) {
+                    return '<i class="far fa-file-image file-image fa-2x"></i>';
+                } else if (['pdf'].includes(extension)) {
+                    return '<i class="far fa-file-pdf file-pdf fa-2x"></i>';
+                } else if (['doc', 'docx', 'rtf', 'odt'].includes(extension)) {
+                    return '<i class="far fa-file-word text-primary fa-2x"></i>';
+                } else if (['xls', 'xlsx', 'csv', 'ods'].includes(extension)) {
+                    return '<i class="far fa-file-excel text-success fa-2x"></i>';
+                } else if (['ppt', 'pptx'].includes(extension)) {
+                    return '<i class="far fa-file-powerpoint text-warning fa-2x"></i>';
+                } else if (['zip', 'rar', '7z', 'tar', 'gz'].includes(extension)) {
+                    return '<i class="far fa-file-archive text-secondary fa-2x"></i>';
+                } else if (['txt', 'log', 'md'].includes(extension)) {
+                    return '<i class="far fa-file-alt text-secondary fa-2x"></i>';
+                } else {
+                    return '<i class="far fa-file text-secondary fa-2x"></i>';
+                }
+            }
+
+            // Show notification
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                const notificationMessage = document.getElementById('notificationMessage');
+                
+                notification.className = 'notification';
+                notification.classList.add(type);
+                notificationMessage.textContent = message;
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

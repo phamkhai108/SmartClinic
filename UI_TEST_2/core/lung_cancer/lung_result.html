@@ -7,7 +7,7 @@
         <link
             rel="icon"
             type="image/x-icon"
-            href="/static/home/images/logoicon.webp"
+            href="../static/home/images/logoicon.webp"
         />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -23,16 +23,16 @@
                 theme: {
                     extend: {
                         colors: {
-                            primary: '#3b82f6',
-                            secondary: '#64748b',
-                            success: '#10b981',
-                            warning: '#f59e0b',
-                            danger: '#ef4444',
-                            info: '#06b6d4'
-                        }
-                    }
-                }
-            }
+                            primary: "#3b82f6",
+                            secondary: "#64748b",
+                            success: "#10b981",
+                            warning: "#f59e0b",
+                            danger: "#ef4444",
+                            info: "#06b6d4",
+                        },
+                    },
+                },
+            };
         </script>
         <style>
             @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
@@ -105,7 +105,7 @@
             }
 
             .progress-step::after {
-                content: '';
+                content: "";
                 position: absolute;
                 top: 15px;
                 right: -50%;
@@ -233,19 +233,23 @@
 
     <body>
         <!-- Nhúng topbar mới -->
-        <!--#include file="../../../static/utils/home/topbar.html" -->
-        
+        <!--#include file="../../..../static/utils/home/topbar.html" -->
+
         <main class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <!-- Progress steps -->
                     <div class="progress-indicator mb-5">
                         <div class="progress-step completed">
-                            <div class="step-number"><i class="fas fa-check"></i></div>
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
                             <div class="step-label">Thông tin cá nhân</div>
                         </div>
                         <div class="progress-step completed">
-                            <div class="step-number"><i class="fas fa-check"></i></div>
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
                             <div class="step-label">Triệu chứng & Yếu tố</div>
                         </div>
                         <div class="progress-step active">
@@ -257,36 +261,76 @@
                     <!-- Result Card -->
                     <div class="card result-card mb-4">
                         <div class="card-body p-5 text-center">
-                            <div id="resultIconWrapper" class="icon-wrapper mb-4">
-                                <i id="resultIcon" class="fas fa-lungs fa-3x text-primary"></i>
+                            <div
+                                id="resultIconWrapper"
+                                class="icon-wrapper mb-4"
+                            >
+                                <i
+                                    id="resultIcon"
+                                    class="fas fa-lungs fa-3x text-primary"
+                                ></i>
                             </div>
-                            <h2 class="fw-bold mb-4">Kết Quả Phân Tích Nguy Cơ Ung Thư Phổi</h2>
-                            <div id="resultMessage" class="result-message text-dark mb-5"></div>
-                            
-                            <div id="recommendation" class="recommendation-card d-none">
-                                <h5 class="fw-bold"><i id="recommendationIcon" class="fas fa-info-circle"></i> <span id="recommendationTitle">Kết luận</span></h5>
+                            <h2 class="fw-bold mb-4">
+                                Kết Quả Phân Tích Nguy Cơ Ung Thư Phổi
+                            </h2>
+                            <div
+                                id="resultMessage"
+                                class="result-message text-dark mb-5"
+                            ></div>
+
+                            <div
+                                id="recommendation"
+                                class="recommendation-card d-none"
+                            >
+                                <h5 class="fw-bold">
+                                    <i
+                                        id="recommendationIcon"
+                                        class="fas fa-info-circle"
+                                    ></i>
+                                    <span id="recommendationTitle"
+                                        >Kết luận</span
+                                    >
+                                </h5>
                                 <p id="recommendationText" class="mb-0"></p>
                             </div>
 
-                            <div class="next-steps bg-white rounded-3 text-start">
+                            <div
+                                class="next-steps bg-white rounded-3 text-start"
+                            >
                                 <h4 class="fw-bold mb-4">Các bước tiếp theo</h4>
                                 <div id="lowRiskSteps" class="d-none">
                                     <div class="action-item">
                                         <div class="action-icon">
-                                            <i class="fas fa-calendar-check text-primary"></i>
+                                            <i
+                                                class="fas fa-calendar-check text-primary"
+                                            ></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1">Kiểm tra sức khỏe định kỳ</h5>
-                                            <p class="text-secondary">Duy trì lịch khám sức khỏe định kỳ hàng năm để bảo đảm phát hiện sớm bất kỳ vấn đề nào.</p>
+                                            <h5 class="fw-bold mb-1">
+                                                Kiểm tra sức khỏe định kỳ
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Duy trì lịch khám sức khỏe định
+                                                kỳ hàng năm để bảo đảm phát hiện
+                                                sớm bất kỳ vấn đề nào.
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="action-item">
                                         <div class="action-icon">
-                                            <i class="fas fa-smoking-ban text-primary"></i>
+                                            <i
+                                                class="fas fa-smoking-ban text-primary"
+                                            ></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1">Duy trì lối sống lành mạnh</h5>
-                                            <p class="text-secondary">Tránh hút thuốc, giảm tiếp xúc với khói thuốc và các chất gây ô nhiễm không khí.</p>
+                                            <h5 class="fw-bold mb-1">
+                                                Duy trì lối sống lành mạnh
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Tránh hút thuốc, giảm tiếp xúc
+                                                với khói thuốc và các chất gây ô
+                                                nhiễm không khí.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -294,20 +338,36 @@
                                 <div id="moderateRiskSteps" class="d-none">
                                     <div class="action-item">
                                         <div class="action-icon">
-                                            <i class="fas fa-user-md text-warning"></i>
+                                            <i
+                                                class="fas fa-user-md text-warning"
+                                            ></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1">Tham khảo ý kiến bác sĩ</h5>
-                                            <p class="text-secondary">Nên đặt lịch hẹn với bác sĩ chuyên khoa để được tư vấn chi tiết về nguy cơ của bạn.</p>
+                                            <h5 class="fw-bold mb-1">
+                                                Tham khảo ý kiến bác sĩ
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Nên đặt lịch hẹn với bác sĩ
+                                                chuyên khoa để được tư vấn chi
+                                                tiết về nguy cơ của bạn.
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="action-item">
                                         <div class="action-icon">
-                                            <i class="fas fa-lungs text-warning"></i>
+                                            <i
+                                                class="fas fa-lungs text-warning"
+                                            ></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1">Xét nghiệm bổ sung</h5>
-                                            <p class="text-secondary">Cân nhắc thực hiện các xét nghiệm sàng lọc như chụp X-quang ngực hoặc CT ngực liều thấp.</p>
+                                            <h5 class="fw-bold mb-1">
+                                                Xét nghiệm bổ sung
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Cân nhắc thực hiện các xét
+                                                nghiệm sàng lọc như chụp X-quang
+                                                ngực hoặc CT ngực liều thấp.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -315,71 +375,140 @@
                                 <div id="highRiskSteps" class="d-none">
                                     <div class="action-item">
                                         <div class="action-icon">
-                                            <i class="fas fa-hospital text-danger"></i>
+                                            <i
+                                                class="fas fa-hospital text-danger"
+                                            ></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1">Khám chuyên khoa khẩn cấp</h5>
-                                            <p class="text-secondary">Hãy liên hệ ngay với bác sĩ chuyên khoa phổi để được khám và đánh giá chi tiết.</p>
+                                            <h5 class="fw-bold mb-1">
+                                                Khám chuyên khoa khẩn cấp
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Hãy liên hệ ngay với bác sĩ
+                                                chuyên khoa phổi để được khám và
+                                                đánh giá chi tiết.
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="action-item">
                                         <div class="action-icon">
-                                            <i class="fas fa-notes-medical text-danger"></i>
+                                            <i
+                                                class="fas fa-notes-medical text-danger"
+                                            ></i>
                                         </div>
                                         <div>
-                                            <h5 class="fw-bold mb-1">Thực hiện xét nghiệm hình ảnh</h5>
-                                            <p class="text-secondary">Chụp CT ngực liều thấp và các xét nghiệm chẩn đoán khác theo chỉ định của bác sĩ.</p>
+                                            <h5 class="fw-bold mb-1">
+                                                Thực hiện xét nghiệm hình ảnh
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Chụp CT ngực liều thấp và các
+                                                xét nghiệm chẩn đoán khác theo
+                                                chỉ định của bác sĩ.
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mt-5 d-flex flex-column flex-sm-row justify-content-center gap-3">
-                                <a href="lung_cancer_form.html" class="btn btn-primary">
-                                    <i class="fas fa-redo me-2"></i> Kiểm tra lại
+                            <div
+                                class="mt-5 d-flex flex-column flex-sm-row justify-content-center gap-3"
+                            >
+                                <a
+                                    href="lung_cancer_form.html"
+                                    class="btn btn-primary"
+                                >
+                                    <i class="fas fa-redo me-2"></i> Kiểm tra
+                                    lại
                                 </a>
                                 <a href="#" class="btn btn-outline-primary">
-                                    <i class="fas fa-print me-2"></i> Lưu kết quả
+                                    <i class="fas fa-print me-2"></i> Lưu kết
+                                    quả
                                 </a>
-                                <a href="/core/chat/chatbot_markdown.html" class="btn btn-outline-primary">
-                                    <i class="fas fa-comment-medical me-2"></i> Tư vấn với AI
+                                <a
+                                    href="../chat/chatbot_markdown.html"
+                                    class="btn btn-outline-primary"
+                                >
+                                    <i class="fas fa-comment-medical me-2"></i>
+                                    Tư vấn với AI
                                 </a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Disclaimer -->
-                    <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4">
+                    <div
+                        class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4"
+                    >
                         <i class="fas fa-info-circle fs-4 me-3 text-info"></i>
                         <div>
-                            <strong>Lưu ý quan trọng:</strong> Kết quả dự đoán này chỉ mang tính tham khảo và không thay thế cho chẩn đoán y khoa chính thức.
-                            Vui lòng tham khảo ý kiến bác sĩ để được tư vấn và điều trị phù hợp.
+                            <strong>Lưu ý quan trọng:</strong> Kết quả dự đoán
+                            này chỉ mang tính tham khảo và không thay thế cho
+                            chẩn đoán y khoa chính thức. Vui lòng tham khảo ý
+                            kiến bác sĩ để được tư vấn và điều trị phù hợp.
                         </div>
                     </div>
 
                     <!-- FAQ Accordion -->
                     <div class="accordion mt-5" id="lungCancerFAQ">
-                        <div class="accordion-item border-0 mb-3 shadow-sm rounded-3">
+                        <div
+                            class="accordion-item border-0 mb-3 shadow-sm rounded-3"
+                        >
                             <h2 class="accordion-header" id="heading1">
-                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                                <button
+                                    class="accordion-button collapsed rounded-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse1"
+                                    aria-expanded="false"
+                                    aria-controls="collapse1"
+                                >
                                     Ung thư phổi là gì?
                                 </button>
                             </h2>
-                            <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="heading1" data-bs-parent="#lungCancerFAQ">
+                            <div
+                                id="collapse1"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="heading1"
+                                data-bs-parent="#lungCancerFAQ"
+                            >
                                 <div class="accordion-body">
-                                    <p>Ung thư phổi là một loại ung thư bắt đầu từ các tế bào của phổi, thường xuất hiện ở các tế bào lót đường dẫn khí. Đây là một trong những loại ung thư phổ biến nhất và là nguyên nhân hàng đầu gây tử vong do ung thư trên toàn thế giới.</p>
+                                    <p>
+                                        Ung thư phổi là một loại ung thư bắt đầu
+                                        từ các tế bào của phổi, thường xuất hiện
+                                        ở các tế bào lót đường dẫn khí. Đây là
+                                        một trong những loại ung thư phổ biến
+                                        nhất và là nguyên nhân hàng đầu gây tử
+                                        vong do ung thư trên toàn thế giới.
+                                    </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion-item border-0 mb-3 shadow-sm rounded-3">
+                        <div
+                            class="accordion-item border-0 mb-3 shadow-sm rounded-3"
+                        >
                             <h2 class="accordion-header" id="heading2">
-                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                <button
+                                    class="accordion-button collapsed rounded-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse2"
+                                    aria-expanded="false"
+                                    aria-controls="collapse2"
+                                >
                                     Những dấu hiệu cảnh báo của ung thư phổi?
                                 </button>
                             </h2>
-                            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="heading2" data-bs-parent="#lungCancerFAQ">
+                            <div
+                                id="collapse2"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="heading2"
+                                data-bs-parent="#lungCancerFAQ"
+                            >
                                 <div class="accordion-body">
-                                    <p>Các dấu hiệu cảnh báo thường gặp của ung thư phổi bao gồm:</p>
+                                    <p>
+                                        Các dấu hiệu cảnh báo thường gặp của ung
+                                        thư phổi bao gồm:
+                                    </p>
                                     <ul>
                                         <li>Ho dai dẳng hoặc ho ra máu</li>
                                         <li>Đau ngực kéo dài</li>
@@ -391,22 +520,55 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="accordion-item border-0 mb-3 shadow-sm rounded-3">
+                        <div
+                            class="accordion-item border-0 mb-3 shadow-sm rounded-3"
+                        >
                             <h2 class="accordion-header" id="heading3">
-                                <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                                    Làm thế nào để giảm nguy cơ mắc ung thư phổi?
+                                <button
+                                    class="accordion-button collapsed rounded-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse3"
+                                    aria-expanded="false"
+                                    aria-controls="collapse3"
+                                >
+                                    Làm thế nào để giảm nguy cơ mắc ung thư
+                                    phổi?
                                 </button>
                             </h2>
-                            <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="heading3" data-bs-parent="#lungCancerFAQ">
+                            <div
+                                id="collapse3"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="heading3"
+                                data-bs-parent="#lungCancerFAQ"
+                            >
                                 <div class="accordion-body">
-                                    <p>Để giảm nguy cơ mắc ung thư phổi, bạn nên:</p>
+                                    <p>
+                                        Để giảm nguy cơ mắc ung thư phổi, bạn
+                                        nên:
+                                    </p>
                                     <ul>
-                                        <li>Không hút thuốc và tránh khói thuốc thụ động</li>
-                                        <li>Kiểm tra radon trong nhà và nơi làm việc</li>
-                                        <li>Tránh tiếp xúc với chất gây ô nhiễm và hóa chất độc hại</li>
-                                        <li>Duy trì chế độ ăn uống giàu trái cây và rau quả</li>
+                                        <li>
+                                            Không hút thuốc và tránh khói thuốc
+                                            thụ động
+                                        </li>
+                                        <li>
+                                            Kiểm tra radon trong nhà và nơi làm
+                                            việc
+                                        </li>
+                                        <li>
+                                            Tránh tiếp xúc với chất gây ô nhiễm
+                                            và hóa chất độc hại
+                                        </li>
+                                        <li>
+                                            Duy trì chế độ ăn uống giàu trái cây
+                                            và rau quả
+                                        </li>
                                         <li>Tập thể dục thường xuyên</li>
-                                        <li>Khám sức khỏe định kỳ, đặc biệt nếu bạn có nguy cơ cao</li>
+                                        <li>
+                                            Khám sức khỏe định kỳ, đặc biệt nếu
+                                            bạn có nguy cơ cao
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -414,29 +576,36 @@
                     </div>
 
                     <p class="text-center text-muted small mt-5">
-                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế thông minh
+                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế
+                        thông minh
                     </p>
                 </div>
             </div>
         </main>
 
         <!-- Nhúng footer mới -->
-        <!--#include file="../../../static/utils/home/footer.html" -->
-        
+        <!--#include file="../../..../static/utils/home/footer.html" -->
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const urlParams = new URLSearchParams(window.location.search);
                 const prediction = parseInt(urlParams.get("prediction"));
                 const message = urlParams.get("message");
 
                 const resultMessage = document.getElementById("resultMessage");
-                const recommendation = document.getElementById("recommendation");
-                const resultIconWrapper = document.getElementById("resultIconWrapper");
+                const recommendation =
+                    document.getElementById("recommendation");
+                const resultIconWrapper =
+                    document.getElementById("resultIconWrapper");
                 const resultIcon = document.getElementById("resultIcon");
-                const recommendationIcon = document.getElementById("recommendationIcon");
-                const recommendationTitle = document.getElementById("recommendationTitle");
-                const recommendationText = document.getElementById("recommendationText");
+                const recommendationIcon =
+                    document.getElementById("recommendationIcon");
+                const recommendationTitle = document.getElementById(
+                    "recommendationTitle"
+                );
+                const recommendationText =
+                    document.getElementById("recommendationText");
 
                 if (message) {
                     resultMessage.innerText = decodeURIComponent(message);
@@ -451,12 +620,17 @@
                     resultIcon.classList.add("text-success");
                     resultIcon.classList.remove("fa-lungs");
                     resultIcon.classList.add("fa-check-circle");
-                    
-                    recommendationIcon.classList.add("fa-check-circle", "text-success");
+
+                    recommendationIcon.classList.add(
+                        "fa-check-circle",
+                        "text-success"
+                    );
                     recommendationTitle.innerText = "Nguy cơ thấp";
                     recommendationText.innerHTML = `Dựa trên thông tin bạn cung cấp, nguy cơ ung thư phổi của bạn ở mức thấp. Hãy tiếp tục duy trì lối sống lành mạnh và khám sức khỏe định kỳ để phát hiện sớm bất kỳ vấn đề nào có thể phát sinh.`;
-                    
-                    document.getElementById("lowRiskSteps").classList.remove("d-none");
+
+                    document
+                        .getElementById("lowRiskSteps")
+                        .classList.remove("d-none");
                 } else if (prediction === 2) {
                     // Moderate risk
                     recommendation.classList.remove("d-none");
@@ -466,12 +640,17 @@
                     resultIcon.classList.add("text-warning");
                     resultIcon.classList.remove("fa-lungs");
                     resultIcon.classList.add("fa-exclamation-triangle");
-                    
-                    recommendationIcon.classList.add("fa-exclamation-triangle", "text-warning");
+
+                    recommendationIcon.classList.add(
+                        "fa-exclamation-triangle",
+                        "text-warning"
+                    );
                     recommendationTitle.innerText = "Nguy cơ trung bình";
                     recommendationText.innerHTML = `Có dấu hiệu nguy cơ ung thư phổi ở mức độ vừa phải. Bạn nên tham khảo ý kiến của bác sĩ chuyên khoa để được đánh giá chi tiết hơn và thực hiện các xét nghiệm sàng lọc nếu cần thiết.`;
-                    
-                    document.getElementById("moderateRiskSteps").classList.remove("d-none");
+
+                    document
+                        .getElementById("moderateRiskSteps")
+                        .classList.remove("d-none");
                 } else if (prediction === 3) {
                     // High risk
                     recommendation.classList.remove("d-none");
@@ -481,17 +660,25 @@
                     resultIcon.classList.add("text-danger");
                     resultIcon.classList.remove("fa-lungs");
                     resultIcon.classList.add("fa-exclamation-circle");
-                    
-                    recommendationIcon.classList.add("fa-exclamation-circle", "text-danger");
+
+                    recommendationIcon.classList.add(
+                        "fa-exclamation-circle",
+                        "text-danger"
+                    );
                     recommendationTitle.innerText = "Nguy cơ cao";
                     recommendationText.innerHTML = `Kết quả cho thấy nguy cơ cao mắc bệnh ung thư phổi. Bạn nên đến cơ sở y tế gần nhất để được khám và đánh giá chuyên sâu càng sớm càng tốt. Điều trị sớm rất quan trọng để nâng cao hiệu quả điều trị.`;
-                    
-                    document.getElementById("highRiskSteps").classList.remove("d-none");
+
+                    document
+                        .getElementById("highRiskSteps")
+                        .classList.remove("d-none");
                 } else {
                     // Unknown
                     recommendation.classList.remove("d-none");
                     recommendation.classList.add("bg-light");
-                    recommendationIcon.classList.add("fa-question-circle", "text-secondary");
+                    recommendationIcon.classList.add(
+                        "fa-question-circle",
+                        "text-secondary"
+                    );
                     recommendationTitle.innerText = "Không xác định";
                     recommendationText.innerHTML = `Không thể xác định kết quả dự đoán. Vui lòng kiểm tra lại thông tin nhập vào hoặc liên hệ với đội ngũ hỗ trợ của chúng tôi.`;
                 }

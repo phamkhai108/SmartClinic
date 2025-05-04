@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Phân loại U não | SmartClinic.AI</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../static/home/images/logoicon.webp"
+        />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#3b82f6",
+                            secondary: "#64748b",
+                            success: "#10b981",
+                            warning: "#f59e0b",
+                            danger: "#ef4444",
+                            info: "#06b6d4",
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+            :root {
+                --primary-color: #3b82f6;
+                --secondary-color: #64748b;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --info-color: #06b6d4;
+                --light-color: #f8fafc;
+                --dark-color: #1e293b;
+            }
+
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: var(--light-color);
+            }
+
+            .form-card {
+                border: none;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .form-card:hover {
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+                transform: translateY(-5px);
+            }
+
+            .btn-primary {
+                background-color: var(--primary-color);
+                border: none;
+                border-radius: 10px;
+                padding: 12px 30px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary:hover {
+                background-color: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+            }
+
+            .btn-light {
+                border-radius: 10px;
+                border: 1px solid #e2e8f0;
+                padding: 12px 30px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .btn-light:hover {
+                background-color: #f1f5f9;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+            }
+
+            .icon-wrapper {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+            }
+
+            .divider {
+                display: flex;
+                align-items: center;
+                margin: 1.5rem 0;
+            }
+
+            .divider::before,
+            .divider::after {
+                content: "";
+                flex-grow: 1;
+                height: 1px;
+                background-color: #e2e8f0;
+            }
+
+            .divider-text {
+                padding: 0 1rem;
+                color: var(--secondary-color);
+                font-weight: 500;
+            }
+
+            .progress-indicator {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+            }
+
+            .progress-step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33.33%;
+                position: relative;
+            }
+
+            .progress-step::after {
+                content: "";
+                position: absolute;
+                top: 15px;
+                right: -50%;
+                width: 100%;
+                height: 3px;
+                background-color: #e2e8f0;
+                z-index: 0;
+            }
+
+            .progress-step:last-child::after {
+                display: none;
+            }
+
+            .progress-step.active .step-number {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .progress-step.completed .step-number {
+                background-color: var(--success-color);
+                color: white;
+            }
+
+            .step-number {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background-color: #e2e8f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .step-label {
+                font-size: 0.85rem;
+                color: var(--secondary-color);
+                text-align: center;
+            }
+
+            .progress-step.active .step-label {
+                color: var(--dark-color);
+                font-weight: 500;
+            }
+
+            .upload-area {
+                border: 2px dashed #e2e8f0;
+                border-radius: 16px;
+                padding: 2rem;
+                text-align: center;
+                position: relative;
+                min-height: 250px;
+                transition: all 0.3s ease;
+                background-color: #ffffff;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .upload-area:hover,
+            .upload-area.dragover {
+                border-color: var(--primary-color);
+                background-color: rgba(59, 130, 246, 0.05);
+            }
+
+            .upload-icon {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                color: var(--primary-color);
+            }
+
+            .badge-format {
+                background-color: #f8fafc;
+                color: var(--secondary-color);
+                border-radius: 20px;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                font-weight: 500;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                margin: 0 5px;
+            }
+
+            .result-box {
+                display: none;
+                transition: all 0.3s ease;
+                animation: fadeIn 0.5s ease;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .preview-image {
+                max-width: 100%;
+                max-height: 300px;
+                border-radius: 8px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                display: none;
+                margin: 1rem auto;
+                transition: all 0.3s ease;
+            }
+
+            .feature-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--secondary-color);
+                font-weight: 500;
+            }
+
+            .feature-item i {
+                color: var(--primary-color);
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Nhúng topbar mới -->
+        <!--#include file="../../..../static/utils/home/topbar.html" -->
+
+        <main class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Page header -->
+                    <div class="text-center mb-5">
+                        <div class="icon-wrapper mb-4">
+                            <i class="fas fa-brain fa-2x text-primary"></i>
+                        </div>
+                        <h1 class="fw-bold">Phân loại U não</h1>
+                        <p class="text-secondary lead">
+                            Công cụ AI phân tích hình ảnh y tế để giúp phát hiện
+                            và phân loại u não
+                        </p>
+                    </div>
+
+                    <!-- Progress steps -->
+                    <div class="progress-indicator mb-5">
+                        <div class="progress-step completed">
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-label">Chuẩn bị</div>
+                        </div>
+                        <div class="progress-step active">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Tải lên hình ảnh</div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Kết quả phân tích</div>
+                        </div>
+                    </div>
+
+                    <!-- Main form card -->
+                    <div class="card form-card mb-4">
+                        <div class="card-body p-4 p-lg-5">
+                            <!-- Khu vực upload ảnh -->
+                            <div class="upload-area" id="upload-area">
+                                <div class="upload-icon mb-3">
+                                    <i
+                                        class="fas fa-cloud-upload-alt fa-2x"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Tải lên hình ảnh y tế</h4>
+                                <div
+                                    class="d-flex flex-wrap justify-content-center gap-2 mb-3"
+                                >
+                                    <span class="badge-format">
+                                        <i class="far fa-file-image"></i> JPG
+                                    </span>
+                                    <span class="badge-format">
+                                        <i class="far fa-file-image"></i> PNG
+                                    </span>
+                                    <span class="badge-format">
+                                        <i class="fas fa-x-ray"></i> DICOM
+                                    </span>
+                                </div>
+                                <p class="text-muted">
+                                    Kéo và thả hoặc nhấp để chọn tệp
+                                </p>
+                                <input
+                                    type="file"
+                                    id="imageInput"
+                                    class="position-absolute opacity-0 top-0 start-0 w-100 h-100"
+                                    accept="image/*"
+                                    style="cursor: pointer"
+                                />
+                            </div>
+
+                            <!-- Hiển thị ảnh đã chọn -->
+                            <div class="text-center mt-4">
+                                <img
+                                    id="previewImage"
+                                    class="preview-image"
+                                    alt="Ảnh preview"
+                                />
+                            </div>
+
+                            <!-- Các nút chức năng -->
+                            <div class="d-grid gap-2 col-lg-8 mx-auto mt-4">
+                                <button
+                                    class="btn btn-primary py-3"
+                                    id="predictBtn"
+                                    disabled
+                                >
+                                    <i class="fas fa-brain me-2"></i> Phân tích
+                                    hình ảnh
+                                </button>
+                                <button
+                                    class="btn btn-light"
+                                    onclick="resetForm()"
+                                >
+                                    <i class="fas fa-redo me-2"></i> Làm mới
+                                </button>
+                            </div>
+
+                            <!-- Kết quả dự đoán -->
+                            <div class="mt-5 result-box" id="resultBox">
+                                <div class="divider">
+                                    <span class="divider-text"
+                                        >Kết quả phân tích</span
+                                    >
+                                </div>
+
+                                <div
+                                    class="card border-0 bg-success bg-opacity-10 p-4 rounded-4"
+                                >
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div
+                                            class="p-3 rounded-circle bg-success bg-opacity-25 me-3"
+                                        >
+                                            <i
+                                                class="fas fa-check-circle text-success fa-2x"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-1 fw-bold">
+                                                Kết quả phân tích:
+                                            </h5>
+                                            <p
+                                                class="mb-0 fs-5"
+                                                id="predictedClass"
+                                            >
+                                                Đang phân tích...
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-3">
+                                        <div
+                                            class="d-flex justify-content-between align-items-center mb-2"
+                                        >
+                                            <span class="fw-medium"
+                                                >Độ tin cậy:</span
+                                            >
+                                            <span
+                                                class="fw-bold"
+                                                id="confidence"
+                                                >0</span
+                                            >
+                                        </div>
+                                        <div
+                                            class="progress"
+                                            style="height: 10px"
+                                        >
+                                            <div
+                                                id="confidenceBar"
+                                                class="progress-bar bg-success"
+                                                style="width: 0%"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <div
+                        class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4"
+                    >
+                        <i class="fas fa-info-circle fs-4 me-3 text-info"></i>
+                        <div>
+                            <strong>Lưu ý quan trọng:</strong> Công cụ này chỉ
+                            giúp đánh giá dựa trên hình ảnh bạn cung cấp. Kết
+                            quả không phải là chẩn đoán y khoa chính thức. Vui
+                            lòng tham khảo ý kiến bác sĩ chuyên khoa để được tư
+                            vấn chuyên sâu.
+                        </div>
+                    </div>
+
+                    <!-- Tính năng nổi bật -->
+                    <div class="row g-4 my-4">
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Bảo mật dữ liệu y tế</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-bolt"></i>
+                                <span>Phân tích nhanh chóng</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Độ chính xác cao</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted small">
+                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế
+                        thông minh
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Nhúng footer mới -->
+        <!--#include file="../../..../static/utils/home/footer.html" -->
+
+        <!-- JavaScript Logic -->
+        <script>
+            const predictBtn = document.getElementById("predictBtn");
+            const imageInput = document.getElementById("imageInput");
+            const resultBox = document.getElementById("resultBox");
+            const predictedClassSpan =
+                document.getElementById("predictedClass");
+            const confidenceSpan = document.getElementById("confidence");
+            const confidenceBar = document.getElementById("confidenceBar");
+            const previewImage = document.getElementById("previewImage");
+            const uploadArea = document.getElementById("upload-area");
+
+            // Xử lý hiển thị ảnh preview
+            imageInput.addEventListener("change", function () {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = "block";
+                        predictBtn.disabled = false;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Xử lý drag and drop
+            uploadArea.addEventListener("dragover", function (e) {
+                e.preventDefault();
+                this.classList.add("dragover");
+            });
+
+            uploadArea.addEventListener("dragleave", function () {
+                this.classList.remove("dragover");
+            });
+
+            uploadArea.addEventListener("drop", function (e) {
+                e.preventDefault();
+                this.classList.remove("dragover");
+
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.match("image.*")) {
+                    imageInput.files = e.dataTransfer.files;
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        previewImage.src = e.target.result;
+                        previewImage.style.display = "block";
+                        predictBtn.disabled = false;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Xử lý dự đoán
+            predictBtn.addEventListener("click", async () => {
+                const file = imageInput.files[0];
+
+                if (!file) {
+                    alert("Vui lòng chọn một hình ảnh để dự đoán.");
+                    return;
+                }
+
+                // Hiển thị trạng thái đang xử lý
+                predictBtn.disabled = true;
+                predictBtn.innerHTML =
+                    '<i class="fas fa-spinner fa-spin me-2"></i> Đang phân tích...';
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                try {
+                    const response = await fetch(
+                        "http://localhost:8000/brain/predict_tumor",
+                        {
+                            method: "POST",
+                            body: formData,
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Lỗi khi gửi yêu cầu tới API.");
+                    }
+
+                    const data = await response.json();
+
+                    // Tạo một data URL từ ảnh đã tải lên để truyền sang trang kết quả
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        const imageDataUrl = encodeURIComponent(reader.result);
+                        const query = new URLSearchParams({
+                            predicted_class: data.predicted_class,
+                            confidence: data.confidence,
+                            image_url: imageDataUrl,
+                        }).toString();
+
+                        // Chuyển hướng đến trang kết quả với dữ liệu
+                        window.location.href = "result_predict.html?" + query;
+                    };
+                    reader.readAsDataURL(file);
+                } catch (error) {
+                    alert("Đã xảy ra lỗi: " + error.message);
+                    predictBtn.disabled = false;
+                    predictBtn.innerHTML =
+                        '<i class="fas fa-brain me-2"></i> Thử lại';
+                }
+            });
+
+            function resetForm() {
+                imageInput.value = "";
+                previewImage.style.display = "none";
+                resultBox.style.display = "none";
+                predictBtn.disabled = true;
+                predictBtn.innerHTML =
+                    '<i class="fas fa-brain me-2"></i> Phân tích hình ảnh';
+            }
+        </script>
+    </body>
+</html>

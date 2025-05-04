@@ -53,3 +53,17 @@ def list_files_by_user(user_id: str = Query(..., description='User ID or "all"')
         return files
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/delete_file/{file_name}")
+async def delete_file(file_name: str) -> dict:
+    try:
+        file_service.delete_file_by_name(file_name)
+        return {
+            "detail": f"File {file_name} deleted successfully.",
+            "status": "success",
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting file: {str(e)}")
