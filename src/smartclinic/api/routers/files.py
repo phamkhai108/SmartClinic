@@ -58,7 +58,7 @@ def list_files_by_user(user_id: str = Query(..., description='User ID or "all"')
 @router.delete("/delete_file/{file_name}")
 async def delete_file(file_name: str) -> dict:
     try:
-        file_service.delete_file_by_name(file_name)
+        file_service.delete_file_by_filename(file_name)
         return {
             "detail": f"File {file_name} deleted successfully.",
             "status": "success",

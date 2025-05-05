@@ -11,6 +11,7 @@ from smartclinic.core.chat.chat_dto import (
     Message,
     choiceMessage,
 )
+from smartclinic.core.chat_history.chat_history_service import HistoryService
 from smartclinic.core.llm.llm_service import LLMModel
 from smartclinic.core.search.search_service import search_vector_cosine
 
@@ -34,6 +35,7 @@ def process_chat(
     llm_model: LLMModel,
     embedding_model: LLMModel,
     client: Elasticsearch,
+    history_service: HistoryService,
 ) -> ChatResponseDto:
     user_id = chat_dto.user_id
     session_id = chat_dto.session_id
@@ -48,7 +50,6 @@ def process_chat(
     session_history = chat_histories.get(session_id, [])
 
     context_messages: list[dict] = []
-
     context_messages.append(
         {"role": "system", "content": SYSTEM_PROMPT.format(context=context)}
     )
@@ -59,14 +60,36 @@ def process_chat(
 
     context_messages.extend({"role": m.role, "content": m.content} for m in user_messages)
 
-    # print("Final context_messages for LLM:")
-    # pprint.pprint(context_messages)
-
-    bot_content = llm_model.chat(context_messages)
-
-    bot_content = clean_think_block(bot_content)  # clean think block
-
+    bot_content = clean_think_block(llm_model.chat(context_messages))
     bot_reply = Message(role="assistant", content=bot_content)
+
+    # 👇 Lấy conversation_name từ DB hoặc tạo mới
+    conversation_name = (
+        history_service.get_session_messages(session_id)[0].conversation_name
+        if history_service.get_session_messages(session_id)
+        else user_messages[0].content
+    )
+
+    # Lưu message user
+    for msg in user_messages:
+        history_service.insert_by_session(
+            session_id=session_id,
+            user_id=user_id,
+            conversation_name=conversation_name,
+            message=msg.content,
+            sender=msg.role,
+            timestamp=datetime.now(),
+        )
+
+    # Lưu message assistant (với cùng conversation_name)
+    history_service.insert_by_session(
+        session_id=session_id,
+        user_id=user_id,
+        conversation_name=conversation_name,
+        message=bot_reply.content,
+        sender="assistant",
+        timestamp=datetime.now(),
+    )
 
     new_choice = choiceMessage(
         messages=user_messages + [bot_reply],

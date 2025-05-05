@@ -3,7 +3,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from smartclinic.api.dependencies import get_elasticsearch_client
-from smartclinic.api.routers import brain, chat, files, heart, lung, mail, search
+from smartclinic.api.routers import (
+    brain,
+    chat,
+    chat_history,
+    files,
+    heart,
+    lung,
+    mail,
+    search,
+)
 from smartclinic.vectordb.elasticsearch.es_setup import create_chunk_index
 
 app = FastAPI(
@@ -24,6 +33,7 @@ app.include_router(brain.router)
 app.include_router(heart.router)
 app.include_router(lung.router)
 app.include_router(chat.router)
+app.include_router(chat_history.router)
 app.include_router(mail.router)
 app.include_router(files.router)
 app.include_router(search.router)

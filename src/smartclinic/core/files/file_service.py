@@ -94,7 +94,7 @@ class UploadFileNProcessChunk:
 
         return self.db_session.query(File).filter(File.user_id == user_id).all()
 
-    def delete_file_by_name(self, file_name: str) -> None:
+    def delete_file_by_filename(self, file_name: str) -> None:
         file = self.db_session.query(File).filter(File.file_name == file_name).first()
         self.chunker.delete_by_source(file_name)
 
