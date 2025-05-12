@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SmartClinic.AI - Giải Pháp Chẩn Đoán Y Tế Thông Minh</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../static/home/images/logoicon.webp"
+        />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#3b82f6",
+                            secondary: "#64748b",
+                            success: "#10b981",
+                            warning: "#f59e0b",
+                            danger: "#ef4444",
+                            info: "#06b6d4",
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+            :root {
+                --primary-color: #3b82f6;
+                --secondary-color: #64748b;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --info-color: #06b6d4;
+                --light-color: #f8fafc;
+                --dark-color: #1e293b;
+            }
+
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: var(--light-color);
+            }
+
+            /* Hero section styles */
+            .hero-section {
+                background: linear-gradient(135deg, #e6f2ff 0%, #f0f9ff 100%);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .hero-section::before {
+                content: "";
+                position: absolute;
+                top: -50px;
+                right: -50px;
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                background: rgba(59, 130, 246, 0.1);
+                z-index: 0;
+            }
+
+            .hero-section::after {
+                content: "";
+                position: absolute;
+                bottom: -80px;
+                left: -80px;
+                width: 200px;
+                height: 200px;
+                border-radius: 50%;
+                background: rgba(59, 130, 246, 0.1);
+                z-index: 0;
+            }
+
+            /* Service card styles */
+            .service-card {
+                transition: all 0.3s ease;
+                border: none;
+                overflow: hidden;
+            }
+
+            .service-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .service-card .icon-wrapper {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+                transition: all 0.3s ease;
+            }
+
+            .service-card:hover .icon-wrapper {
+                background-color: var(--primary-color);
+            }
+
+            .service-card:hover .icon-wrapper i {
+                color: white !important;
+            }
+
+            /* Feature section styles */
+            .feature-item {
+                transition: all 0.3s ease;
+            }
+
+            .feature-item:hover {
+                transform: translateY(-5px);
+            }
+
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                border-radius: 12px;
+                background-color: rgba(59, 130, 246, 0.15);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+                transition: all 0.3s ease;
+            }
+
+            .feature-item:hover .feature-icon {
+                background-color: var(--primary-color);
+            }
+
+            .feature-item:hover .feature-icon i {
+                color: white !important;
+            }
+
+            /* Gallery image styles */
+            .gallery-img {
+                transition: all 0.4s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .gallery-img::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 0, 0, 0.7) 100%
+                );
+                opacity: 0;
+                transition: all 0.4s ease;
+            }
+
+            .gallery-img:hover::after {
+                opacity: 1;
+            }
+
+            .gallery-img:hover {
+                transform: scale(1.03);
+            }
+
+            /* Chatbot button styles */
+            .chatbot-button {
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background-color: var(--primary-color);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+                transition: all 0.3s ease;
+                z-index: 1000;
+            }
+
+            .chatbot-button:hover {
+                transform: scale(1.1);
+                box-shadow: 0 6px 25px rgba(59, 130, 246, 0.5);
+            }
+
+            .chatbot-icon {
+                font-size: 26px;
+            }
+
+            /* Chatbot iframe wrapper */
+            #chatbotWrapper {
+                position: fixed;
+                bottom: 110px;
+                right: 30px;
+                width: 400px;
+                height: 600px;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+                display: none;
+            }
+
+            #chatbotIframe {
+                width: 100%;
+                height: 100%;
+                border: none;
+            }
+
+            #closeChatbot {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background-color: var(--primary-color);
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 1001;
+                border: none;
+                transition: all 0.2s ease;
+            }
+
+            #closeChatbot:hover {
+                background-color: var(--danger-color);
+                transform: rotate(90deg);
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Nhúng topbar mới -->
+        <!--#include file="..../static/utils/home/topbar.html" -->
+
+        <main>
+            <!-- Hero Section -->
+            <section class="hero-section py-5">
+                <div class="container py-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-5 mb-lg-0">
+                            <h1
+                                class="display-4 fw-bold mb-4"
+                                style="color: var(--dark-color)"
+                            >
+                                Chẩn đoán y tế
+                                <span style="color: var(--primary-color)"
+                                    >thông minh</span
+                                >
+                                cho sức khỏe tốt hơn
+                            </h1>
+                            <p class="lead mb-4 text-secondary">
+                                SmartClinic.AI kết hợp trí tuệ nhân tạo và
+                                chuyên môn y khoa để mang đến dịch vụ chẩn đoán
+                                nhanh chóng, chính xác và tiện lợi cho mọi
+                                người.
+                            </p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <a
+                                    href="#services"
+                                    class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm"
+                                >
+                                    Khám phá dịch vụ
+                                    <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                                <a
+                                    href="#about"
+                                    class="btn btn-outline-primary btn-lg rounded-pill px-4"
+                                >
+                                    Tìm hiểu thêm
+                                </a>
+                            </div>
+                            <div class="mt-5 d-flex align-items-center">
+                                <div class="d-flex">
+                                    <div class="me-n3">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/men/32.jpg"
+                                            alt="User"
+                                            class="rounded-circle border border-3 border-white"
+                                            width="50"
+                                            height="50"
+                                        />
+                                    </div>
+                                    <div class="me-n3">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/women/44.jpg"
+                                            alt="User"
+                                            class="rounded-circle border border-3 border-white"
+                                            width="50"
+                                            height="50"
+                                        />
+                                    </div>
+                                    <div class="me-n3">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/men/68.jpg"
+                                            alt="User"
+                                            class="rounded-circle border border-3 border-white"
+                                            width="50"
+                                            height="50"
+                                        />
+                                    </div>
+                                    <div class="me-3">
+                                        <img
+                                            src="https://randomuser.me/api/portraits/women/65.jpg"
+                                            alt="User"
+                                            class="rounded-circle border border-3 border-white"
+                                            width="50"
+                                            height="50"
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-warning me-2">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span class="fw-bold">4.8/5</span>
+                                    </div>
+                                    <p class="mb-0 text-secondary small">
+                                        Được tin dùng bởi 10,000+ người dùng
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 position-relative">
+                            <div class="position-relative">
+                                <img
+                                    src="https://img.freepik.com/free-photo/doctor-using-tablet-checking-medical-history-patient_1150-19661.jpg"
+                                    alt="Doctor using SmartClinic.AI"
+                                    class="img-fluid rounded-4 shadow"
+                                />
+                                <div
+                                    class="position-absolute top-0 end-0 translate-middle-y bg-white p-3 rounded-4 shadow-sm d-none d-md-block"
+                                    style="margin-right: -30px"
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="bg-success bg-opacity-10 p-3 rounded-circle me-3"
+                                        >
+                                            <i
+                                                class="fas fa-heartbeat text-success"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="mb-0 text-secondary small"
+                                            >
+                                                Độ chính xác
+                                            </p>
+                                            <p class="mb-0 fw-bold">98.7%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="position-absolute bottom-0 start-0 translate-middle-y bg-white p-3 rounded-4 shadow-sm d-none d-md-block"
+                                    style="margin-left: -30px"
+                                >
+                                    <div class="d-flex align-items-center">
+                                        <div
+                                            class="bg-primary bg-opacity-10 p-3 rounded-circle me-3"
+                                        >
+                                            <i
+                                                class="fas fa-stethoscope text-primary"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="mb-0 text-secondary small"
+                                            >
+                                                Chẩn đoán
+                                            </p>
+                                            <p class="mb-0 fw-bold">+15,000</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section id="services" class="py-5 bg-white">
+                <div class="container py-5">
+                    <div class="row text-center mb-5">
+                        <div class="col-lg-6 mx-auto">
+                            <h6
+                                class="text-uppercase fw-semibold"
+                                style="
+                                    color: var(--primary-color);
+                                    letter-spacing: 2px;
+                                "
+                            >
+                                Dịch vụ của chúng tôi
+                            </h6>
+                            <h2 class="fw-bold mb-4">
+                                Bảo vệ sức khỏe của bạn với công nghệ AI tiên
+                                tiến
+                            </h2>
+                            <p class="text-secondary">
+                                Chúng tôi cung cấp nhiều dịch vụ chẩn đoán và tư
+                                vấn y tế thông minh, giúp bạn phát hiện sớm và
+                                phòng ngừa bệnh tật.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-6">
+                            <div
+                                class="card service-card h-100 rounded-4 p-4 text-center"
+                            >
+                                <div class="icon-wrapper">
+                                    <i
+                                        class="fas fa-lungs fa-2x text-primary"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Chẩn đoán ung thư phổi</h4>
+                                <p class="text-secondary mb-4">
+                                    Phát hiện sớm nguy cơ ung thư phổi thông qua
+                                    các triệu chứng và yếu tố nguy cơ.
+                                </p>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    data-href="../core/lung_cancer/lung_cancer_form.html"
+                                >
+                                    Kiểm tra ngay
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div
+                                class="card service-card h-100 rounded-4 p-4 text-center"
+                            >
+                                <div class="icon-wrapper">
+                                    <i
+                                        class="fas fa-brain fa-2x text-primary"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Phân loại khối u não</h4>
+                                <p class="text-secondary mb-4">
+                                    Phân tích hình ảnh MRI não để phân loại khối
+                                    u và đưa ra gợi ý cho quá trình điều trị.
+                                </p>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    data-href="../core/turmor_brain/turmor_brain.html"
+                                >
+                                    Tải ảnh MRI
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div
+                                class="card service-card h-100 rounded-4 p-4 text-center"
+                            >
+                                <div class="icon-wrapper">
+                                    <i
+                                        class="fas fa-heartbeat fa-2x text-primary"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Dự đoán bệnh suy tim</h4>
+                                <p class="text-secondary mb-4">
+                                    Dự đoán nguy cơ suy tim dựa trên các thông
+                                    số sức khỏe và tiền sử bệnh lý.
+                                </p>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    data-href="../core/heart_failure/heart_failure_form.html"
+                                >
+                                    Kiểm tra ngay
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div
+                                class="card service-card h-100 rounded-4 p-4 text-center"
+                            >
+                                <div class="icon-wrapper">
+                                    <i
+                                        class="fas fa-comment-medical fa-2x text-primary"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Tư vấn sức khỏe AI</h4>
+                                <p class="text-secondary mb-4">
+                                    Trò chuyện với trợ lý AI thông minh để nhận
+                                    tư vấn sức khỏe và thông tin y tế hữu ích.
+                                </p>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-pill mt-auto auth-required-btn"
+                                    data-href="../core/chat/chatbot_markdown.html"
+                                >
+                                    Bắt đầu trò chuyện
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div
+                                class="card service-card h-100 rounded-4 p-4 text-center"
+                            >
+                                <div class="icon-wrapper">
+                                    <i
+                                        class="fas fa-user-md fa-2x text-primary"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Tư vấn chuyên gia</h4>
+                                <p class="text-secondary mb-4">
+                                    Kết nối trực tiếp với các bác sĩ chuyên khoa
+                                    để nhận tư vấn y tế chuyên sâu và chính xác.
+                                </p>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    data-href="#"
+                                >
+                                    Đặt lịch hẹn
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div
+                                class="card service-card h-100 rounded-4 p-4 text-center"
+                            >
+                                <div class="icon-wrapper">
+                                    <i
+                                        class="fas fa-file-medical-alt fa-2x text-primary"
+                                    ></i>
+                                </div>
+                                <h4 class="mb-3">Hồ sơ sức khỏe</h4>
+                                <p class="text-secondary mb-4">
+                                    Quản lý hồ sơ sức khỏe của bạn một cách an
+                                    toàn và thuận tiện, truy cập mọi lúc mọi
+                                    nơi.
+                                </p>
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    data-href="#"
+                                >
+                                    Đăng ký ngay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Image Gallery Section -->
+            <section class="py-5" style="background-color: var(--light-color)">
+                <div class="container py-4">
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-lg-6 text-center">
+                            <h6
+                                class="text-uppercase fw-semibold"
+                                style="
+                                    color: var(--primary-color);
+                                    letter-spacing: 2px;
+                                "
+                            >
+                                Hình ảnh
+                            </h6>
+                            <h2 class="fw-bold mb-4">
+                                Khám phá trung tâm y tế của chúng tôi
+                            </h2>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <div
+                                class="gallery-img rounded-4 overflow-hidden shadow-sm h-100"
+                            >
+                                <img
+                                    src="../static/home/images/fullwidth.jpg"
+                                    alt="Cơ sở y tế"
+                                    class="img-fluid w-100 h-100 object-fit-cover"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div
+                                class="gallery-img rounded-4 overflow-hidden shadow-sm h-100"
+                            >
+                                <img
+                                    src="../static/home/images/UngThuPhoi.jpg"
+                                    alt="Chẩn đoán ung thư phổi"
+                                    class="img-fluid w-100 h-100 object-fit-cover"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div
+                                class="gallery-img rounded-4 overflow-hidden shadow-sm h-100"
+                            >
+                                <img
+                                    src="../static/home/images/ungthuvu.jpg"
+                                    alt="Kiểm tra sức khỏe"
+                                    class="img-fluid w-100 h-100 object-fit-cover"
+                                />
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div
+                                class="gallery-img rounded-4 overflow-hidden shadow-sm h-100"
+                            >
+                                <img
+                                    src="../static/home/images/XuongKhop.jpg"
+                                    alt="Thiết bị y tế"
+                                    class="img-fluid w-100 h-100 object-fit-cover"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="py-5 bg-white" id="about">
+                <div class="container py-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 mb-5 mb-lg-0">
+                            <img
+                                src="https://img.freepik.com/free-photo/group-doctors-standing-hospital-corridor_107420-84829.jpg"
+                                alt="Đội ngũ y tế"
+                                class="img-fluid rounded-4 shadow"
+                            />
+                        </div>
+                        <div class="col-lg-6">
+                            <h6
+                                class="text-uppercase fw-semibold"
+                                style="
+                                    color: var(--primary-color);
+                                    letter-spacing: 2px;
+                                "
+                            >
+                                Về chúng tôi
+                            </h6>
+                            <h2 class="fw-bold mb-4">
+                                Tại sao nên chọn SmartClinic.AI?
+                            </h2>
+                            <p class="text-secondary mb-4">
+                                SmartClinic.AI là nền tảng chẩn đoán y tế thông
+                                minh kết hợp giữa trí tuệ nhân tạo hiện đại và
+                                kinh nghiệm chuyên môn của các bác sĩ hàng đầu,
+                                mang đến dịch vụ chăm sóc sức khỏe toàn diện và
+                                tiện lợi.
+                            </p>
+
+                            <div class="row g-4 mt-2">
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i
+                                                class="fas fa-robot fa-lg text-primary"
+                                            ></i>
+                                        </div>
+                                        <h5 class="mb-2">Trí tuệ nhân tạo</h5>
+                                        <p class="text-secondary">
+                                            Ứng dụng AI tiên tiến để đưa ra chẩn
+                                            đoán chính xác và nhanh chóng.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i
+                                                class="fas fa-user-md fa-lg text-primary"
+                                            ></i>
+                                        </div>
+                                        <h5 class="mb-2">Chuyên gia y tế</h5>
+                                        <p class="text-secondary">
+                                            Đội ngũ bác sĩ giàu kinh nghiệm và
+                                            chuyên môn cao.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i
+                                                class="fas fa-shield-alt fa-lg text-primary"
+                                            ></i>
+                                        </div>
+                                        <h5 class="mb-2">Bảo mật dữ liệu</h5>
+                                        <p class="text-secondary">
+                                            Cam kết bảo vệ thông tin cá nhân và
+                                            dữ liệu y tế của người dùng.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="feature-item">
+                                        <div class="feature-icon">
+                                            <i
+                                                class="fas fa-tachometer-alt fa-lg text-primary"
+                                            ></i>
+                                        </div>
+                                        <h5 class="mb-2">
+                                            Nhanh chóng & tiện lợi
+                                        </h5>
+                                        <p class="text-secondary">
+                                            Chẩn đoán nhanh chóng mọi lúc, mọi
+                                            nơi qua thiết bị di động.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonials Section -->
+            <section class="py-5" style="background-color: var(--light-color)">
+                <div class="container py-5">
+                    <div class="row text-center mb-5">
+                        <div class="col-lg-6 mx-auto">
+                            <h6
+                                class="text-uppercase fw-semibold"
+                                style="
+                                    color: var(--primary-color);
+                                    letter-spacing: 2px;
+                                "
+                            >
+                                Đánh giá
+                            </h6>
+                            <h2 class="fw-bold mb-4">
+                                Người dùng nói gì về chúng tôi
+                            </h2>
+                            <p class="text-secondary">
+                                Trải nghiệm và đánh giá từ những người đã sử
+                                dụng dịch vụ chẩn đoán y tế thông minh của
+                                SmartClinic.AI.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div
+                                class="card border-0 shadow-sm rounded-4 h-100 p-4"
+                            >
+                                <div class="d-flex mb-3">
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-4">
+                                    "Tôi đã sử dụng ứng dụng SmartClinic.AI để
+                                    kiểm tra nguy cơ ung thư phổi. Kết quả được
+                                    đưa ra nhanh chóng và chính xác, giúp tôi an
+                                    tâm hơn về tình trạng sức khỏe của mình."
+                                </p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <img
+                                        src="https://randomuser.me/api/portraits/men/32.jpg"
+                                        alt="User"
+                                        class="rounded-circle me-3"
+                                        width="50"
+                                        height="50"
+                                    />
+                                    <div>
+                                        <h6 class="mb-0">Nguyễn Văn A</h6>
+                                        <p class="text-secondary small mb-0">
+                                            Giáo viên, 45 tuổi
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4 mb-md-0">
+                            <div
+                                class="card border-0 shadow-sm rounded-4 h-100 p-4"
+                            >
+                                <div class="d-flex mb-3">
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-4">
+                                    "Trợ lý AI cung cấp thông tin y tế rất hữu
+                                    ích và dễ hiểu. Tôi thường xuyên sử dụng để
+                                    tìm hiểu về các vấn đề sức khỏe thường gặp
+                                    và nhận được hướng dẫn rõ ràng."
+                                </p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <img
+                                        src="https://randomuser.me/api/portraits/women/44.jpg"
+                                        alt="User"
+                                        class="rounded-circle me-3"
+                                        width="50"
+                                        height="50"
+                                    />
+                                    <div>
+                                        <h6 class="mb-0">Trần Thị B</h6>
+                                        <p class="text-secondary small mb-0">
+                                            Nhân viên văn phòng, 32 tuổi
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div
+                                class="card border-0 shadow-sm rounded-4 h-100 p-4"
+                            >
+                                <div class="d-flex mb-3">
+                                    <div class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <p class="text-secondary mb-4">
+                                    "Tôi phát hiện sớm nguy cơ suy tim nhờ công
+                                    cụ dự đoán của SmartClinic.AI. Sau khi nhận
+                                    kết quả, tôi đã đi khám bác sĩ và được điều
+                                    trị kịp thời, rất biết ơn dịch vụ này."
+                                </p>
+                                <div class="d-flex align-items-center mt-auto">
+                                    <img
+                                        src="https://randomuser.me/api/portraits/men/68.jpg"
+                                        alt="User"
+                                        class="rounded-circle me-3"
+                                        width="50"
+                                        height="50"
+                                    />
+                                    <div>
+                                        <h6 class="mb-0">Lê Văn C</h6>
+                                        <p class="text-secondary small mb-0">
+                                            Kỹ sư, 58 tuổi
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="py-5 bg-primary">
+                <div class="container py-5 text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <h2 class="fw-bold text-white mb-4">
+                                Bắt đầu chăm sóc sức khỏe thông minh ngay hôm
+                                nay
+                            </h2>
+                            <p class="text-white opacity-85 mb-5">
+                                Đăng ký tài khoản miễn phí để sử dụng đầy đủ các
+                                dịch vụ chẩn đoán y tế thông minh và theo dõi
+                                sức khỏe của bạn.
+                            </p>
+                            <div
+                                class="d-flex flex-column flex-sm-row justify-content-center gap-3"
+                            >
+                                <a
+                                    href="#"
+                                    class="btn btn-light btn-lg rounded-pill px-4 shadow fw-medium"
+                                >
+                                    <i class="fas fa-user-plus me-2"></i> Đăng
+                                    ký ngay
+                                </a>
+                                <a
+                                    href="#services"
+                                    class="btn btn-outline-light btn-lg rounded-pill px-4"
+                                >
+                                    Khám phá dịch vụ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Nhúng footer mới -->
+        <!--#include file="..../static/utils/home/footer.html" -->
+
+        <!-- Chatbot Button -->
+        <div class="chatbot-button" onclick="toggleChatbot()">
+            <i class="fas fa-comment-dots chatbot-icon"></i>
+        </div>
+
+        <!-- Chatbot Wrapper -->
+        <div id="chatbotWrapper">
+            <button id="closeChatbot">&times;</button>
+            <iframe id="chatbotIframe" src=""></iframe>
+        </div>
+
+        <!-- Auth Guard Script -->
+        <script src="../core/auth/auth-guard.js"></script>
+        
+        <script>
+            var isChatbotLoaded = false;
+
+            // Toggle chatbot visibility
+            function toggleChatbot() {
+                // Kiểm tra xem người dùng đã đăng nhập chưa
+                if (!window.AuthGuard.isAuthenticated()) {
+                    window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                    return;
+                }
+                
+                var chatbotWrapper = document.getElementById("chatbotWrapper");
+                var iframe = document.getElementById("chatbotIframe");
+
+                if (
+                    chatbotWrapper.style.display === "none" ||
+                    chatbotWrapper.style.display === ""
+                ) {
+                    if (!isChatbotLoaded) {
+                        iframe.src = "../core/chat/chatbot_markdown.html";
+                        isChatbotLoaded = true;
+                    }
+                    chatbotWrapper.style.display = "block";
+
+                    // Add animation
+                    chatbotWrapper.style.transition = "all 0.3s ease";
+                    chatbotWrapper.style.transform = "scale(0.95)";
+                    setTimeout(() => {
+                        chatbotWrapper.style.transform = "scale(1)";
+                    }, 50);
+                } else {
+                    // Add animation
+                    chatbotWrapper.style.transform = "scale(0.95)";
+                    setTimeout(() => {
+                        chatbotWrapper.style.display = "none";
+                    }, 200);
+                }
+            }
+
+            // Close chatbot iframe
+            document
+                .getElementById("closeChatbot")
+                .addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    var chatbotWrapper =
+                        document.getElementById("chatbotWrapper");
+
+                    // Add animation
+                    chatbotWrapper.style.transform = "scale(0.95)";
+                    setTimeout(() => {
+                        chatbotWrapper.style.display = "none";
+                    }, 200);
+                });
+
+            // Handle navigation active state
+            document.addEventListener("DOMContentLoaded", function () {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll(".nav-link");
+
+                navLinks.forEach((link) => {
+                    if (link.getAttribute("href") === currentPath) {
+                        link.classList.add("active");
+                    }
+                });
+                
+                // Xử lý các nút yêu cầu quyền admin
+                const adminRequiredBtns = document.querySelectorAll('.admin-required-btn');
+                adminRequiredBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const href = this.getAttribute('data-href');
+                        if (window.AuthGuard.isAdmin()) {
+                            window.location.href = href;
+                        } else {
+                            // Nếu đã đăng nhập nhưng không phải admin
+                            if (window.AuthGuard.isAuthenticated()) {
+                                alert('Chức năng này chỉ dành cho quản trị viên. Vui lòng liên hệ admin để biết thêm chi tiết.');
+                            } else {
+                                // Nếu chưa đăng nhập
+                                window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(href) + '&unauthorized=true';
+                            }
+                        }
+                    });
+                });
+                
+                // Xử lý các nút yêu cầu xác thực
+                const authRequiredBtns = document.querySelectorAll('.auth-required-btn');
+                authRequiredBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const href = this.getAttribute('data-href');
+                        if (window.AuthGuard.isAuthenticated()) {
+                            window.location.href = href;
+                        } else {
+                            window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(href);
+                        }
+                    });
+                });
+                
+                // Cập nhật nút đăng ký ở CTA Section
+                const registerCTABtn = document.querySelector('.btn-light.btn-lg');
+                if (registerCTABtn) {
+                    registerCTABtn.href = '/core/auth/register.html';
+                }
+            });
+        </script>
+    </body>
+</html>

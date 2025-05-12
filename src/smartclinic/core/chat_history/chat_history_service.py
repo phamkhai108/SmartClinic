@@ -77,29 +77,38 @@ class HistoryService:
         )
 
     def get_user_sessions(self, user_id: str) -> list[SessionInfo]:
-        all_sessions = (
+        from sqlalchemy import func
+
+        subq = (
+            self.session.query(
+                ChatHistory.session_id,
+                func.max(ChatHistory.timestamp).label("latest_timestamp"),
+            )
+            .filter(ChatHistory.user_id == user_id)
+            .group_by(ChatHistory.session_id)
+            .subquery()
+        )
+
+        rows = (
             self.session.query(
                 ChatHistory.session_id,
                 ChatHistory.conversation_name,
-                ChatHistory.timestamp,
+                subq.c.latest_timestamp,
             )
-            .filter(ChatHistory.user_id == user_id)
-            .order_by(ChatHistory.session_id, ChatHistory.timestamp.asc())
+            .join(
+                subq,
+                (ChatHistory.session_id == subq.c.session_id)
+                & (ChatHistory.timestamp == subq.c.latest_timestamp),
+            )
+            .order_by(subq.c.latest_timestamp.desc())
             .all()
         )
 
-        seen_sessions = set()
-        unique_sessions = []
-
-        for row in all_sessions:
-            if row.session_id not in seen_sessions:
-                seen_sessions.add(row.session_id)
-                unique_sessions.append(
-                    SessionInfo(
-                        session_id=row.session_id,
-                        conversation_name=row.conversation_name,
-                        latest_timestamp=row.timestamp,
-                    )
-                )
-
-        return unique_sessions
+        return [
+            SessionInfo(
+                session_id=row.session_id,
+                conversation_name=row.conversation_name,
+                latest_timestamp=row.latest_timestamp,
+            )
+            for row in rows
+        ]

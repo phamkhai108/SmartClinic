@@ -3,7 +3,7 @@ import os
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 
 from smartclinic.api.dependencies import (
-    get_database_client,
+    get_db,
     get_elasticsearch_client,
     get_embedding_model,
 )
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/files", tags=["File Management"])
 
 es_client = get_elasticsearch_client()
 embeding_model = get_embedding_model()
-db_session = get_database_client()
+db_session = get_db()
 chunker = Chunker(es_client)
 file_service = UploadFileNProcessChunk(chunker, embeding_model, db_session)
 

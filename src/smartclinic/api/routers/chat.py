@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from smartclinic.api.dependencies import (
-    get_database_client,
+    get_db,
     get_elasticsearch_client,
     get_embedding_model,
     get_llm_model,
@@ -28,7 +28,7 @@ async def chat_endpoint(
     llm_model: LLMModel = Depends(get_llm_model),  # noqa: B008
     embedding_model: LLMModel = Depends(get_embedding_model),  # noqa: B008
     client: Elasticsearch = Depends(get_elasticsearch_client),  # noqa: B008
-    db: Session = Depends(get_database_client),  # noqa: B008
+    db: Session = Depends(get_db),  # noqa: B008
 ) -> ChatResponseDto:
     history_service = HistoryService(db)
     return process_chat(
