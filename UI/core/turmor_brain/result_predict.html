@@ -496,7 +496,7 @@
                     </div>
 
                     <!-- Disclaimer -->
-                    <div
+                    <!-- <div
                         class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-5"
                     >
                         <i class="fas fa-info-circle fs-4 me-3 text-info"></i>
@@ -507,7 +507,7 @@
                             khảo ý kiến bác sĩ chuyên khoa để được tư vấn và
                             điều trị phù hợp.
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Phần thông tin bổ sung về u não -->
                     <div class="bg-white rounded-4 p-4 shadow-sm mb-4">
@@ -562,7 +562,10 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 // Kiểm tra phân quyền khi trang tải
-                if (!window.AuthGuard.isAdmin()) {
+                if (
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
                     window.location.href =
                         "/core/auth/login.html?redirect=" +
                         encodeURIComponent(window.location.pathname) +

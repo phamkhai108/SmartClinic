@@ -248,10 +248,14 @@
                             dựa trên các yếu tố và triệu chứng
                         </p>
                         <!-- Admin only alert -->
-                        <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4 mx-auto" style="max-width: 600px;">
+                        <div
+                            class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4 mx-auto"
+                            style="max-width: 600px"
+                        >
                             <i class="fas fa-lock me-3 text-info"></i>
                             <div>
-                                Chức năng này chỉ dành cho quản trị viên. Bạn đang truy cập với quyền admin.
+                                Chức năng này chỉ dành cho quản trị viên. Bạn
+                                đang truy cập với quyền admin.
                             </div>
                         </div>
                     </div>
@@ -585,14 +589,22 @@
         <!--#include file="../../..../static/utils/home/footer.html" -->
 
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 // Kiểm tra phân quyền khi trang tải
-                if (!window.AuthGuard.isAdmin()) {
-                    window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname) + '&unauthorized=true';
+
+                if (
+                    !window.AuthGuard.isAuthenticated() &&
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
+                    window.location.href =
+                        "/core/auth/login.html?redirect=" +
+                        encodeURIComponent(window.location.pathname) +
+                        "&unauthorized=true";
                     return;
                 }
             });
-            
+
             const form = document.getElementById("lungForm");
             form.addEventListener("submit", async function (e) {
                 e.preventDefault();
@@ -605,16 +617,16 @@
 
                 try {
                     // Lấy token nếu có
-                    const token = localStorage.getItem('accessToken');
+                    const token = localStorage.getItem("accessToken");
                     const headers = {
                         "Content-Type": "application/json",
-                        "Accept": "application/json"
+                        Accept: "application/json",
                     };
-                    
+
                     if (token) {
                         headers["Authorization"] = `Bearer ${token}`;
                     }
-                    
+
                     const response = await fetch(
                         "http://localhost:8000/predict/lung_cancer",
                         {
@@ -625,10 +637,15 @@
                     );
 
                     if (!response.ok) {
-                        if (response.status === 401 || response.status === 403) {
+                        if (
+                            response.status === 401 ||
+                            response.status === 403
+                        ) {
                             // Nếu lỗi xác thực hoặc không có quyền
-                            alert("Bạn không có quyền sử dụng chức năng này hoặc phiên làm việc đã hết hạn.");
-                            window.location.href = '/core/auth/login.html';
+                            alert(
+                                "Bạn không có quyền sử dụng chức năng này hoặc phiên làm việc đã hết hạn."
+                            );
+                            window.location.href = "/core/auth/login.html";
                             return;
                         }
                         throw new Error("Lỗi kết nối với máy chủ");

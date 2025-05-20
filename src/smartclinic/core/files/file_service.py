@@ -73,7 +73,7 @@ class UploadFileNProcessChunk:
         return "\n".join([p.text for p in doc.paragraphs])
 
     def _split_text_to_chunks(
-        self, text: str, max_words: int = 300, overlap: int = 50
+        self, text: str, max_words: int = 250, overlap: int = 30
     ) -> list[str]:
         words = text.split()
         chunks = []

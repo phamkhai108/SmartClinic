@@ -6,10 +6,17 @@
             "/core/admin/index.html",
             "/core/admin/files.html",
             "/core/admin/upload.html",
-            "/core/heart_failure/heart_failure_form.html",
-            "/core/heart_failure/heart_result.html",
-            "/core/lung_cancer/lung_cancer_form.html",
-            "/core/lung_cancer/lung_result.html",
+            // // "/core/lung_cancer/lung_cancer_form.html",
+            // // "/core/lung_cancer/lung_result.html",
+            // "/core/turmor_brain/turmor_brain.html",
+            // "/core/turmor_brain/result_predict.html",
+        ],
+
+        // Pages that doctors can access
+        doctorOnly: [
+            // "/core/heart_failure/heart_failure_form.html",
+            // "/core/heart_failure/heart_result.html",
+            // "/core/chat/chatbot_markdown.html",
             "/core/turmor_brain/turmor_brain.html",
             "/core/turmor_brain/result_predict.html",
         ],
@@ -17,12 +24,10 @@
         // Pages that require any authentication (both admin and regular users)
         authRequired: [
             "/core/chat/chatbot_markdown.html",
-            "/core/heart_failure/heart_failure_form.html",
-            "/core/heart_failure/heart_result.html",
             "/core/lung_cancer/lung_cancer_form.html",
             "/core/lung_cancer/lung_result.html",
-            "/core/turmor_brain/turmor_brain.html",
-            "/core/turmor_brain/result_predict.html",
+            "/core/heart_failure/heart_failure_form.html",
+            "/core/heart_failure/heart_result.html",
         ],
 
         // Pages that are public (no authentication required)
@@ -121,6 +126,15 @@
     }
 
     /**
+     * Check if the user has doctor role
+     * @returns {boolean} True if user is doctor, false otherwise
+     */
+    function isDoctor() {
+        const userInfo = getUserInfo();
+        return userInfo && userInfo.role === "doctor";
+    }
+
+    /**
      * Update UI based on authentication status
      */
     function updateUI() {
@@ -188,6 +202,17 @@
             }
         }
 
+        // Check if page is doctor only
+        if (
+            ACCESS_CONFIG.doctorOnly.some((path) => currentPath.endsWith(path))
+        ) {
+            if (!isDoctor() && !isAdmin()) {
+                window.location.href =
+                    "/core/auth/login.html?unauthorized=true";
+                return;
+            }
+        }
+
         // Check if page requires authentication
         if (
             ACCESS_CONFIG.authRequired.some((path) =>
@@ -210,7 +235,10 @@
         ) {
             const userInfo = getUserInfo();
             if (userInfo.role === "admin") {
-                window.location.href = "/core/admin/index.html";
+                window.location.href = "/home/main.html";
+            } else if (userInfo.role === "doctor") {
+                window.location.href =
+                    "/core/heart_failure/heart_failure_form.html";
             } else {
                 window.location.href = "/home/main.html";
             }
@@ -263,6 +291,7 @@
     window.AuthGuard = {
         isAuthenticated,
         isAdmin,
+        isDoctor,
         getUserInfo,
         logout,
     };

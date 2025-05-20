@@ -24,14 +24,6 @@ def search_fulltext(client: Elasticsearch, query: str, size: int = 10) -> Search
     return SearchResultDTO(total=response["hits"]["total"]["value"], hits=hits)
 
 
-# es_client = Elasticsearch(
-#     hosts="http://localhost:9200", request_timeout=30, max_retries=2
-# )
-
-# result = search_fulltext(es_client, "This is a chunk")
-# print(result.model_dump_json(indent=2))
-
-
 def search_vector_cosine(
     client: Elasticsearch,
     embedding_model: LLMModel,

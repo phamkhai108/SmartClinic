@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Kết Quả Chẩn Đoán | SmartClinic.AI</title>
+        <title>Kết Quả Dự Đoán Ung Thư Phổi | SmartClinic.AI</title>
         <link
             rel="icon"
             type="image/x-icon"
@@ -18,8 +18,6 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Auth Guard Script -->
-        <script src="../auth/auth-guard.js"></script>
         <script>
             tailwind.config = {
                 theme: {
@@ -69,73 +67,91 @@
             }
 
             .icon-wrapper {
-                width: 70px;
-                height: 70px;
+                width: 100px;
+                height: 100px;
                 border-radius: 50%;
                 background-color: rgba(59, 130, 246, 0.1);
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 margin: 0 auto 1.5rem;
-            }
-
-            .result-badge {
-                display: inline-block;
-                font-size: 1.1rem;
-                padding: 0.5rem 1.5rem;
-                border-radius: 50px;
-                font-weight: 500;
-                margin-bottom: 1rem;
-            }
-
-            .result-badge.low {
-                background-color: rgba(16, 185, 129, 0.15);
-                color: var(--success-color);
-            }
-
-            .result-badge.moderate {
-                background-color: rgba(245, 158, 11, 0.15);
-                color: var(--warning-color);
-            }
-
-            .result-badge.high {
-                background-color: rgba(239, 68, 68, 0.15);
-                color: var(--danger-color);
-            }
-
-            .result-title {
-                font-size: 1.5rem;
-                font-weight: 700;
-                margin-bottom: 1rem;
-            }
-
-            .result-description {
-                color: var(--secondary-color);
-                margin-bottom: 2rem;
-            }
-
-            .recommendation-card {
-                border: 1px solid rgba(0, 0, 0, 0.05);
-                border-radius: 12px;
-                padding: 1.5rem;
-                margin-bottom: 1rem;
                 transition: all 0.3s ease;
             }
 
-            .recommendation-card:hover {
-                background-color: rgba(59, 130, 246, 0.02);
-                transform: translateY(-2px);
+            .icon-wrapper.success {
+                background-color: rgba(16, 185, 129, 0.1);
             }
 
-            .recommendation-icon {
-                width: 50px;
-                height: 50px;
-                border-radius: 12px;
-                background-color: rgba(59, 130, 246, 0.1);
+            .icon-wrapper.warning {
+                background-color: rgba(245, 158, 11, 0.1);
+            }
+
+            .icon-wrapper.danger {
+                background-color: rgba(239, 68, 68, 0.1);
+            }
+
+            .progress-indicator {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+            }
+
+            .progress-step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33.33%;
+                position: relative;
+            }
+
+            .progress-step::after {
+                content: "";
+                position: absolute;
+                top: 15px;
+                right: -50%;
+                width: 100%;
+                height: 3px;
+                background-color: #e2e8f0;
+                z-index: 0;
+            }
+
+            .progress-step:last-child::after {
+                display: none;
+            }
+
+            .progress-step.active .step-number {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .progress-step.completed .step-number {
+                background-color: var(--success-color);
+                color: white;
+            }
+
+            .step-number {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background-color: #e2e8f0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-right: 1rem;
+                font-weight: bold;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .step-label {
+                font-size: 0.85rem;
+                color: var(--secondary-color);
+                text-align: center;
+            }
+
+            .progress-step.active .step-label {
+                color: var(--dark-color);
+                font-weight: 500;
             }
 
             .btn-primary {
@@ -153,81 +169,64 @@
                 box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
             }
 
-            .btn-outline-primary {
-                border-color: var(--primary-color);
-                color: var(--primary-color);
-                border-radius: 10px;
-                padding: 12px 30px;
-                font-weight: 500;
-                transition: all 0.3s ease;
+            .result-message {
+                font-size: 1.25rem;
+                line-height: 1.75rem;
+                margin-bottom: 2rem;
             }
 
-            .btn-outline-primary:hover {
-                background-color: var(--primary-color);
-                color: white;
-                transform: translateY(-2px);
-                box-shadow: 0 6px 15px rgba(59, 130, 246, 0.2);
+            .recommendation-card {
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+                border-left: 5px solid;
             }
 
-            .risk-level {
-                width: 100%;
-                height: 12px;
-                background-color: #e2e8f0;
-                border-radius: 6px;
-                margin: 1.5rem 0;
-                position: relative;
-                overflow: hidden;
+            .recommendation-card.low {
+                background-color: rgba(16, 185, 129, 0.1);
+                border-left-color: var(--success-color);
             }
 
-            .risk-indicator {
-                height: 100%;
-                border-radius: 6px;
-                position: absolute;
-                top: 0;
-                left: 0;
-                transition: width 1.5s ease;
+            .recommendation-card.moderate {
+                background-color: rgba(245, 158, 11, 0.1);
+                border-left-color: var(--warning-color);
             }
 
-            .risk-indicator.low {
-                background-color: var(--success-color);
-                width: 0%; /* Will be set by JS */
+            .recommendation-card.high {
+                background-color: rgba(239, 68, 68, 0.1);
+                border-left-color: var(--danger-color);
             }
 
-            .risk-indicator.moderate {
-                background-color: var(--warning-color);
-                width: 0%; /* Will be set by JS */
-            }
-
-            .risk-indicator.high {
-                background-color: var(--danger-color);
-                width: 0%; /* Will be set by JS */
-            }
-
-            .risk-scale {
+            .recommendation-card h5 {
                 display: flex;
-                justify-content: space-between;
-                margin-bottom: 0.5rem;
+                align-items: center;
+                margin-bottom: 1rem;
             }
 
-            .risk-label {
-                font-size: 0.85rem;
-                color: var(--secondary-color);
+            .recommendation-card h5 i {
+                margin-right: 0.75rem;
             }
 
-            /* Print styles */
-            @media print {
-                .no-print {
-                    display: none !important;
-                }
-                
-                body {
-                    background-color: white !important;
-                }
-                
-                .result-card {
-                    box-shadow: none !important;
-                    border: 1px solid #e2e8f0 !important;
-                }
+            .next-steps {
+                margin-top: 2rem;
+            }
+
+            .action-item {
+                display: flex;
+                align-items: start;
+                margin-bottom: 1rem;
+            }
+
+            .action-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 1rem;
+                flex-shrink: 0;
             }
         </style>
     </head>
@@ -238,121 +237,347 @@
 
         <main class="container py-5">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <!-- Page header -->
-                    <div class="text-center mb-5">
-                        <div class="icon-wrapper mb-4">
-                            <i class="fas fa-lungs fa-2x text-primary"></i>
-                        </div>
-                        <h1 class="fw-bold">Kết Quả Đánh Giá Nguy Cơ Ung Thư Phổi</h1>
-                        <p class="text-secondary lead">
-                            Dựa trên thông tin bạn cung cấp, hệ thống AI của chúng tôi đã phân tích và đưa ra kết quả
-                        </p>
-                        <!-- Admin only alert -->
-                        <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4 mx-auto" style="max-width: 600px;">
-                            <i class="fas fa-lock me-3 text-info"></i>
-                            <div>
-                                Chức năng này chỉ dành cho quản trị viên. Bạn đang truy cập với quyền admin.
+                <div class="col-lg-10">
+                    <!-- Progress steps -->
+                    <div class="progress-indicator mb-5">
+                        <div class="progress-step completed">
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
                             </div>
+                            <div class="step-label">Thông tin cá nhân</div>
+                        </div>
+                        <div class="progress-step completed">
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-label">Triệu chứng & Yếu tố</div>
+                        </div>
+                        <div class="progress-step active">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Kết quả</div>
                         </div>
                     </div>
 
-                    <!-- Result card -->
-                    <div class="card result-card mb-5">
-                        <div class="card-body p-4 p-lg-5">
-                            <div class="text-center mb-4">
-                                <div class="risk-badge" id="riskBadge">Đang phân tích...</div>
-                                <h2 class="result-title" id="resultTitle">Đang tải kết quả...</h2>
-                                <p class="result-description" id="resultDescription">
-                                    Dựa trên thông tin bạn cung cấp, đây là đánh giá chi tiết về nguy cơ ung thư phổi.
-                                </p>
+                    <!-- Result Card -->
+                    <div class="card result-card mb-4">
+                        <div class="card-body p-5 text-center">
+                            <div
+                                id="resultIconWrapper"
+                                class="icon-wrapper mb-4"
+                            >
+                                <i
+                                    id="resultIcon"
+                                    class="fas fa-lungs fa-3x text-primary"
+                                ></i>
+                            </div>
+                            <h2 class="fw-bold mb-4">
+                                Kết Quả Phân Tích Nguy Cơ Ung Thư Phổi
+                            </h2>
+                            <div
+                                id="resultMessage"
+                                class="result-message text-dark mb-5"
+                            ></div>
 
-                                <!-- Risk level bar -->
-                                <div class="risk-scale">
-                                    <span class="risk-label">Thấp</span>
-                                    <span class="risk-label">Trung bình</span>
-                                    <span class="risk-label">Cao</span>
+                            <div
+                                id="recommendation"
+                                class="recommendation-card d-none"
+                            >
+                                <h5 class="fw-bold">
+                                    <i
+                                        id="recommendationIcon"
+                                        class="fas fa-info-circle"
+                                    ></i>
+                                    <span id="recommendationTitle"
+                                        >Kết luận</span
+                                    >
+                                </h5>
+                                <p id="recommendationText" class="mb-0"></p>
+                            </div>
+
+                            <div
+                                class="next-steps bg-white rounded-3 text-start"
+                            >
+                                <h4 class="fw-bold mb-4">Các bước tiếp theo</h4>
+                                <div id="lowRiskSteps" class="d-none">
+                                    <div class="action-item">
+                                        <div class="action-icon">
+                                            <i
+                                                class="fas fa-calendar-check text-primary"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Kiểm tra sức khỏe định kỳ
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Duy trì lịch khám sức khỏe định
+                                                kỳ hàng năm để bảo đảm phát hiện
+                                                sớm bất kỳ vấn đề nào.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="action-item">
+                                        <div class="action-icon">
+                                            <i
+                                                class="fas fa-smoking-ban text-primary"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Duy trì lối sống lành mạnh
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Tránh hút thuốc, giảm tiếp xúc
+                                                với khói thuốc và các chất gây ô
+                                                nhiễm không khí.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="risk-level">
-                                    <div class="risk-indicator" id="riskIndicator"></div>
+
+                                <div id="moderateRiskSteps" class="d-none">
+                                    <div class="action-item">
+                                        <div class="action-icon">
+                                            <i
+                                                class="fas fa-user-md text-warning"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Tham khảo ý kiến bác sĩ
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Nên đặt lịch hẹn với bác sĩ
+                                                chuyên khoa để được tư vấn chi
+                                                tiết về nguy cơ của bạn.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="action-item">
+                                        <div class="action-icon">
+                                            <i
+                                                class="fas fa-lungs text-warning"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Xét nghiệm bổ sung
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Cân nhắc thực hiện các xét
+                                                nghiệm sàng lọc như chụp X-quang
+                                                ngực hoặc CT ngực liều thấp.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="highRiskSteps" class="d-none">
+                                    <div class="action-item">
+                                        <div class="action-icon">
+                                            <i
+                                                class="fas fa-hospital text-danger"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Khám chuyên khoa khẩn cấp
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Hãy liên hệ ngay với bác sĩ
+                                                chuyên khoa phổi để được khám và
+                                                đánh giá chi tiết.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="action-item">
+                                        <div class="action-icon">
+                                            <i
+                                                class="fas fa-notes-medical text-danger"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Thực hiện xét nghiệm hình ảnh
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Chụp CT ngực liều thấp và các
+                                                xét nghiệm chẩn đoán khác theo
+                                                chỉ định của bác sĩ.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Recommendations section -->
-                            <div class="mt-5">
-                                <h4 class="fw-bold mb-4">Khuyến nghị và bước tiếp theo</h4>
-                                
-                                <div class="recommendation-card d-flex align-items-start">
-                                    <div class="recommendation-icon">
-                                        <i class="fas fa-stethoscope text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold">Tham khảo ý kiến bác sĩ</h5>
-                                        <p class="text-secondary mb-0">
-                                            Kết quả này chỉ mang tính tham khảo. Vui lòng tham khảo ý kiến bác sĩ chuyên khoa để được tư vấn chi tiết và phù hợp với tình trạng sức khỏe cá nhân.
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div class="recommendation-card d-flex align-items-start">
-                                    <div class="recommendation-icon">
-                                        <i class="fas fa-lungs text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold">Kiểm tra sức khỏe định kỳ</h5>
-                                        <p class="text-secondary mb-0">
-                                            Việc thực hiện kiểm tra sức khỏe định kỳ, đặc biệt là chụp X-quang ngực hoặc CT ngực liều thấp đối với nhóm có nguy cơ cao sẽ giúp phát hiện sớm bệnh lý.
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div class="recommendation-card d-flex align-items-start" id="smokingRecommendation">
-                                    <div class="recommendation-icon">
-                                        <i class="fas fa-smoking-ban text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold">Bỏ thuốc lá</h5>
-                                        <p class="text-secondary mb-0">
-                                            Hút thuốc là yếu tố nguy cơ hàng đầu của ung thư phổi. Bỏ thuốc lá sẽ giảm đáng kể nguy cơ mắc bệnh, ngay cả khi đã hút thuốc trong nhiều năm.
-                                        </p>
-                                    </div>
-                                </div>
-                                
-                                <div class="recommendation-card d-flex align-items-start">
-                                    <div class="recommendation-icon">
-                                        <i class="fas fa-heartbeat text-primary"></i>
-                                    </div>
-                                    <div>
-                                        <h5 class="fw-bold">Lối sống lành mạnh</h5>
-                                        <p class="text-secondary mb-0">
-                                            Duy trì chế độ ăn uống cân bằng, tăng cường rau xanh và trái cây, tập thể dục đều đặn và hạn chế tiếp xúc với các chất độc hại như khói, hóa chất công nghiệp.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-5 no-print">
-                                <a href="lung_cancer_form.html" class="btn btn-outline-primary">
-                                    <i class="fas fa-redo me-2"></i> Đánh giá lại
+                            <div
+                                class="mt-5 d-flex flex-column flex-sm-row justify-content-center gap-3"
+                            >
+                                <a
+                                    href="lung_cancer_form.html"
+                                    class="btn btn-primary"
+                                >
+                                    <i class="fas fa-redo me-2"></i> Kiểm tra
+                                    lại
                                 </a>
-                                <button onclick="window.print()" class="btn btn-primary">
-                                    <i class="fas fa-print me-2"></i> In kết quả
-                                </button>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-print me-2"></i> Lưu kết
+                                    quả
+                                </a>
+                                <a
+                                    href="../chat/chatbot_markdown.html"
+                                    class="btn btn-outline-primary"
+                                >
+                                    <i class="fas fa-comment-medical me-2"></i>
+                                    Tư vấn với AI
+                                </a>
                             </div>
                         </div>
                     </div>
 
                     <!-- Disclaimer -->
-                    <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4">
+                    <div
+                        class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4"
+                    >
                         <i class="fas fa-info-circle fs-4 me-3 text-info"></i>
                         <div>
-                            <strong>Lưu ý quan trọng:</strong> Kết quả này chỉ mang tính tham khảo và không thay thế cho chẩn đoán y khoa chính thức từ bác sĩ. Vui lòng tham khảo ý kiến chuyên gia y tế để được tư vấn chính xác.
+                            <strong>Lưu ý quan trọng:</strong> Kết quả dự đoán
+                            này chỉ mang tính tham khảo và không thay thế cho
+                            chẩn đoán y khoa chính thức. Vui lòng tham khảo ý
+                            kiến bác sĩ để được tư vấn và điều trị phù hợp.
                         </div>
                     </div>
 
-                    <p class="text-center text-muted small">
-                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế thông minh
+                    <!-- FAQ Accordion -->
+                    <div class="accordion mt-5" id="lungCancerFAQ">
+                        <div
+                            class="accordion-item border-0 mb-3 shadow-sm rounded-3"
+                        >
+                            <h2 class="accordion-header" id="heading1">
+                                <button
+                                    class="accordion-button collapsed rounded-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse1"
+                                    aria-expanded="false"
+                                    aria-controls="collapse1"
+                                >
+                                    Ung thư phổi là gì?
+                                </button>
+                            </h2>
+                            <div
+                                id="collapse1"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="heading1"
+                                data-bs-parent="#lungCancerFAQ"
+                            >
+                                <div class="accordion-body">
+                                    <p>
+                                        Ung thư phổi là một loại ung thư bắt đầu
+                                        từ các tế bào của phổi, thường xuất hiện
+                                        ở các tế bào lót đường dẫn khí. Đây là
+                                        một trong những loại ung thư phổ biến
+                                        nhất và là nguyên nhân hàng đầu gây tử
+                                        vong do ung thư trên toàn thế giới.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="accordion-item border-0 mb-3 shadow-sm rounded-3"
+                        >
+                            <h2 class="accordion-header" id="heading2">
+                                <button
+                                    class="accordion-button collapsed rounded-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse2"
+                                    aria-expanded="false"
+                                    aria-controls="collapse2"
+                                >
+                                    Những dấu hiệu cảnh báo của ung thư phổi?
+                                </button>
+                            </h2>
+                            <div
+                                id="collapse2"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="heading2"
+                                data-bs-parent="#lungCancerFAQ"
+                            >
+                                <div class="accordion-body">
+                                    <p>
+                                        Các dấu hiệu cảnh báo thường gặp của ung
+                                        thư phổi bao gồm:
+                                    </p>
+                                    <ul>
+                                        <li>Ho dai dẳng hoặc ho ra máu</li>
+                                        <li>Đau ngực kéo dài</li>
+                                        <li>Khó thở, thở khò khè</li>
+                                        <li>Mệt mỏi không rõ nguyên nhân</li>
+                                        <li>Sụt cân không rõ nguyên nhân</li>
+                                        <li>Nhiễm trùng phổi tái phát</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            class="accordion-item border-0 mb-3 shadow-sm rounded-3"
+                        >
+                            <h2 class="accordion-header" id="heading3">
+                                <button
+                                    class="accordion-button collapsed rounded-3"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse3"
+                                    aria-expanded="false"
+                                    aria-controls="collapse3"
+                                >
+                                    Làm thế nào để giảm nguy cơ mắc ung thư
+                                    phổi?
+                                </button>
+                            </h2>
+                            <div
+                                id="collapse3"
+                                class="accordion-collapse collapse"
+                                aria-labelledby="heading3"
+                                data-bs-parent="#lungCancerFAQ"
+                            >
+                                <div class="accordion-body">
+                                    <p>
+                                        Để giảm nguy cơ mắc ung thư phổi, bạn
+                                        nên:
+                                    </p>
+                                    <ul>
+                                        <li>
+                                            Không hút thuốc và tránh khói thuốc
+                                            thụ động
+                                        </li>
+                                        <li>
+                                            Kiểm tra radon trong nhà và nơi làm
+                                            việc
+                                        </li>
+                                        <li>
+                                            Tránh tiếp xúc với chất gây ô nhiễm
+                                            và hóa chất độc hại
+                                        </li>
+                                        <li>
+                                            Duy trì chế độ ăn uống giàu trái cây
+                                            và rau quả
+                                        </li>
+                                        <li>Tập thể dục thường xuyên</li>
+                                        <li>
+                                            Khám sức khỏe định kỳ, đặc biệt nếu
+                                            bạn có nguy cơ cao
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted small mt-5">
+                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế
+                        thông minh
                     </p>
                 </div>
             </div>
@@ -361,54 +586,102 @@
         <!-- Nhúng footer mới -->
         <!--#include file="../../..../static/utils/home/footer.html" -->
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Kiểm tra phân quyền khi trang tải
-                if (!window.AuthGuard.isAdmin()) {
-                    window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname) + '&unauthorized=true';
-                    return;
-                }
-                
-                // Parse URL parameters
+            document.addEventListener("DOMContentLoaded", function () {
                 const urlParams = new URLSearchParams(window.location.search);
-                const prediction = urlParams.get('prediction');
-                const message = urlParams.get('message');
-                
-                if (!prediction || !message) {
-                    // Redirect back to form if no results
-                    window.location.href = 'lung_cancer_form.html';
-                    return;
+                const prediction = parseInt(urlParams.get("prediction"));
+                const message = urlParams.get("message");
+
+                const resultMessage = document.getElementById("resultMessage");
+                const recommendation =
+                    document.getElementById("recommendation");
+                const resultIconWrapper =
+                    document.getElementById("resultIconWrapper");
+                const resultIcon = document.getElementById("resultIcon");
+                const recommendationIcon =
+                    document.getElementById("recommendationIcon");
+                const recommendationTitle = document.getElementById(
+                    "recommendationTitle"
+                );
+                const recommendationText =
+                    document.getElementById("recommendationText");
+
+                if (message) {
+                    resultMessage.innerText = decodeURIComponent(message);
                 }
-                
-                const riskBadge = document.getElementById('riskBadge');
-                const resultTitle = document.getElementById('resultTitle');
-                const resultDescription = document.getElementById('resultDescription');
-                const riskIndicator = document.getElementById('riskIndicator');
-                const smokingRecommendation = document.getElementById('smokingRecommendation');
-                
-                // Update UI based on prediction
-                if (prediction === 'Low') {
-                    riskBadge.textContent = 'Nguy cơ thấp';
-                    riskBadge.className = 'result-badge low';
-                    resultTitle.textContent = 'Nguy cơ ung thư phổi thấp';
-                    riskIndicator.className = 'risk-indicator low';
-                    setTimeout(() => { riskIndicator.style.width = '20%'; }, 100);
-                } else if (prediction === 'Medium') {
-                    riskBadge.textContent = 'Nguy cơ trung bình';
-                    riskBadge.className = 'result-badge moderate';
-                    resultTitle.textContent = 'Nguy cơ ung thư phổi trung bình';
-                    riskIndicator.className = 'risk-indicator moderate';
-                    setTimeout(() => { riskIndicator.style.width = '60%'; }, 100);
-                } else if (prediction === 'High') {
-                    riskBadge.textContent = 'Nguy cơ cao';
-                    riskBadge.className = 'result-badge high';
-                    resultTitle.textContent = 'Nguy cơ ung thư phổi cao';
-                    riskIndicator.className = 'risk-indicator high';
-                    setTimeout(() => { riskIndicator.style.width = '90%'; }, 100);
+
+                if (prediction === 1) {
+                    // Low risk
+                    recommendation.classList.remove("d-none");
+                    recommendation.classList.add("low");
+                    resultIconWrapper.classList.add("success");
+                    resultIcon.classList.remove("text-primary");
+                    resultIcon.classList.add("text-success");
+                    resultIcon.classList.remove("fa-lungs");
+                    resultIcon.classList.add("fa-check-circle");
+
+                    recommendationIcon.classList.add(
+                        "fa-check-circle",
+                        "text-success"
+                    );
+                    recommendationTitle.innerText = "Nguy cơ thấp";
+                    recommendationText.innerHTML = `Dựa trên thông tin bạn cung cấp, nguy cơ ung thư phổi của bạn ở mức thấp. Hãy tiếp tục duy trì lối sống lành mạnh và khám sức khỏe định kỳ để phát hiện sớm bất kỳ vấn đề nào có thể phát sinh.`;
+
+                    document
+                        .getElementById("lowRiskSteps")
+                        .classList.remove("d-none");
+                } else if (prediction === 2) {
+                    // Moderate risk
+                    recommendation.classList.remove("d-none");
+                    recommendation.classList.add("moderate");
+                    resultIconWrapper.classList.add("warning");
+                    resultIcon.classList.remove("text-primary");
+                    resultIcon.classList.add("text-warning");
+                    resultIcon.classList.remove("fa-lungs");
+                    resultIcon.classList.add("fa-exclamation-triangle");
+
+                    recommendationIcon.classList.add(
+                        "fa-exclamation-triangle",
+                        "text-warning"
+                    );
+                    recommendationTitle.innerText = "Nguy cơ trung bình";
+                    recommendationText.innerHTML = `Có dấu hiệu nguy cơ ung thư phổi ở mức độ vừa phải. Bạn nên tham khảo ý kiến của bác sĩ chuyên khoa để được đánh giá chi tiết hơn và thực hiện các xét nghiệm sàng lọc nếu cần thiết.`;
+
+                    document
+                        .getElementById("moderateRiskSteps")
+                        .classList.remove("d-none");
+                } else if (prediction === 3) {
+                    // High risk
+                    recommendation.classList.remove("d-none");
+                    recommendation.classList.add("high");
+                    resultIconWrapper.classList.add("danger");
+                    resultIcon.classList.remove("text-primary");
+                    resultIcon.classList.add("text-danger");
+                    resultIcon.classList.remove("fa-lungs");
+                    resultIcon.classList.add("fa-exclamation-circle");
+
+                    recommendationIcon.classList.add(
+                        "fa-exclamation-circle",
+                        "text-danger"
+                    );
+                    recommendationTitle.innerText = "Nguy cơ cao";
+                    recommendationText.innerHTML = `Kết quả cho thấy nguy cơ cao mắc bệnh ung thư phổi. Bạn nên đến cơ sở y tế gần nhất để được khám và đánh giá chuyên sâu càng sớm càng tốt. Điều trị sớm rất quan trọng để nâng cao hiệu quả điều trị.`;
+
+                    document
+                        .getElementById("highRiskSteps")
+                        .classList.remove("d-none");
+                } else {
+                    // Unknown
+                    recommendation.classList.remove("d-none");
+                    recommendation.classList.add("bg-light");
+                    recommendationIcon.classList.add(
+                        "fa-question-circle",
+                        "text-secondary"
+                    );
+                    recommendationTitle.innerText = "Không xác định";
+                    recommendationText.innerHTML = `Không thể xác định kết quả dự đoán. Vui lòng kiểm tra lại thông tin nhập vào hoặc liên hệ với đội ngũ hỗ trợ của chúng tôi.`;
                 }
-                
-                // Set message
-                resultDescription.textContent = decodeURIComponent(message);
             });
         </script>
     </body>

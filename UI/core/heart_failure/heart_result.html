@@ -533,11 +533,13 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 // Kiểm tra phân quyền khi trang tải
-                if (!window.AuthGuard.isAdmin()) {
+                if (
+                    !window.AuthGuard.isAuthenticated() &&
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
                     window.location.href =
-                        "/core/auth/login.html?redirect=" +
-                        encodeURIComponent(window.location.pathname) +
-                        "&unauthorized=true";
+                        "/core/auth/login.html?unauthorized=true";
                     return;
                 }
 

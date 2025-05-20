@@ -427,7 +427,10 @@
                         <div
                             class="d-flex align-items-center justify-content-between"
                         >
-                            <div class="d-flex align-items-center">
+                            <div
+                                class="d-flex align-items-center click-yte"
+                                style="cursor: pointer"
+                            >
                                 <button
                                     id="mobile-toggle"
                                     class="btn btn-sm text-white me-3 d-md-none"
@@ -437,7 +440,7 @@
                                 <i class="fas fa-robot me-3 fs-4"></i>
                                 <h5 class="mb-0">Chatbot Y Tế</h5>
                             </div>
-                            <div class="d-flex gap-2">
+                            <!-- <div class="d-flex gap-2">
                                 <button
                                     id="back-to-home"
                                     class="btn btn-sm btn-outline-light px-3"
@@ -450,7 +453,7 @@
                                 >
                                     <i class="fas fa-trash me-2"></i> Xóa phiên
                                 </button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -529,9 +532,19 @@
                 },
             });
 
+            document
+                .getElementsByClassName("click-yte")[0]
+                .addEventListener("click", function () {
+                    window.location.href = "/home/main.html";
+                });
+
             // Kiểm tra xác thực người dùng trước khi cho phép sử dụng chatbot
             document.addEventListener("DOMContentLoaded", function () {
-                if (!window.AuthGuard.isAuthenticated()) {
+                if (
+                    !window.AuthGuard.isAuthenticated() &&
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
                     // Nếu không đăng nhập, chuyển hướng về trang đăng nhập
                     window.location.href =
                         "/core/auth/login.html?redirect=" +

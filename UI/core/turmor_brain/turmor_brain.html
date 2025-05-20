@@ -295,12 +295,16 @@
                             và phân loại u não
                         </p>
                         <!-- Admin only alert -->
-                        <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4 mx-auto" style="max-width: 600px;">
+                        <!-- <div
+                            class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4 mx-auto"
+                            style="max-width: 600px"
+                        >
                             <i class="fas fa-lock me-3 text-info"></i>
                             <div>
-                                Chức năng này chỉ dành cho quản trị viên. Bạn đang truy cập với quyền admin.
+                                Chức năng này chỉ dành cho quản trị viên. Bạn
+                                đang truy cập với quyền admin.
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- Progress steps -->
@@ -494,10 +498,16 @@
 
         <!-- JavaScript Logic -->
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 // Kiểm tra phân quyền khi trang tải
-                if (!window.AuthGuard.isAdmin()) {
-                    window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname) + '&unauthorized=true';
+                if (
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
+                    window.location.href =
+                        "/core/auth/login.html?redirect=" +
+                        encodeURIComponent(window.location.pathname) +
+                        "&unauthorized=true";
                     return;
                 }
             });

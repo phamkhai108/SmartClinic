@@ -254,6 +254,31 @@
         <!--#include file="..../static/utils/home/topbar.html" -->
 
         <main>
+            <section class="py-0" style="background-color: #123456">
+                <nav
+                    class="navbar bg-body-tertiary"
+                    style="background-color: #1abc9c"
+                >
+                    <div class="container d-flex align-items-center">
+                        <a
+                            class="navbar-brand d-flex align-items-center"
+                            href="#"
+                        >
+                            <img
+                                src="../static/home/images/logoicon.webp"
+                                alt="SmartClinic.AI Logo"
+                                width="50"
+                                height="50"
+                                class="me-2"
+                            />
+                            <span class="fw-bold text-white"
+                                >SmartClinic.AI</span
+                            >
+                        </a>
+                    </div>
+                </nav>
+            </section>
+
             <!-- Hero Section -->
             <section class="hero-section py-5">
                 <div class="container py-5">
@@ -445,7 +470,7 @@
                                 </p>
                                 <button
                                     type="button"
-                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    class="btn btn-outline-primary rounded-pill mt-auto auth-required-btn"
                                     data-href="../core/lung_cancer/lung_cancer_form.html"
                                 >
                                     Kiểm tra ngay
@@ -468,7 +493,7 @@
                                 </p>
                                 <button
                                     type="button"
-                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    class="btn btn-outline-primary rounded-pill mt-auto doctor-required-btn"
                                     data-href="../core/turmor_brain/turmor_brain.html"
                                 >
                                     Tải ảnh MRI
@@ -491,7 +516,7 @@
                                 </p>
                                 <button
                                     type="button"
-                                    class="btn btn-outline-primary rounded-pill mt-auto admin-required-btn"
+                                    class="btn btn-outline-primary rounded-pill mt-auto auth-required-btn"
                                     data-href="../core/heart_failure/heart_failure_form.html"
                                 >
                                     Kiểm tra ngay
@@ -927,7 +952,7 @@
 
         <!-- Auth Guard Script -->
         <script src="../core/auth/auth-guard.js"></script>
-        
+
         <script>
             var isChatbotLoaded = false;
 
@@ -935,10 +960,12 @@
             function toggleChatbot() {
                 // Kiểm tra xem người dùng đã đăng nhập chưa
                 if (!window.AuthGuard.isAuthenticated()) {
-                    window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+                    window.location.href =
+                        "/core/auth/login.html?redirect=" +
+                        encodeURIComponent(window.location.pathname);
                     return;
                 }
-                
+
                 var chatbotWrapper = document.getElementById("chatbotWrapper");
                 var iframe = document.getElementById("chatbotIframe");
 
@@ -992,44 +1019,110 @@
                         link.classList.add("active");
                     }
                 });
-                
+
                 // Xử lý các nút yêu cầu quyền admin
-                const adminRequiredBtns = document.querySelectorAll('.admin-required-btn');
-                adminRequiredBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const href = this.getAttribute('data-href');
+                const adminRequiredBtns = document.querySelectorAll(
+                    ".admin-required-btn"
+                );
+                adminRequiredBtns.forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const href = this.getAttribute("data-href");
                         if (window.AuthGuard.isAdmin()) {
                             window.location.href = href;
                         } else {
                             // Nếu đã đăng nhập nhưng không phải admin
                             if (window.AuthGuard.isAuthenticated()) {
-                                alert('Chức năng này chỉ dành cho quản trị viên. Vui lòng liên hệ admin để biết thêm chi tiết.');
+                                alert(
+                                    "Chức năng này chỉ dành cho quản trị viên. Vui lòng liên hệ admin để biết thêm chi tiết."
+                                );
                             } else {
                                 // Nếu chưa đăng nhập
-                                window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(href) + '&unauthorized=true';
+                                window.location.href =
+                                    "/core/auth/login.html?redirect=" +
+                                    encodeURIComponent(href) +
+                                    "&unauthorized=true";
                             }
                         }
                     });
                 });
-                
+
                 // Xử lý các nút yêu cầu xác thực
-                const authRequiredBtns = document.querySelectorAll('.auth-required-btn');
-                authRequiredBtns.forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const href = this.getAttribute('data-href');
+                const authRequiredBtns =
+                    document.querySelectorAll(".auth-required-btn");
+                authRequiredBtns.forEach((btn) => {
+                    btn.addEventListener("click", function () {
+                        const href = this.getAttribute("data-href");
                         if (window.AuthGuard.isAuthenticated()) {
                             window.location.href = href;
                         } else {
-                            window.location.href = '/core/auth/login.html?redirect=' + encodeURIComponent(href);
+                            window.location.href =
+                                "/core/auth/login.html?redirect=" +
+                                encodeURIComponent(href);
                         }
                     });
                 });
-                
+
                 // Cập nhật nút đăng ký ở CTA Section
-                const registerCTABtn = document.querySelector('.btn-light.btn-lg');
+                const registerCTABtn =
+                    document.querySelector(".btn-light.btn-lg");
                 if (registerCTABtn) {
-                    registerCTABtn.href = '/core/auth/register.html';
+                    registerCTABtn.href = "/core/auth/register.html";
                 }
+            });
+
+            // Handle navigation active state
+            document.addEventListener("DOMContentLoaded", function () {
+                // Handle admin-only buttons
+                document
+                    .querySelectorAll(".admin-required-btn")
+                    .forEach((btn) => {
+                        if (!window.AuthGuard.isAdmin()) {
+                            btn.disabled = true;
+                            btn.title =
+                                "Chỉ admin mới có thể truy cập chức năng này";
+                            btn.classList.add("opacity-50");
+                        }
+                    });
+
+                // Handle doctor-required buttons
+                document
+                    .querySelectorAll(".doctor-required-btn")
+                    .forEach((btn) => {
+                        if (
+                            !window.AuthGuard.isDoctor() &&
+                            !window.AuthGuard.isAdmin()
+                            // true
+                        ) {
+                            btn.disabled = true;
+                            btn.title =
+                                "Chỉ bác sĩ mới có thể truy cập chức năng này";
+                            btn.classList.add("opacity-50");
+                        }
+                    });
+
+                // Handle auth-required buttons
+                document
+                    .querySelectorAll(".auth-required-btn")
+                    .forEach((btn) => {
+                        if (!window.AuthGuard.isAuthenticated()) {
+                            btn.disabled = true;
+                            btn.title =
+                                "Bạn cần đăng nhập để sử dụng chức năng này";
+                            btn.classList.add("opacity-50");
+                        }
+                    });
+
+                // Handle button clicks
+                document
+                    .querySelectorAll("button[data-href]")
+                    .forEach((btn) => {
+                        btn.addEventListener("click", function () {
+                            const href = this.getAttribute("data-href");
+                            if (href && !this.disabled) {
+                                window.location.href = href;
+                            }
+                        });
+                    });
             });
         </script>
     </body>
