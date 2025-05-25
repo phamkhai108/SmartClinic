@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SmartClinic.AI - Quản lý người dùng</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../../static/home/images/logoicon.webp"
+        />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#3b82f6",
+                            secondary: "#64748b",
+                            success: "#10b981",
+                            warning: "#f59e0b",
+                            danger: "#ef4444",
+                            info: "#06b6d4",
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+            :root {
+                --primary-color: #3b82f6;
+                --secondary-color: #64748b;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --info-color: #06b6d4;
+                --light-color: #f8fafc;
+                --dark-color: #1e293b;
+            }
+
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: var(--light-color);
+            }
+
+            .admin-sidebar {
+                width: 280px;
+                position: fixed;
+                height: 100vh;
+                background-color: white;
+                border-right: 1px solid rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+                transition: all 0.3s ease;
+            }
+
+            .admin-content {
+                margin-left: 280px;
+                padding: 2rem;
+                transition: all 0.3s ease;
+            }
+
+            .sidebar-collapsed .admin-sidebar {
+                width: 80px;
+            }
+
+            .sidebar-collapsed .admin-content {
+                margin-left: 80px;
+            }
+
+            .sidebar-collapsed .sidebar-text,
+            .sidebar-collapsed .sidebar-arrow {
+                display: none;
+            }
+
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                padding: 0.8rem 1.5rem;
+                color: var(--secondary-color);
+                border-radius: 0.5rem;
+                margin: 0.25rem 0.75rem;
+                transition: all 0.2s ease;
+            }
+
+            .sidebar-item:hover {
+                background-color: rgba(59, 130, 246, 0.1);
+                color: var(--primary-color);
+            }
+
+            .sidebar-item.active {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .sidebar-icon {
+                font-size: 1.25rem;
+                min-width: 2rem;
+                text-align: center;
+            }
+
+            /* Notification */
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 0.5rem;
+                color: white;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: all 0.3s ease;
+                z-index: 1100;
+                max-width: 350px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .notification.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .notification.success {
+                background-color: var(--success-color);
+            }
+
+            .notification.error {
+                background-color: var(--danger-color);
+            }
+
+            /* Table styles */
+            .user-table {
+                background: white;
+                border-radius: 1rem;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            }
+
+            .user-table th {
+                background-color: #f8fafc;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                letter-spacing: 0.05em;
+            }
+
+            .role-badge {
+                padding: 0.25rem 0.75rem;
+                border-radius: 9999px;
+                font-size: 0.875rem;
+                font-weight: 500;
+            }
+
+            .role-badge.admin {
+                background-color: rgba(239, 68, 68, 0.1);
+                color: var(--danger-color);
+            }
+
+            .role-badge.doctor {
+                background-color: rgba(59, 130, 246, 0.1);
+                color: var(--primary-color);
+            }
+
+            .role-badge.user {
+                background-color: rgba(100, 116, 139, 0.1);
+                color: var(--secondary-color);
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- Notification element -->
+        <div id="notification" class="notification">
+            <span id="notificationMessage"></span>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div
+                class="d-flex align-items-center justify-content-between p-4 border-bottom"
+            >
+                <a class="d-flex align-items-center">
+                    <img
+                        src="../../static/home/images/logoicon.webp"
+                        alt="Logo"
+                        width="40"
+                        height="40"
+                        class="me-3"
+                    />
+                    <h5 class="mb-0 sidebar-text">SmartClinic.AI</h5>
+                </a>
+                <button
+                    id="toggleSidebar"
+                    class="btn btn-sm btn-light rounded-circle"
+                >
+                    <i class="fas fa-chevron-left sidebar-arrow"></i>
+                    <i class="fas fa-bars d-none"></i>
+                </button>
+            </div>
+            <div class="mt-4">
+                <a href="index.html" class="text-decoration-none">
+                    <div class="sidebar-item">
+                        <i class="fas fa-tachometer-alt sidebar-icon"></i>
+                        <span class="sidebar-text">Bảng điều khiển</span>
+                    </div>
+                </a>
+                <a href="files.html" class="text-decoration-none">
+                    <div class="sidebar-item">
+                        <i class="fas fa-file sidebar-icon"></i>
+                        <span class="sidebar-text">Quản lý tệp tin</span>
+                    </div>
+                </a>
+                <a href="upload.html" class="text-decoration-none">
+                    <div class="sidebar-item">
+                        <i class="fas fa-cloud-upload-alt sidebar-icon"></i>
+                        <span class="sidebar-text">Tải lên tệp tin</span>
+                    </div>
+                </a>
+                <a href="users.html" class="text-decoration-none">
+                    <div class="sidebar-item active">
+                        <i class="fas fa-user sidebar-icon"></i>
+                        <span class="sidebar-text">Người dùng</span>
+                    </div>
+                </a>
+                <div class="sidebar-item">
+                    <i class="fas fa-cog sidebar-icon"></i>
+                    <span class="sidebar-text">Cài đặt</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                    <span class="sidebar-text">Đăng xuất</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="admin-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0 fw-bold">Quản lý người dùng</h4>
+                <button
+                    onclick="fetchUsers()"
+                    class="btn btn-primary rounded-pill px-4"
+                >
+                    <i class="fas fa-sync-alt me-2"></i>Làm mới
+                </button>
+            </div>
+
+            <div class="user-table">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3">ID</th>
+                                <th class="px-4 py-3">Tên người dùng</th>
+                                <th class="px-4 py-3">Email</th>
+                                <th class="px-4 py-3">Vai trò</th>
+                                <th class="px-4 py-3">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- User data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Role Modal -->
+        <div class="modal fade" id="changeRoleModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thay đổi vai trò người dùng</h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="selectedUserId" />
+                        <div class="mb-3">
+                            <label class="form-label">Vai trò mới</label>
+                            <select class="form-select" id="newRoleSelect">
+                                <!-- <option value="admin">Admin</option> -->
+                                <option value="doctor">Bác sĩ</option>
+                                <option value="user">Người dùng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            Hủy
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="updateUserRole()"
+                        >
+                            Cập nhật
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Toggle sidebar
+                const toggleBtn = document.getElementById("toggleSidebar");
+                const body = document.body;
+                toggleBtn.addEventListener("click", function () {
+                    body.classList.toggle("sidebar-collapsed");
+                    const icons = toggleBtn.querySelectorAll("i");
+                    icons.forEach((icon) => icon.classList.toggle("d-none"));
+                });
+
+                // Initial data load
+                fetchUsers();
+            });
+
+            // Show notification
+            function showNotification(message, type) {
+                const notification = document.getElementById("notification");
+                const notificationMessage = document.getElementById(
+                    "notificationMessage"
+                );
+                notification.className = "notification";
+                notification.classList.add(type);
+                notificationMessage.textContent = message;
+                notification.classList.add("show");
+                setTimeout(() => {
+                    notification.classList.remove("show");
+                }, 5000);
+            }
+
+            // Fetch users data
+            function fetchUsers() {
+                fetch("http://localhost:8000/users/")
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        const tableBody =
+                            document.getElementById("userTableBody");
+                        tableBody.innerHTML = "";
+
+                        data.forEach((user) => {
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td class="px-4 py-3">${user.id}</td>
+                                <td class="px-4 py-3">${user.user_name}</td>
+                                <td class="px-4 py-3">${user.email}</td>
+                                <td class="px-4 py-3">
+                                    <span class="role-badge ${user.role}">${user.role}</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button onclick="showChangeRoleModal('${user.id}', '${user.role}')"
+                                            class="btn btn-sm btn-outline-primary rounded-pill">
+                                        <i class="fas fa-user-edit me-1"></i>Đổi vai trò
+                                    </button>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching users:", error);
+                        showNotification(
+                            "Lỗi khi tải danh sách người dùng: " +
+                                error.message,
+                            "error"
+                        );
+                    });
+            }
+
+            // Show change role modal
+            function showChangeRoleModal(userId, currentRole) {
+                document.getElementById("selectedUserId").value = userId;
+                document.getElementById("newRoleSelect").value = currentRole;
+                new bootstrap.Modal(
+                    document.getElementById("changeRoleModal")
+                ).show();
+            }
+
+            // Update user role
+            function updateUserRole() {
+                const userId = document.getElementById("selectedUserId").value;
+                const newRole = document.getElementById("newRoleSelect").value;
+
+                fetch(`http://localhost:8000/users/${userId}/role`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ role: newRole }),
+                })
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        showNotification(
+                            "Cập nhật vai trò thành công!",
+                            "success"
+                        );
+                        bootstrap.Modal.getInstance(
+                            document.getElementById("changeRoleModal")
+                        ).hide();
+                        fetchUsers();
+                    })
+                    .catch((error) => {
+                        console.error("Error updating role:", error);
+                        showNotification(
+                            "Lỗi khi cập nhật vai trò: " + error.message,
+                            "error"
+                        );
+                    });
+            }
+        </script>
+    </body>
+</html>

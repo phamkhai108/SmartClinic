@@ -378,10 +378,12 @@
                         <span class="sidebar-text">Tải lên tệp tin</span>
                     </div>
                 </a>
-                <div class="sidebar-item">
-                    <i class="fas fa-user sidebar-icon"></i>
-                    <span class="sidebar-text">Người dùng</span>
-                </div>
+                <a href="users.html" class="text-decoration-none">
+                    <div class="sidebar-item">
+                        <i class="fas fa-user sidebar-icon"></i>
+                        <span class="sidebar-text">Người dùng</span>
+                    </div>
+                </a>
                 <div class="sidebar-item">
                     <i class="fas fa-cog sidebar-icon"></i>
                     <span class="sidebar-text">Cài đặt</span>
@@ -457,11 +459,11 @@
                     </div>
                     <ul class="mb-0">
                         <li class="mb-2">
-                            Hỗ trợ tất cả các loại tệp tin, tối đa 100MB.
+                            Chỉ hỗ trợ tải lên các file dạng PDF, DOC, DOCX, tối
+                            đa 100MB.
                         </li>
                         <li class="mb-2">
-                            Định dạng được hỗ trợ tốt nhất: PDF, DOC, DOCX, XLS,
-                            XLSX, JPG, PNG.
+                            Các định dạng khác sẽ không được chấp nhận.
                         </li>
                         <li class="mb-2">
                             Bạn có thể kéo thả tệp tin hoặc nhấp vào khu vực để
@@ -489,6 +491,7 @@
                                     type="file"
                                     id="fileInput"
                                     class="d-none"
+                                    accept=".pdf,.doc,.docx"
                                 />
                                 <div class="upload-icon">
                                     <i class="fas fa-cloud-upload-alt"></i>

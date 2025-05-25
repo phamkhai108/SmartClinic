@@ -427,10 +427,7 @@
                         <div
                             class="d-flex align-items-center justify-content-between"
                         >
-                            <div
-                                class="d-flex align-items-center click-yte"
-                                style="cursor: pointer"
-                            >
+                            <div class="d-flex align-items-center">
                                 <button
                                     id="mobile-toggle"
                                     class="btn btn-sm text-white me-3 d-md-none"
@@ -532,19 +529,9 @@
                 },
             });
 
-            document
-                .getElementsByClassName("click-yte")[0]
-                .addEventListener("click", function () {
-                    window.location.href = "/home/main.html";
-                });
-
             // Kiểm tra xác thực người dùng trước khi cho phép sử dụng chatbot
             document.addEventListener("DOMContentLoaded", function () {
-                if (
-                    !window.AuthGuard.isAuthenticated() &&
-                    !window.AuthGuard.isDoctor() &&
-                    !window.AuthGuard.isAdmin()
-                ) {
+                if (!window.AuthGuard.isAuthenticated()) {
                     // Nếu không đăng nhập, chuyển hướng về trang đăng nhập
                     window.location.href =
                         "/core/auth/login.html?redirect=" +
@@ -564,11 +551,11 @@
             });
 
             // Back to home button event
-            document
-                .getElementById("back-to-home")
-                .addEventListener("click", function () {
-                    window.location.href = "/home/main.html";
-                });
+            // document
+            //     .getElementById("back-to-home")
+            //     .addEventListener("click", function () {
+            //         window.location.href = "/home/main.html";
+            //     });
 
             // Replace toggle sidebar function
             document
@@ -682,7 +669,7 @@
 
             // Event listeners
             chatForm.addEventListener("submit", sendMessage);
-            clearSessionBtn.addEventListener("click", clearSession);
+            // clearSessionBtn.addEventListener("click", clearSession);
             newChatBtn.addEventListener("click", createNewChat);
 
             // Function to load conversation list

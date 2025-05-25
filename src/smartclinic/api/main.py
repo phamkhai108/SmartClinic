@@ -13,6 +13,7 @@ from smartclinic.api.routers import (
     lung,
     mail,
     search,
+    user,
 )
 from smartclinic.sql.setup_db import setup_db
 from smartclinic.vectordb.elasticsearch.es_setup import create_chunk_index
@@ -43,5 +44,6 @@ app.include_router(mail.router)
 app.include_router(files.router)
 app.include_router(search.router)
 app.include_router(auth.router)
+app.include_router(user.router)
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)
