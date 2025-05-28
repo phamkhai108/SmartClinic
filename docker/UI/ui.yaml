@@ -1,0 +1,10 @@
+services:
+    ui:
+        build:
+            context: ../../
+            dockerfile: docker/UI/Dockerfile
+        container_name: smartclinic-ui
+        ports:
+            - "5000:5000"
+        volumes:
+            - ../../ui:/app/ui
