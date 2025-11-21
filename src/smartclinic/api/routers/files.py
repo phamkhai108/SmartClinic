@@ -3,7 +3,7 @@ import os
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile
 
 from smartclinic.api.dependencies import (
-    get_database_client,
+    get_db,
     get_elasticsearch_client,
     get_embedding_model,
 )
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/files", tags=["File Management"])
 
 es_client = get_elasticsearch_client()
 embeding_model = get_embedding_model()
-db_session = get_database_client()
+db_session = get_db()
 chunker = Chunker(es_client)
 file_service = UploadFileNProcessChunk(chunker, embeding_model, db_session)
 
@@ -53,3 +53,17 @@ def list_files_by_user(user_id: str = Query(..., description='User ID or "all"')
         return files
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/delete_file/{file_name}")
+async def delete_file(file_name: str) -> dict:
+    try:
+        file_service.delete_file_by_filename(file_name)
+        return {
+            "detail": f"File {file_name} deleted successfully.",
+            "status": "success",
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting file: {str(e)}")

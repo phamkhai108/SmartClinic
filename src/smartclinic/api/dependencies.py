@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from smartclinic.common.base import AppConfig
 from smartclinic.core.llm.llm_service import LLMModel
+from smartclinic.core.mailer.email_service import EmailService
 
 
 def get_elasticsearch_client() -> Elasticsearch:
@@ -26,6 +27,13 @@ def get_llm_model() -> LLMModel:
     )
 
 
+def get_mailer_service() -> EmailService:
+    return EmailService(
+        sender_email=AppConfig.sender_email,
+        sender_password=AppConfig.sender_password,
+    )
+
+
 engine = create_engine(
     AppConfig.database_url,
     connect_args={"check_same_thread": False}
@@ -36,5 +44,5 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_database_client() -> Session:
+def get_db() -> Session:
     return SessionLocal()

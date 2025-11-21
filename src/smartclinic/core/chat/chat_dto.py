@@ -1,10 +1,11 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel
 
 
 class Message(BaseModel):
-    role: str
+    role: Literal["user", "assistant"] = "user"
     content: str
 
 

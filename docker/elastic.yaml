@@ -20,3 +20,4 @@ volumes:
 networks:
     elasticnet:
         driver: bridge
+        # external: true

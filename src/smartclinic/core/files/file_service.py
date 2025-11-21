@@ -8,7 +8,7 @@ from fastapi import HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from smartclinic.core.llm.llm_service import LLMModel
-from smartclinic.sql.setup_db import File, User
+from smartclinic.sql.setup_db import File
 from smartclinic.vectordb.elasticsearch.es_model import Chunk
 from smartclinic.vectordb.elasticsearch.es_service import Chunker
 
@@ -73,7 +73,7 @@ class UploadFileNProcessChunk:
         return "\n".join([p.text for p in doc.paragraphs])
 
     def _split_text_to_chunks(
-        self, text: str, max_words: int = 300, overlap: int = 50
+        self, text: str, max_words: int = 250, overlap: int = 30
     ) -> list[str]:
         words = text.split()
         chunks = []
@@ -88,8 +88,18 @@ class UploadFileNProcessChunk:
         if user_id == "all":
             return self.db_session.query(File).all()
 
-        user = self.db_session.query(User).filter(User.id == user_id).first()
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
+        # user = self.db_session.query(User).filter(User.id == user_id).first()
+        # if not user:
+        #     raise HTTPException(status_code=404, detail="User not found")
 
         return self.db_session.query(File).filter(File.user_id == user_id).all()
+
+    def delete_file_by_filename(self, file_name: str) -> None:
+        file = self.db_session.query(File).filter(File.file_name == file_name).first()
+        self.chunker.delete_by_source(file_name)
+
+        if not file:
+            raise HTTPException(status_code=404, detail="File not found")
+
+        self.db_session.delete(file)
+        self.db_session.commit()

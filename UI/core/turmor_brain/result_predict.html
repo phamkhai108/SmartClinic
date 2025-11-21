@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kết Quả Phân Loại U Não | SmartClinic.AI</title>
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../static/home/images/logoicon.webp"
+        />
+        <link
+            href="../../static/bootstrap-5.3.6/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="../../static/fontawesome-free-6.7.2-web/css/all.min.css"
+        />
+        <script src="../../static/tailwindcss.js"></script>
+        <!-- Auth Guard Script -->
+        <script src="../auth/auth-guard.js"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#3b82f6",
+                            secondary: "#64748b",
+                            success: "#10b981",
+                            warning: "#f59e0b",
+                            danger: "#ef4444",
+                            info: "#06b6d4",
+                        },
+                    },
+                },
+            };
+        </script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+            :root {
+                --primary-color: #3b82f6;
+                --secondary-color: #64748b;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --info-color: #06b6d4;
+                --light-color: #f8fafc;
+                --dark-color: #1e293b;
+            }
+
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: var(--light-color);
+            }
+
+            .result-card {
+                border: none;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .result-card:hover {
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+                transform: translateY(-5px);
+            }
+
+            .icon-wrapper {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+                transition: all 0.3s ease;
+            }
+
+            .icon-wrapper.success {
+                background-color: rgba(16, 185, 129, 0.1);
+            }
+
+            .icon-wrapper.warning {
+                background-color: rgba(245, 158, 11, 0.1);
+            }
+
+            .icon-wrapper.danger {
+                background-color: rgba(239, 68, 68, 0.1);
+            }
+
+            .progress-indicator {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+            }
+
+            .progress-step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33.33%;
+                position: relative;
+            }
+
+            .progress-step::after {
+                content: "";
+                position: absolute;
+                top: 15px;
+                right: -50%;
+                width: 100%;
+                height: 3px;
+                background-color: #e2e8f0;
+                z-index: 0;
+            }
+
+            .progress-step:last-child::after {
+                display: none;
+            }
+
+            .progress-step.active .step-number {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .progress-step.completed .step-number {
+                background-color: var(--success-color);
+                color: white;
+            }
+
+            .step-number {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background-color: #e2e8f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .step-label {
+                font-size: 0.85rem;
+                color: var(--secondary-color);
+                text-align: center;
+            }
+
+            .progress-step.active .step-label {
+                color: var(--dark-color);
+                font-weight: 500;
+            }
+
+            .btn-primary {
+                background-color: var(--primary-color);
+                border: none;
+                border-radius: 10px;
+                padding: 12px 30px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary:hover {
+                background-color: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+            }
+
+            .result-message {
+                font-size: 1.25rem;
+                line-height: 1.75rem;
+                margin-bottom: 2rem;
+            }
+
+            .result-box {
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 2rem;
+                background-color: rgba(16, 185, 129, 0.1);
+                border-left: 5px solid var(--success-color);
+            }
+
+            .result-box h5 {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+
+            .result-box h5 i {
+                margin-right: 0.75rem;
+            }
+
+            .result-info {
+                padding: 1rem;
+                border-radius: 10px;
+                background-color: white;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .confidence-bar {
+                height: 10px;
+                border-radius: 5px;
+                background-color: #e2e8f0;
+                margin-top: 0.5rem;
+                overflow: hidden;
+            }
+
+            .confidence-progress {
+                height: 100%;
+                background-color: var(--success-color);
+                border-radius: 5px;
+                transition: width 1.5s ease;
+            }
+
+            .badge-result {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                padding: 0.5rem 1rem;
+                border-radius: 30px;
+                font-weight: 500;
+                font-size: 1rem;
+                background-color: rgba(16, 185, 129, 0.15);
+                color: var (--success-color);
+            }
+
+            .image-container {
+                margin: 2rem 0;
+                text-align: center;
+            }
+
+            .result-image {
+                max-width: 100%;
+                max-height: 300px;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .recommendation-items {
+                margin-top: 2rem;
+            }
+
+            .recommendation-item {
+                display: flex;
+                align-items: start;
+                margin-bottom: 1.5rem;
+            }
+
+            .recommendation-icon {
+                width: 45px;
+                height: 45px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 1rem;
+                flex-shrink: 0;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .fade-in {
+                animation: fadeIn 0.5s ease;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Nhúng topbar mới -->
+        <!--#include file="../../..../static/utils/home/topbar.html" -->
+
+        <main class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Progress steps -->
+                    <div class="progress-indicator mb-5">
+                        <div class="progress-step completed">
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-label">Chuẩn bị</div>
+                        </div>
+                        <div class="progress-step completed">
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-label">Tải lên hình ảnh</div>
+                        </div>
+                        <div class="progress-step active">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Kết quả phân tích</div>
+                        </div>
+                    </div>
+
+                    <!-- Result Card -->
+                    <div class="card result-card mb-4">
+                        <div class="card-body p-5">
+                            <div class="text-center">
+                                <div
+                                    id="resultIconWrapper"
+                                    class="icon-wrapper mb-4"
+                                >
+                                    <i
+                                        class="fas fa-brain fa-3x text-primary"
+                                    ></i>
+                                </div>
+                                <h2 class="fw-bold mb-4">
+                                    Kết Quả Phân Loại U Não
+                                </h2>
+                                <p class="text-secondary mb-5">
+                                    Kết quả phân tích hình ảnh dựa trên công
+                                    nghệ AI
+                                </p>
+                            </div>
+
+                            <div class="result-box fade-in">
+                                <h5 class="fw-bold">
+                                    <i
+                                        class="fas fa-check-circle text-success"
+                                    ></i
+                                    >Phân loại thành công
+                                </h5>
+
+                                <div class="result-info">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <h5 class="fw-bold mb-3">
+                                                Kết quả phân loại
+                                            </h5>
+                                            <div class="mb-4">
+                                                <span
+                                                    class="badge-result"
+                                                    id="predictionResult"
+                                                >
+                                                    <i class="fas fa-tag"></i>
+                                                    <span id="predictedClass"
+                                                        >...</span
+                                                    >
+                                                </span>
+                                            </div>
+
+                                            <h6 class="fw-bold mb-2">
+                                                Độ tin cậy
+                                            </h6>
+                                            <div
+                                                class="d-flex justify-content-between small mb-1"
+                                            >
+                                                <span>Mức độ chính xác</span>
+                                                <span
+                                                    class="fw-medium"
+                                                    id="confidenceValue"
+                                                    >...</span
+                                                >
+                                            </div>
+                                            <div class="confidence-bar">
+                                                <div
+                                                    class="confidence-progress"
+                                                    id="confidenceBar"
+                                                    style="width: 0%"
+                                                ></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 mt-4 mt-md-0">
+                                            <div class="image-container">
+                                                <img
+                                                    id="analyzedImage"
+                                                    src=""
+                                                    alt="Ảnh phân tích"
+                                                    class="result-image d-none"
+                                                />
+                                                <div
+                                                    class="text-center text-muted small"
+                                                    id="noImageText"
+                                                >
+                                                    <i
+                                                        class="fas fa-image fa-3x mb-3 d-block mx-auto opacity-25"
+                                                    ></i>
+                                                    Không có hình ảnh hiển thị
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-5">
+                                <h4 class="fw-bold mb-4">
+                                    Khuyến nghị của hệ thống
+                                </h4>
+
+                                <div class="recommendation-items">
+                                    <div class="recommendation-item">
+                                        <div class="recommendation-icon">
+                                            <i
+                                                class="fas fa-user-doctor text-primary"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Tham khảo ý kiến chuyên gia
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Dù có kết quả từ AI, bạn vẫn nên
+                                                tham khảo ý kiến của bác sĩ
+                                                chuyên khoa thần kinh hoặc bác
+                                                sĩ chẩn đoán hình ảnh để có đánh
+                                                giá toàn diện.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="recommendation-item">
+                                        <div class="recommendation-icon">
+                                            <i
+                                                class="fas fa-file-medical text-primary"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Thực hiện thêm xét nghiệm
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Để có chẩn đoán chính xác, bạn
+                                                có thể cần MRI não có tiêm chất
+                                                tương phản, chụp CT hoặc các xét
+                                                nghiệm bổ sung khác theo chỉ
+                                                định của bác sĩ.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="recommendation-item">
+                                        <div class="recommendation-icon">
+                                            <i
+                                                class="fas fa-notes-medical text-primary"
+                                            ></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="fw-bold mb-1">
+                                                Lưu trữ kết quả
+                                            </h5>
+                                            <p class="text-secondary">
+                                                Lưu lại kết quả phân tích này
+                                                cùng với hình ảnh gốc để so sánh
+                                                với các kết quả trong tương lai
+                                                và cung cấp cho bác sĩ khi cần
+                                                thiết.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="mt-5 d-flex flex-column flex-sm-row justify-content-center gap-3"
+                            >
+                                <a
+                                    href="turmor_brain.html"
+                                    class="btn btn-primary"
+                                >
+                                    <i class="fas fa-arrow-left me-2"></i> Quay
+                                    lại
+                                </a>
+                                <a
+                                    href="#"
+                                    id="downloadBtn"
+                                    class="btn btn-outline-primary"
+                                >
+                                    <i class="fas fa-download me-2"></i> Tải kết
+                                    quả
+                                </a>
+                                <a
+                                    href="../chat/chatbot_markdown.html"
+                                    class="btn btn-outline-primary"
+                                >
+                                    <i class="fas fa-comment-medical me-2"></i>
+                                    Tư vấn với AI
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <!-- <div
+                        class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-5"
+                    >
+                        <i class="fas fa-info-circle fs-4 me-3 text-info"></i>
+                        <div>
+                            <strong>Lưu ý quan trọng:</strong> Kết quả phân tích
+                            hình ảnh này chỉ mang tính tham khảo và không thay
+                            thế cho chẩn đoán y khoa chính thức. Vui lòng tham
+                            khảo ý kiến bác sĩ chuyên khoa để được tư vấn và
+                            điều trị phù hợp.
+                        </div>
+                    </div> -->
+
+                    <!-- Phần thông tin bổ sung về u não -->
+                    <div class="bg-white rounded-4 p-4 shadow-sm mb-4">
+                        <h4 class="fw-bold mb-4">
+                            Thông tin về các loại u não
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <h5 class="fw-bold">
+                                    <i
+                                        class="fas fa-circle-info text-primary me-2"
+                                    ></i
+                                    >U não là gì?
+                                </h5>
+                                <p class="text-secondary">
+                                    U não là khối mô bất thường phát triển trong
+                                    não. Chúng có thể là lành tính (không phải
+                                    ung thư) hoặc ác tính (ung thư). U não có
+                                    thể xuất phát từ các tế bào não, màng não,
+                                    dây thần kinh hoặc các tuyến.
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="fw-bold">
+                                    <i
+                                        class="fas fa-circle-info text-primary me-2"
+                                    ></i
+                                    >Các triệu chứng phổ biến
+                                </h5>
+                                <p class="text-secondary">
+                                    Đau đầu, co giật, thay đổi thị lực, buồn nôn
+                                    và nôn, mệt mỏi, thay đổi nhận thức và trí
+                                    nhớ, khó giữ thăng bằng, thay đổi tính cách,
+                                    khó nói hoặc hiểu lời nói.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted small mt-5">
+                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế
+                        thông minh
+                    </p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Nhúng footer mới -->
+        <!--#include file="../../..../static/utils/home/footer.html" -->
+
+        <script src="../../static/bootstrap-5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Kiểm tra phân quyền khi trang tải
+                if (
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
+                    window.location.href =
+                        "/core/auth/login.html?redirect=" +
+                        encodeURIComponent(window.location.pathname) +
+                        "&unauthorized=true";
+                    return;
+                }
+
+                // Lấy các tham số từ URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const predictedClass =
+                    urlParams.get("predicted_class") || "Không xác định";
+                const confidence = urlParams.get("confidence") || "0";
+                const imageUrl = urlParams.get("image_url");
+
+                // Cập nhật giao diện với dữ liệu
+                document.getElementById("predictedClass").textContent =
+                    predictedClass;
+                document.getElementById("confidenceValue").textContent =
+                    confidence + "%";
+
+                // Hiệu ứng điền thanh độ tin cậy
+                setTimeout(() => {
+                    document.getElementById("confidenceBar").style.width =
+                        confidence + "%";
+                }, 500);
+
+                // Hiển thị hình ảnh nếu có
+                if (imageUrl) {
+                    const analyzedImage =
+                        document.getElementById("analyzedImage");
+                    analyzedImage.src = decodeURIComponent(imageUrl);
+                    analyzedImage.classList.remove("d-none");
+                    document
+                        .getElementById("noImageText")
+                        .classList.add("d-none");
+                }
+
+                // Xử lý nút tải kết quả
+                document
+                    .getElementById("downloadBtn")
+                    .addEventListener("click", function (e) {
+                        e.preventDefault();
+                        alert(
+                            "Chức năng tải kết quả đang được phát triển. Vui lòng thử lại sau."
+                        );
+                    });
+            });
+        </script>
+    </body>
+</html>

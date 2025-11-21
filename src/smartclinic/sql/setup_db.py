@@ -1,8 +1,9 @@
 import uuid
+from datetime import UTC, datetime
 
 import bcrypt
-from sqlalchemy import Column, DateTime, ForeignKey, String
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, DateTime, Enum, ForeignKey, String, Text, create_engine
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 Base = declarative_base()
 
@@ -38,37 +39,64 @@ class File(Base):
     user = relationship("User", back_populates="files")
 
 
-# Khởi tạo database (ví dụ sqlite)
-# if __name__ == "__main__":
-#     engine = create_engine("sqlite:///example.db")
-#     Base.metadata.create_all(engine)
+class ChatHistory(Base):
+    __tablename__ = "chat_history"
 
-#     Session = sessionmaker(bind=engine)
-#     session = Session()
+    id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
+    session_id = Column(String, nullable=False, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    conversation_name = Column(String, nullable=False)
+    message = Column(Text, nullable=False)
+    sender = Column(Enum("user", "assistant", name="sender_type"), nullable=False)
+    timestamp = Column(DateTime, default=datetime.now(UTC))
 
-#     new_user = User(user_name="test_user", email="test@example.com", role="admin")
-#     new_user.set_password("securepassword123")
-#     session.add(new_user)
-#     session.commit()
+    user = relationship("User", backref="chat_history")
 
-#     print(f"User {new_user.user_name} created with ID {new_user.id}")
 
-#     file1 = File(
-#         id="file1",
-#         user_id=new_user.id,
-#         file_name="photo.jpg",
-#         status="pending",
-#         created_at=datetime(2024, 12, 1, 12, 0, 0),
-#     )
-#     file2 = File(
-#         id="file2",
-#         user_id=new_user.id,
-#         file_name="report.docx",
-#         status="active",
-#         created_at=datetime(2023, 10, 1, 12, 0, 0),
-#     )
+def setup_db():
+    """Set up the database, create tables if they don't exist"""
+    import os
 
-#     session.add_all([file1, file2])
-#     session.commit()
+    db_path = "example.db"
 
-#     print("Multiple files added successfully.")
+    if os.path.exists(db_path):
+        print(f"Database {db_path} already exists, skipping creation.")
+        return None
+
+    print(f"Creating new database {db_path}...")
+    engine = create_engine(f"sqlite:///{db_path}")
+    Base.metadata.create_all(engine)
+    print("Database tables created successfully.")
+
+    # Insert default admin
+    SessionLocal = sessionmaker(bind=engine)
+    session = SessionLocal()
+
+    existing_admin = session.query(User).filter_by(user_name="admin").first()
+    if not existing_admin:
+        admin = User(user_name="admin", email="admin@example.com", role="admin")
+        admin.set_password("admin")  # Hash password
+        session.add(admin)
+        print("Default admin user created.")
+    else:
+        print("Admin user already exists.")
+
+    # Add doctor
+    existing_doctor = session.query(User).filter_by(user_name="doctor").first()
+    if not existing_doctor:
+        doctor = User(user_name="doctor", email="doctor@gmail.com", role="doctor")
+        doctor.set_password("doctor")
+        session.add(doctor)
+        print("Default doctor user created.")
+    else:
+        print("Doctor user already exists.")
+
+    session.commit()
+    session.close()
+
+    return engine
+
+
+# Phần này chỉ chạy khi file này được chạy trực tiếp
+if __name__ == "__main__":
+    setup_db()

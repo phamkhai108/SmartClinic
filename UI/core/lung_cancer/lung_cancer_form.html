@@ -3,210 +3,608 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Dự đoán Ung Thư Phổi</title>
+        <title>Dự Đoán Ung Thư Phổi | SmartClinic.AI</title>
         <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+            rel="icon"
+            type="image/x-icon"
+            href="../static/home/images/logoicon.webp"
+        />
+        <link
+            href="../../static/bootstrap-5.3.6/dist/css/bootstrap.min.css"
             rel="stylesheet"
         />
+        <link
+            rel="stylesheet"
+            href="../../static/fontawesome-free-6.7.2-web/css/all.min.css"
+        />
+        <script src="../../static/tailwindcss.js"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: "#3b82f6",
+                            secondary: "#64748b",
+                            success: "#10b981",
+                            warning: "#f59e0b",
+                            danger: "#ef4444",
+                            info: "#06b6d4",
+                        },
+                    },
+                },
+            };
+        </script>
+        <!-- Auth Guard Script -->
+        <script src="../auth/auth-guard.js"></script>
+        <style>
+            @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+            :root {
+                --primary-color: #3b82f6;
+                --secondary-color: #64748b;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --info-color: #06b6d4;
+                --light-color: #f8fafc;
+                --dark-color: #1e293b;
+            }
+
+            body {
+                font-family: "Roboto", sans-serif;
+                background-color: var(--light-color);
+            }
+
+            .form-card {
+                border: none;
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .form-card:hover {
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+                transform: translateY(-5px);
+            }
+
+            .form-control {
+                border-radius: 8px;
+                padding: 12px;
+                border: 1px solid #e2e8f0;
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus {
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+                border-color: var(--primary-color);
+            }
+
+            .form-label {
+                font-weight: 500;
+                color: var(--dark-color);
+                margin-bottom: 8px;
+            }
+
+            .btn-primary {
+                background-color: var(--primary-color);
+                border: none;
+                border-radius: 10px;
+                padding: 12px 30px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary:hover {
+                background-color: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+            }
+
+            .divider {
+                display: flex;
+                align-items: center;
+                margin: 1.5rem 0;
+            }
+
+            .divider::before,
+            .divider::after {
+                content: "";
+                flex-grow: 1;
+                height: 1px;
+                background-color: #e2e8f0;
+            }
+
+            .divider-text {
+                padding: 0 1rem;
+                color: var(--secondary-color);
+                font-weight: 500;
+            }
+
+            .icon-wrapper {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background-color: rgba(59, 130, 246, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+            }
+
+            .progress-indicator {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 2rem;
+            }
+
+            .progress-step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 33.33%;
+                position: relative;
+            }
+
+            .progress-step::after {
+                content: "";
+                position: absolute;
+                top: 15px;
+                right: -50%;
+                width: 100%;
+                height: 3px;
+                background-color: #e2e8f0;
+                z-index: 0;
+            }
+
+            .progress-step:last-child::after {
+                display: none;
+            }
+
+            .progress-step.active .step-number {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .progress-step.completed .step-number {
+                background-color: var(--success-color);
+                color: white;
+            }
+
+            .step-number {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                background-color: #e2e8f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .step-label {
+                font-size: 0.85rem;
+                color: var(--secondary-color);
+                text-align: center;
+            }
+
+            .progress-step.active .step-label {
+                color: var(--dark-color);
+                font-weight: 500;
+            }
+
+            /* For input range styling */
+            input[type="range"] {
+                width: 100%;
+                height: 8px;
+                -webkit-appearance: none;
+                background-color: #e2e8f0;
+                border-radius: 5px;
+                outline: none;
+                margin-top: 10px;
+            }
+
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 20px;
+                height: 20px;
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            input[type="range"]::-webkit-slider-thumb:hover {
+                transform: scale(1.2);
+            }
+
+            .range-value {
+                margin-top: 8px;
+                text-align: center;
+                font-weight: 500;
+                color: var(--dark-color);
+            }
+        </style>
     </head>
-    <body class="bg-light">
-        <div class="container py-5">
+
+    <body>
+        <!-- Nhúng topbar mới -->
+        <!--#include file="../../..../static/utils/home/topbar.html" -->
+
+        <main class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-                    <div class="card shadow rounded-4 border-0">
-                        <div class="card-body p-5">
-                            <h2 class="text-center mb-4">
-                                Dự đoán Ung Thư Phổi
-                            </h2>
+                    <!-- Page header -->
+                    <div class="text-center mb-5">
+                        <div class="icon-wrapper mb-4">
+                            <i class="fas fa-lungs fa-2x text-primary"></i>
+                        </div>
+                        <h1 class="fw-bold">Dự Đoán Nguy Cơ Ung Thư Phổi</h1>
+                        <p class="text-secondary lead">
+                            Công cụ AI giúp phát hiện sớm các dấu hiệu nguy cơ
+                            dựa trên các yếu tố và triệu chứng
+                        </p>
+                        <!-- Admin only alert -->
+                        <!-- <div
+                            class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4 mx-auto"
+                            style="max-width: 600px"
+                        >
+                            <i class="fas fa-lock me-3 text-info"></i>
+                            <div>
+                                Chức năng này chỉ dành cho quản trị viên. Bạn
+                                đang truy cập với quyền admin.
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <!-- Progress steps -->
+                    <div class="progress-indicator mb-5">
+                        <div class="progress-step completed">
+                            <div class="step-number">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="step-label">Thông tin cá nhân</div>
+                        </div>
+                        <div class="progress-step active">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Triệu chứng & Yếu tố</div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Kết quả</div>
+                        </div>
+                    </div>
+
+                    <!-- Main form card -->
+                    <div class="card form-card mb-4">
+                        <div class="card-body p-4 p-lg-5">
                             <form id="lungForm">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
+                                <div class="row g-4">
+                                    <!-- Personal Information Section -->
+                                    <div class="col-12">
+                                        <div class="divider">
+                                            <span class="divider-text"
+                                                >Thông tin cá nhân</span
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <label class="form-label">Tuổi</label>
-                                        <input
-                                            type="number"
-                                            name="Age"
-                                            class="form-control"
-                                            min="1"
-                                            max="120"
-                                            value="45"
-                                            required
-                                        />
+                                        <div class="input-group">
+                                            <span class="input-group-text"
+                                                ><i
+                                                    class="fas fa-calendar-alt text-secondary"
+                                                ></i
+                                            ></span>
+                                            <input
+                                                type="number"
+                                                name="Age"
+                                                class="form-control"
+                                                min="1"
+                                                max="120"
+                                                value="45"
+                                                required
+                                            />
+                                        </div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Giới tính (0 = Nam, 1 = Nữ)</label
+                                            >Giới tính</label
+                                        >
+                                        <div class="d-flex gap-4">
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="Gender"
+                                                    id="gender-male"
+                                                    value="0"
+                                                    checked
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="gender-male"
+                                                >
+                                                    <i
+                                                        class="fas fa-male text-primary me-1"
+                                                    ></i>
+                                                    Nam
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    name="Gender"
+                                                    id="gender-female"
+                                                    value="1"
+                                                />
+                                                <label
+                                                    class="form-check-label"
+                                                    for="gender-female"
+                                                >
+                                                    <i
+                                                        class="fas fa-female text-danger me-1"
+                                                    ></i>
+                                                    Nữ
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Risk Factors Section -->
+                                    <div class="col-12">
+                                        <div class="divider">
+                                            <span class="divider-text"
+                                                >Các yếu tố nguy cơ</span
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label"
+                                            >Ô nhiễm không khí (0-10)</label
                                         >
                                         <input
-                                            type="number"
-                                            name="Gender"
-                                            class="form-control"
-                                            min="0"
-                                            max="1"
-                                            value="0"
-                                            required
-                                        />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label"
-                                            >Ô nhiễm không khí</label
-                                        >
-                                        <input
-                                            type="number"
+                                            type="range"
                                             name="Air_Pollution"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="6"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">6</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Sử dụng rượu</label
+                                            >Sử dụng rượu (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Alcohol_use"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="4"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">4</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Nguy cơ nghề nghiệp</label
+                                            >Nguy cơ nghề nghiệp (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="OccuPational_Hazards"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="5"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">5</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Nguy cơ di truyền</label
+                                            >Nguy cơ di truyền (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Genetic_Risk"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="3"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">3</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Bệnh phổi mãn tính</label
+                                            >Bệnh phổi mãn tính (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="chronic_Lung_Disease"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="2"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">2</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Hút thuốc</label
+                                            >Hút thuốc (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Smoking"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="7"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">7</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <!-- Symptoms Section -->
+                                    <div class="col-12">
+                                        <div class="divider">
+                                            <span class="divider-text"
+                                                >Triệu chứng</span
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Hút thuốc thụ động</label
+                                            >Hút thuốc thụ động (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Passive_Smoker"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="5"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">5</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Đau ngực</label
+                                            >Đau ngực (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Chest_Pain"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="4"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">4</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Ho ra máu</label
+                                            >Ho ra máu (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Coughing_of_Blood"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="1"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">1</div>
                                     </div>
-                                    <div class="col-md-4">
+
+                                    <div class="col-md-6">
                                         <label class="form-label"
-                                            >Ngón tay dùi trống</label
+                                            >Ngón tay dùi trống (0-10)</label
                                         >
                                         <input
-                                            type="number"
+                                            type="range"
                                             name="Clubbing_of_Finger_Nails"
-                                            class="form-control"
                                             min="0"
                                             max="10"
                                             value="0"
-                                            required
+                                            class="form-range"
+                                            oninput="this.nextElementSibling.textContent = this.value"
                                         />
+                                        <div class="range-value">0</div>
                                     </div>
-                                </div>
-                                <div class="mt-4 text-center">
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary px-5"
-                                    >
-                                        Dự đoán
-                                    </button>
+
+                                    <!-- Submit Button -->
+                                    <div class="col-12 mt-4 text-center">
+                                        <div
+                                            class="d-grid gap-2 col-lg-6 mx-auto"
+                                        >
+                                            <button
+                                                type="submit"
+                                                class="btn btn-primary py-3"
+                                            >
+                                                <i
+                                                    class="fas fa-chart-line me-2"
+                                                ></i>
+                                                Phân tích kết quả
+                                            </button>
+                                            <button
+                                                type="reset"
+                                                class="btn btn-outline-secondary"
+                                            >
+                                                <i class="fas fa-redo me-2"></i>
+                                                Đặt lại
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    <p class="text-center text-muted mt-3 small">
-                        © 2025 Hệ thống hỗ trợ chẩn đoán y tế - Thông tin chỉ
-                        mang tính tham khảo
+
+                    <!-- Disclaimer -->
+                    <div
+                        class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-4"
+                    >
+                        <i class="fas fa-info-circle fs-4 me-3 text-info"></i>
+                        <div>
+                            <strong>Lưu ý quan trọng:</strong> Công cụ này chỉ
+                            giúp đánh giá nguy cơ dựa trên thông tin bạn cung
+                            cấp. Kết quả không phải là chẩn đoán y khoa chính
+                            thức. Vui lòng tham khảo ý kiến bác sĩ để được tư
+                            vấn chuyên sâu.
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted small">
+                        © 2025 SmartClinic.AI - Hệ thống hỗ trợ chẩn đoán y tế
+                        thông minh
                     </p>
                 </div>
             </div>
-        </div>
+        </main>
+
+        <!-- Nhúng footer mới -->
+        <!--#include file="../../..../static/utils/home/footer.html" -->
 
         <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Kiểm tra phân quyền khi trang tải
+
+                if (
+                    !window.AuthGuard.isAuthenticated() &&
+                    !window.AuthGuard.isDoctor() &&
+                    !window.AuthGuard.isAdmin()
+                ) {
+                    window.location.href =
+                        "/core/auth/login.html?redirect=" +
+                        encodeURIComponent(window.location.pathname) +
+                        "&unauthorized=true";
+                    return;
+                }
+            });
+
             const form = document.getElementById("lungForm");
             form.addEventListener("submit", async function (e) {
                 e.preventDefault();
@@ -218,17 +616,40 @@
                 });
 
                 try {
+                    // Lấy token nếu có
+                    const token = localStorage.getItem("accessToken");
+                    const headers = {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    };
+
+                    if (token) {
+                        headers["Authorization"] = `Bearer ${token}`;
+                    }
+
                     const response = await fetch(
                         "http://localhost:8000/predict/lung_cancer",
                         {
                             method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                Accept: "application/json",
-                            },
+                            headers: headers,
                             body: JSON.stringify(jsonData),
                         }
                     );
+
+                    if (!response.ok) {
+                        if (
+                            response.status === 401 ||
+                            response.status === 403
+                        ) {
+                            // Nếu lỗi xác thực hoặc không có quyền
+                            alert(
+                                "Bạn không có quyền sử dụng chức năng này hoặc phiên làm việc đã hết hạn."
+                            );
+                            window.location.href = "/core/auth/login.html";
+                            return;
+                        }
+                        throw new Error("Lỗi kết nối với máy chủ");
+                    }
 
                     const result = await response.json();
                     window.location.href = `lung_result.html?prediction=${
