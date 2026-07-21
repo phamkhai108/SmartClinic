@@ -1,10 +1,10 @@
 # Định nghĩa các Enum cho các trường phân loại
-from enum import Enum
+from enum import Enum, StrEnum
 
 from pydantic import BaseModel
 
 
-class SexEnum(str, Enum):
+class SexEnum(StrEnum):
     M = "M"
     F = "F"
 
@@ -14,7 +14,7 @@ class SexEnum(str, Enum):
         return mapping[self.value]
 
 
-class ChestPainTypeEnum(str, Enum):
+class ChestPainTypeEnum(StrEnum):
     TA = "TA"
     ATA = "ATA"
     NAP = "NAP"
@@ -26,7 +26,7 @@ class ChestPainTypeEnum(str, Enum):
         return mapping[self.value]
 
 
-class RestingECGEnum(str, Enum):
+class RestingECGEnum(StrEnum):
     Normal = "Normal"
     ST = "ST"
     LVH = "LVH"
@@ -37,7 +37,7 @@ class RestingECGEnum(str, Enum):
         return mapping[self.value]
 
 
-class ExerciseAnginaEnum(str, Enum):
+class ExerciseAnginaEnum(StrEnum):
     Y = "Y"
     N = "N"
 
@@ -47,7 +47,7 @@ class ExerciseAnginaEnum(str, Enum):
         return mapping[self.value]
 
 
-class STSlopeEnum(str, Enum):
+class STSlopeEnum(StrEnum):
     Up = "Up"
     Flat = "Flat"
     Down = "Down"

@@ -1,5 +1,8 @@
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
 
+from fastapi import APIRouter, Depends, HTTPException
+
+from smartclinic.api.deps_auth import CurrentUser, get_current_user
 from smartclinic.core.heart.heart_dto import (
     PredictHeartRequestDto,
     PredictResponseDto,
@@ -10,7 +13,10 @@ router = APIRouter()
 
 
 @router.post("/predict/heart_failure", tags=["Heart Failure Prediction"])
-def predict(data: PredictHeartRequestDto):
+def predict(
+    data: PredictHeartRequestDto,
+    _user: Annotated[CurrentUser, Depends(get_current_user)],
+):
     try:
         prediction = process_prediction(data)
         result = (
@@ -20,25 +26,7 @@ def predict(data: PredictHeartRequestDto):
             prediction=prediction,
             message=result,
         )
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-"""
-how to use:
-curl -X POST http://localhost:8000/predict/heart_failure \
-  -H "Content-Type: application/json" \
-  -d '{
-    "Age": 45,
-    "Sex": "M",
-    "ChestPainType": "ATA",
-    "RestingBP": 130,
-    "Cholesterol": 250,
-    "FastingBS": 0,
-    "RestingECG": "Normal",
-    "MaxHR": 160,
-    "ExerciseAngina": "N",
-    "Oldpeak": 1.5,
-    "ST_Slope": "Up"
-}'
-"""
+        raise HTTPException(status_code=500, detail=str(e)) from e

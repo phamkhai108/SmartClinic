@@ -1,13 +1,30 @@
+from pathlib import Path
+
 import joblib
 import numpy as np
 
+from smartclinic.common.errors import feature_unavailable_error
 from smartclinic.core.heart.heart_dto import PredictHeartRequestDto
 
-model_path = r"models/model_predict/heart_failure.pkl"
-loaded_model = joblib.load(model_path)
+_MODEL = None
+_MODEL_PATH = Path("models/model_predict/heart_failure.pkl")
+
+
+def _get_model():
+    global _MODEL
+    if _MODEL is not None:
+        return _MODEL
+    if not _MODEL_PATH.exists():
+        raise feature_unavailable_error(
+            "Heart failure model file is missing.",
+            code="MISSING_MODEL",
+        )
+    _MODEL = joblib.load(_MODEL_PATH)
+    return _MODEL
 
 
 def process_prediction(data: PredictHeartRequestDto):
+    loaded_model = _get_model()
     feature_vector = [
         data.Age,
         data.Sex.numeric,
