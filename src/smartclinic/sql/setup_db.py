@@ -1,3 +1,4 @@
+import logging
 import uuid
 from datetime import UTC, datetime
 
@@ -5,6 +6,9 @@ import bcrypt
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, String, Text, create_engine
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
+from smartclinic.common.base import get_settings
+
+logger = logging.getLogger("smartclinic")
 Base = declarative_base()
 
 
@@ -54,49 +58,31 @@ class ChatHistory(Base):
 
 
 def setup_db():
-    """Set up the database, create tables if they don't exist"""
-    import os
-
-    db_path = "example.db"
-
-    if os.path.exists(db_path):
-        print(f"Database {db_path} already exists, skipping creation.")
-        return None
-
-    print(f"Creating new database {db_path}...")
-    engine = create_engine(f"sqlite:///{db_path}")
+    settings = get_settings()
+    engine = create_engine(
+        settings.database_url,
+        connect_args={"check_same_thread": False}
+        if settings.database_url.startswith("sqlite")
+        else {},
+    )
     Base.metadata.create_all(engine)
-    print("Database tables created successfully.")
 
-    # Insert default admin
     SessionLocal = sessionmaker(bind=engine)
     session = SessionLocal()
-
-    existing_admin = session.query(User).filter_by(user_name="admin").first()
-    if not existing_admin:
-        admin = User(user_name="admin", email="admin@example.com", role="admin")
-        admin.set_password("admin")  # Hash password
-        session.add(admin)
-        print("Default admin user created.")
-    else:
-        print("Admin user already exists.")
-
-    # Add doctor
-    existing_doctor = session.query(User).filter_by(user_name="doctor").first()
-    if not existing_doctor:
-        doctor = User(user_name="doctor", email="doctor@gmail.com", role="doctor")
-        doctor.set_password("doctor")
-        session.add(doctor)
-        print("Default doctor user created.")
-    else:
-        print("Doctor user already exists.")
-
-    session.commit()
-    session.close()
+    try:
+        if session.query(User).count() == 0:
+            admin = User(user_name="admin", email="admin@example.com", role="admin")
+            admin.set_password("admin")
+            doctor = User(user_name="doctor", email="doctor@gmail.com", role="doctor")
+            doctor.set_password("doctor")
+            session.add_all([admin, doctor])
+            session.commit()
+            logger.info("Seeded default admin/doctor users.")
+    finally:
+        session.close()
 
     return engine
 
 
-# Phần này chỉ chạy khi file này được chạy trực tiếp
 if __name__ == "__main__":
     setup_db()

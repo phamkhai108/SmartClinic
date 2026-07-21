@@ -4,9 +4,9 @@ from pydantic import BaseModel
 
 
 class EmailResponseDTO(BaseModel):
-    email: str
-    code_verify: str
-    received_time: datetime = None
+    email: str | None = None
+    code_verify: str | None = None
+    received_time: datetime | None = None
 
 
 class EmailRequestDTO(BaseModel):

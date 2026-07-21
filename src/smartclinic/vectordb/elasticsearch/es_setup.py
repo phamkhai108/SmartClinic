@@ -1,16 +1,17 @@
+from __future__ import annotations
+
 from elasticsearch import Elasticsearch
+
+from smartclinic.vectordb.constants import CHUNKS_COLLECTION, VECTOR_DIMS, VECTOR_FIELD
 
 
 def create_chunk_index(client: Elasticsearch) -> None:
-    index_name = "chunks"
-    vector_dims = 384
-
-    mapping = {
+    mapping: dict = {
         "mappings": {
             "properties": {
                 "id_chunk": {"type": "keyword"},
                 "chunk_content": {"type": "text"},
-                "vector_content": {"type": "dense_vector", "dims": vector_dims},
+                VECTOR_FIELD: {"type": "dense_vector", "dims": VECTOR_DIMS},
                 "status": {"type": "keyword"},
                 "source": {"type": "keyword"},
                 "created_at": {"type": "date"},
@@ -18,6 +19,5 @@ def create_chunk_index(client: Elasticsearch) -> None:
             }
         }
     }
-
-    if not client.indices.exists(index=index_name):
-        client.indices.create(index=index_name, body=mapping)
+    if not client.indices.exists(index=CHUNKS_COLLECTION):
+        client.indices.create(index=CHUNKS_COLLECTION, body=mapping)
