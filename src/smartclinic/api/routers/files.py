@@ -1,69 +1,82 @@
-import os
+from __future__ import annotations
 
-from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+import os
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, File as UploadFileParam, HTTPException, Query, UploadFile
+from sqlalchemy.orm import Session
 
 from smartclinic.api.dependencies import (
+    get_chunk_repository,
     get_db,
-    get_elasticsearch_client,
     get_embedding_model,
 )
+from smartclinic.api.deps_auth import CurrentUser, require_roles
 from smartclinic.core.files.file_dto import FileResponseDTO
-from smartclinic.core.files.file_service import UploadFileNProcessChunk
-from smartclinic.vectordb.elasticsearch.es_service import Chunker
+from smartclinic.core.files.file_service import FileService
+from smartclinic.core.ingestion.ingest_constants import ALLOWED_EXTENSIONS
+from smartclinic.core.ingestion.ingest_controller import ingest_upload_controller
+from smartclinic.core.ingestion.ingest_dto import IngestFileResponseDTO
+from smartclinic.core.llm.llm_service import LLMModel
+from smartclinic.sql.setup_db import File as FileEntity
+from smartclinic.vectordb.protocols import ChunkRepository
 
 UPLOAD_DIR = "./uploaded_files"
-
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 router = APIRouter(prefix="/files", tags=["File Management"])
 
 
-es_client = get_elasticsearch_client()
-embeding_model = get_embedding_model()
-db_session = get_db()
-chunker = Chunker(es_client)
-file_service = UploadFileNProcessChunk(chunker, embeding_model, db_session)
-
-
-@router.post("/upload_flow")
-async def upload_file(user_id: str, file: UploadFile = File(...)) -> FileResponseDTO:
-    if file.filename.lower().endswith((".pdf", ".docx")):
-        try:
-            file_obj = await file_service.process_and_store_file(file, user_id=user_id)
-
-            return FileResponseDTO(
-                id=file_obj.id,
-                user_id=file_obj.user_id,
-                status="success",
-                file_name=file_obj.file_name,
-                created_at=file_obj.created_at,
-            )
-        except Exception as e:
-            raise HTTPException(
-                status_code=500, detail=f"Error processing file: {str(e)}"
-            )
-    else:
-        raise HTTPException(status_code=400, detail="File must be PDF or DOCX")
+@router.post("/upload_flow", response_model=IngestFileResponseDTO)
+async def upload_file(
+    user_id: str,
+    _admin: Annotated[CurrentUser, Depends(require_roles("admin"))],
+    db: Annotated[Session, Depends(get_db)],
+    repository: Annotated[ChunkRepository, Depends(get_chunk_repository)],
+    embedding_model: Annotated[LLMModel, Depends(get_embedding_model)],
+    file: UploadFile = UploadFileParam(...),
+) -> IngestFileResponseDTO:
+    return await ingest_upload_controller(
+        upload=file,
+        user_id=user_id,
+        repository=repository,
+        embedding_model=embedding_model,
+        db=db,
+    )
 
 
 @router.get("/get_info_files", response_model=list[FileResponseDTO])
-def list_files_by_user(user_id: str = Query(..., description='User ID or "all"')):
+def list_files_by_user(
+    _admin: Annotated[CurrentUser, Depends(require_roles("admin"))],
+    db: Annotated[Session, Depends(get_db)],
+    user_id: str = Query(..., description='User ID or "all"'),
+) -> list[FileEntity]:
     try:
-        files = file_service.list_files_by_user(user_id)
-        return files
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        if user_id == "all":
+            return db.query(FileEntity).all()
+        return db.query(FileEntity).filter(FileEntity.user_id == user_id).all()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
 @router.delete("/delete_file/{file_name}")
-async def delete_file(file_name: str) -> dict:
+async def delete_file(
+    file_name: str,
+    _admin: Annotated[CurrentUser, Depends(require_roles("admin"))],
+    db: Annotated[Session, Depends(get_db)],
+    repository: Annotated[ChunkRepository, Depends(get_chunk_repository)],
+) -> dict[str, str]:
     try:
-        file_service.delete_file_by_filename(file_name)
+        FileService(db, repository).delete_file_by_filename(file_name)
         return {
             "detail": f"File {file_name} deleted successfully.",
             "status": "success",
         }
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting file: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+def allowed_upload_extensions() -> frozenset[str]:
+    return ALLOWED_EXTENSIONS
