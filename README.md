@@ -2,9 +2,9 @@
 
 **AI-assisted clinical decision support** for care teams — faster risk screening and instant answers from your clinic’s own documents.
 
-[![Python](https://img.shields.io/badge/Python-%E2%89%A53.11-3776AB)](https://www.python.org/)
-[![Vue 3](https://img.shields.io/badge/UI-Vue%203-42b883)](https://vuejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Vue 3](https://img.shields.io/badge/Vue-3-42B883?logo=vuedotjs&logoColor=white)](https://vuejs.org/)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue?logo=apache&logoColor=white)](LICENSE)
 
 > Outputs are **assistive only**. Final clinical decisions remain with licensed professionals.
 
@@ -33,10 +33,10 @@
 
 ## Quick start
 
-1. Install [uv](https://github.com/astral-sh/uv), Python ≥ 3.11, and Node.js ≥ 20  
-2. Follow **[Backend setup](doc/setup.md)** (`.env` + start the API)  
-3. Follow **[Frontend setup](frontend/doc/setup.md)**  
-4. Open http://localhost:5173 and sign in  
+1. Install [uv](https://github.com/astral-sh/uv), Python ≥ 3.11, and Node.js ≥ 20
+2. Follow **[Backend setup](doc/setup.md)** (`.env` + start the API)
+3. Follow **[Frontend setup](frontend/doc/setup.md)**
+4. Open http://localhost:5173 and sign in
 
 **Demo accounts** (created only when the database is empty):
 
@@ -61,6 +61,6 @@ Change these passwords before any shared or production use.
 
 ## License
 
-[MIT License](LICENSE) — © 2025 phamkhai108
+[Apache 2.0 License](LICENSE) — © 2025 phamkhai108
 
 *SmartClinic supports diagnosis — it does not replace a physician.*
