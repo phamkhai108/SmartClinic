@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import random
 import smtplib
@@ -69,7 +71,7 @@ class EmailService:
             </div>
         </body>
         </html>
-        """  # noqa: E501
+        """
 
         # Tạo một phần MIME có chứa nội dung HTML
         part1 = MIMEText(html, "html")

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from smartclinic.common.base import Settings, get_settings
 
-__all__ = ["Settings", "get_settings", "AppConfig"]
+__all__ = ["AppConfig", "Settings", "get_settings"]
 
 
 def __getattr__(name: str):

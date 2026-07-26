@@ -26,6 +26,24 @@ from smartclinic.sql.setup_db import setup_db
 logger = logging.getLogger("smartclinic")
 
 
+def configure_logging() -> None:
+    """Ensure app loggers emit INFO+ (uvicorn access alone hides chat/SSE internals)."""
+    root = logging.getLogger()
+    if not root.handlers:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+            datefmt="%H:%M:%S",
+        )
+    else:
+        root.setLevel(logging.INFO)
+
+    logging.getLogger("smartclinic").setLevel(logging.INFO)
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("openai").setLevel(logging.WARNING)
+
+
 def _setup_vector_backend() -> None:
     settings = get_settings()
     if settings.vector_backend == "elasticsearch":
@@ -57,8 +75,14 @@ def _setup_vector_backend() -> None:
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    configure_logging()
+    logger.info(
+        "SmartClinic API starting (vector_backend=%s)",
+        get_settings().vector_backend,
+    )
     setup_db()
     _setup_vector_backend()
+    logger.info("SmartClinic API startup complete")
     yield
 
 

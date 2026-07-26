@@ -6,10 +6,22 @@ import type { MessageSchema } from '@/i18n/locales/vi'
 export function useValidationSchemas() {
   const { t, locale } = useI18n<{ message: MessageSchema }>()
 
+  const numberField = () =>
+    z.number({
+      error: (issue) => (issue.input === undefined ? t('validation.required') : t('validation.number')),
+    })
+
+  const requiredEmail = () =>
+    z
+      .string()
+      .trim()
+      .min(1, t('validation.required'))
+      .pipe(z.email({ error: t('validation.email') }))
+
   const loginSchema = computed(() => {
     void locale.value
     return z.object({
-      email: z.string().trim().min(1, t('validation.required')).email(t('validation.email')),
+      email: requiredEmail(),
       password: z.string().min(1, t('validation.required')).min(4, t('validation.minPassword', { min: 4 })),
     })
   })
@@ -18,7 +30,7 @@ export function useValidationSchemas() {
     void locale.value
     return z.object({
       user_name: z.string().trim().min(1, t('validation.required')).min(2, t('validation.minUserName', { min: 2 })),
-      email: z.string().trim().min(1, t('validation.required')).email(t('validation.email')),
+      email: requiredEmail(),
       password: z.string().min(1, t('validation.required')).min(4, t('validation.minPassword', { min: 4 })),
     })
   })
@@ -37,7 +49,7 @@ export function useValidationSchemas() {
 
   const heartSchema = computed(() => {
     void locale.value
-    const num = z.number({ invalid_type_error: t('validation.number') })
+    const num = numberField()
     return z.object({
       Age: num.min(1, t('validation.min', { min: 1 })).max(120, t('validation.max', { max: 120 })),
       Sex: z.enum(['M', 'F']),
@@ -55,12 +67,11 @@ export function useValidationSchemas() {
 
   const lungSchema = computed(() => {
     void locale.value
-    const scale = z
-      .number({ invalid_type_error: t('validation.number') })
+    const scale = numberField()
       .min(0, t('validation.min', { min: 0 }))
       .max(10, t('validation.max', { max: 10 }))
     return z.object({
-      Age: z.number({ invalid_type_error: t('validation.number') }).min(0).max(120),
+      Age: numberField().min(0).max(120),
       Gender: z.number().min(0).max(1),
       Air_Pollution: scale,
       Alcohol_use: scale,
@@ -77,7 +88,7 @@ export function useValidationSchemas() {
 
   const breastSchema = computed(() => {
     void locale.value
-    const n = z.number({ invalid_type_error: t('validation.number') })
+    const n = numberField()
     return z.object({
       radius_mean: n,
       texture_mean: n,

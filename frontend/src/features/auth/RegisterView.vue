@@ -22,7 +22,11 @@ const schema = computed(() => {
       .trim()
       .min(1, t('validation.required'))
       .min(2, t('validation.minUserName', { min: 2 })),
-    email: z.string().trim().min(1, t('validation.required')).email(t('validation.email')),
+    email: z
+      .string()
+      .trim()
+      .min(1, t('validation.required'))
+      .pipe(z.email({ error: t('validation.email') })),
     password: z
       .string()
       .min(1, t('validation.required'))

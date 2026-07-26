@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import logging
 from datetime import datetime
 from typing import Annotated
 
@@ -18,6 +21,8 @@ from smartclinic.core.chat.chat_service import (
 )
 from smartclinic.core.chat_history.chat_history_service import HistoryService
 
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/chat_all", tags=["API Chat"])
 
 
@@ -37,6 +42,11 @@ async def chat_endpoint(
         )
 
     ensure_llm_config()
+    logger.info(
+        "chat.http_accept session=%s user=%s (SSE 200 starts before stream finishes)",
+        payload.session_id,
+        payload.user_id,
+    )
 
     async def event_stream():
         # Own session for stream lifetime (FastAPI <0.118 closes Depends before SSE ends).
@@ -44,7 +54,21 @@ async def chat_endpoint(
         try:
             history_service = HistoryService(db)
             async for event in stream_agent_chat(payload, history_service):
+                event_type = event.get("type")
+                if event_type in {"error", "done"}:
+                    logger.info(
+                        "chat.sse_event type=%s session=%s",
+                        event_type,
+                        payload.session_id,
+                    )
                 yield format_sse(event)
+        except Exception:
+            logger.exception(
+                "chat.stream_aborted session=%s user=%s",
+                payload.session_id,
+                payload.user_id,
+            )
+            raise
         finally:
             db.close()
 

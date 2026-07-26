@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class SessionInfo(BaseModel):
@@ -10,6 +12,8 @@ class SessionInfo(BaseModel):
 
 
 class ChatMessageSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     session_id: str
     user_id: str
@@ -17,6 +21,3 @@ class ChatMessageSchema(BaseModel):
     message: str
     sender: str
     timestamp: datetime
-
-    class Config:
-        orm_mode = True

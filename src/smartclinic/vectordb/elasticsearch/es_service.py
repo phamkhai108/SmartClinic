@@ -60,10 +60,7 @@ class ElasticsearchChunkRepository:
             "_source": list(OUTPUT_FIELDS),
         }
         response = self._client.search(index=self._index, body=body)
-        hits = [
-            ChunkResponseDTO(**hit["_source"])
-            for hit in response["hits"]["hits"]
-        ]
+        hits = [ChunkResponseDTO(**hit["_source"]) for hit in response["hits"]["hits"]]
         total = response["hits"]["total"]["value"]
         return SearchResultDTO(total=int(total), hits=hits)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Annotated
 
 import jwt
@@ -27,7 +29,11 @@ def get_current_user(
     if credentials is None or not credentials.credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "UNAUTHORIZED", "message": "Missing bearer token.", "keys": []},
+            detail={
+                "code": "UNAUTHORIZED",
+                "message": "Missing bearer token.",
+                "keys": [],
+            },
         )
     try:
         payload = jwt.decode(
@@ -38,14 +44,22 @@ def get_current_user(
     except jwt.PyJWTError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "UNAUTHORIZED", "message": "Invalid or expired token.", "keys": []},
+            detail={
+                "code": "UNAUTHORIZED",
+                "message": "Invalid or expired token.",
+                "keys": [],
+            },
         ) from exc
 
     user_id = payload.get("user_id")
     if not user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"code": "UNAUTHORIZED", "message": "Invalid token payload.", "keys": []},
+            detail={
+                "code": "UNAUTHORIZED",
+                "message": "Invalid token payload.",
+                "keys": [],
+            },
         )
 
     user = db.query(User).filter_by(id=user_id).first()

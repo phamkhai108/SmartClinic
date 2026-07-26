@@ -36,8 +36,8 @@ class AgentRunContext:
 def ensure_llm_config() -> None:
     settings = get_settings()
     missing: list[str] = []
-    if not settings.openai_api_url:
-        missing.append("SMARTCLINIC_OPENAI_API_URL")
+    if not settings.resolved_llm_api_url:
+        missing.append("SMARTCLINIC_LLM_API_URL")
     if not settings.model_llm_id:
         missing.append("SMARTCLINIC_MODEL_LLM_ID")
     if missing:
@@ -50,15 +50,15 @@ def resolve_optional_search_deps() -> tuple[ChunkRepository | None, LLMModel | N
         return None, None
     if settings.vector_backend == "milvus" and not settings.milvus_uri:
         return None, None
-    if not settings.openai_api_url or not settings.model_embed_id:
+    if not settings.resolved_embed_api_url or not settings.model_embed_id:
         logger.info("Document search disabled: embedding config incomplete.")
         return None, None
 
     try:
         repository = build_chunk_repository(settings)
         embedding_model = LLMModel(
-            openai_api_url=settings.openai_api_url,
-            openai_api_key=settings.openai_api_key,
+            openai_api_url=settings.resolved_embed_api_url,
+            openai_api_key=settings.resolved_embed_api_key,
             model_id=settings.model_embed_id,
         )
         return repository, embedding_model
@@ -144,7 +144,7 @@ def _persist_turn(
     )
 
     new_choice = choiceMessage(
-        messages=list(user_messages) + [bot_reply],
+        messages=[*list(user_messages), bot_reply],
         message_id=str(uuid.uuid4()),
         time_at=datetime.now(),
         finish_reason="stop",
@@ -160,6 +160,20 @@ async def stream_agent_chat(
     settings = get_settings()
     run_context = AgentRunContext()
     repository, embedding_model = resolve_optional_search_deps()
+    rag_enabled = repository is not None and embedding_model is not None
+
+    user_preview = ""
+    if payload.messages:
+        user_preview = (payload.messages[-1].content or "")[:120]
+
+    logger.info(
+        "chat.start session=%s user=%s rag=%s llm=%s preview=%r",
+        payload.session_id,
+        payload.user_id,
+        rag_enabled,
+        settings.model_llm_id,
+        user_preview,
+    )
 
     agent = build_chat_agent(
         settings=settings,
@@ -173,6 +187,7 @@ async def stream_agent_chat(
 
     assembled: list[str] = []
     refs_sent = False
+    token_events = 0
 
     try:
         async for item in agent.astream(
@@ -183,13 +198,25 @@ async def stream_agent_chat(
             text = _chunk_text(message_chunk)
             if text:
                 assembled.append(text)
+                token_events += 1
                 yield {"type": "token", "content": text}
 
             if run_context.sources and not refs_sent:
                 refs_sent = True
+                logger.info(
+                    "chat.references session=%s sources=%s",
+                    payload.session_id,
+                    run_context.sources,
+                )
                 yield {"type": "references", "references": list(run_context.sources)}
 
     except Exception as exc:
+        logger.exception(
+            "chat.error session=%s user=%s: %s",
+            payload.session_id,
+            payload.user_id,
+            exc,
+        )
         yield {
             "type": "error",
             "code": "AGENT_ERROR",
@@ -198,14 +225,32 @@ async def stream_agent_chat(
         return
 
     if run_context.sources and not refs_sent:
+        logger.info(
+            "chat.references session=%s sources=%s",
+            payload.session_id,
+            run_context.sources,
+        )
         yield {"type": "references", "references": list(run_context.sources)}
 
     raw = "".join(assembled)
     bot_content = clean_think_block(raw) or raw
     if not bot_content.strip():
+        logger.warning(
+            "chat.empty_reply session=%s tokens=%s — using fallback message",
+            payload.session_id,
+            token_events,
+        )
         bot_content = "Xin lỗi, tôi chưa tạo được phản hồi. Vui lòng thử lại."
 
     choice = _persist_turn(payload, bot_content, history_service)
+    logger.info(
+        "chat.done session=%s message_id=%s tokens=%s chars=%s sources=%s",
+        payload.session_id,
+        choice.message_id,
+        token_events,
+        len(bot_content),
+        run_context.sources or [],
+    )
     yield {
         "type": "done",
         "message_id": choice.message_id,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 SYSTEM_PROMPT = """
 You are SmartClinic.AI, a medical assistant for clinical staff.
 

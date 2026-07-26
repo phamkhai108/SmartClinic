@@ -23,6 +23,7 @@ dist/
 .env
 !.env.example
 
-# Frontend
-frontend/node_modules/
-frontend/dist/
+# Uploaded documents (persisted by file_id)
+uploaded_files/
+!uploaded_files/.gitkeep
+

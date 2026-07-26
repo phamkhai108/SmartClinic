@@ -1,5 +1,7 @@
 # Định nghĩa các Enum cho các trường phân loại
-from enum import Enum, StrEnum
+from __future__ import annotations
+
+from enum import StrEnum
 
 from pydantic import BaseModel
 
