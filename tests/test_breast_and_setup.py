@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import pytest
@@ -6,10 +8,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from smartclinic.common.base import get_settings
-from smartclinic.core.breast_cancer.breast_dto import PredictBreastRequest
 from smartclinic.core.breast_cancer import breast_service
-from smartclinic.sql.setup_db import Base, User, setup_db
-
+from smartclinic.core.breast_cancer.breast_dto import PredictBreastRequest
+from smartclinic.sql.setup_db import User, setup_db
 
 SAMPLE = {
     "radius_mean": 17.99,
