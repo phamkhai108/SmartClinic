@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 from fastapi import HTTPException
 
@@ -26,10 +28,12 @@ def test_missing_es_raises_503(monkeypatch):
 def test_missing_llm_lists_keys(monkeypatch):
     monkeypatch.setenv("SMARTCLINIC_DATABASE_URL", "sqlite:///./example.db")
     monkeypatch.setenv("SMARTCLINIC_JWT_SECRET", "test-secret-key-16")
+    monkeypatch.setenv("SMARTCLINIC_LLM_API_URL", "")
+    monkeypatch.setenv("SMARTCLINIC_LLM_API_KEY", "")
+    monkeypatch.setenv("SMARTCLINIC_MODEL_LLM_ID", "")
     monkeypatch.setenv("SMARTCLINIC_OPENAI_API_URL", "")
     monkeypatch.setenv("SMARTCLINIC_OPENAI_API_KEY", "")
-    monkeypatch.setenv("SMARTCLINIC_MODEL_LLM_ID", "")
     get_settings.cache_clear()
     with pytest.raises(HTTPException) as exc:
         require_llm_config()
-    assert "SMARTCLINIC_OPENAI_API_URL" in exc.value.detail["keys"]
+    assert "SMARTCLINIC_LLM_API_URL" in exc.value.detail["keys"]

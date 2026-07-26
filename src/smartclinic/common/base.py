@@ -27,10 +27,20 @@ class Settings(BaseSettings):
     es_host: str | None = None
     milvus_uri: str | None = None
     milvus_token: str | None = None
+
+    # Chat / LLM (OpenAI-compatible)
+    llm_api_url: str | None = None
+    llm_api_key: str | None = None
+    model_llm_id: str | None = None
+
+    # Embedding (OpenAI-compatible; can be a different host/model)
+    embed_api_url: str | None = None
+    embed_api_key: str | None = None
+    model_embed_id: str | None = None
+
+    # Deprecated shared endpoint — fallback if llm_* / embed_* unset
     openai_api_url: str | None = None
     openai_api_key: str | None = None
-    model_llm_id: str | None = None
-    model_embed_id: str | None = None
 
     @field_validator(
         "sender_email",
@@ -38,10 +48,14 @@ class Settings(BaseSettings):
         "es_host",
         "milvus_uri",
         "milvus_token",
+        "llm_api_url",
+        "llm_api_key",
+        "model_llm_id",
+        "embed_api_url",
+        "embed_api_key",
+        "model_embed_id",
         "openai_api_url",
         "openai_api_key",
-        "model_llm_id",
-        "model_embed_id",
         mode="before",
     )
     @classmethod
@@ -60,6 +74,22 @@ class Settings(BaseSettings):
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @property
+    def resolved_llm_api_url(self) -> str | None:
+        return self.llm_api_url or self.openai_api_url
+
+    @property
+    def resolved_llm_api_key(self) -> str | None:
+        return self.llm_api_key or self.openai_api_key
+
+    @property
+    def resolved_embed_api_url(self) -> str | None:
+        return self.embed_api_url or self.openai_api_url
+
+    @property
+    def resolved_embed_api_key(self) -> str | None:
+        return self.embed_api_key or self.openai_api_key
 
 
 @lru_cache

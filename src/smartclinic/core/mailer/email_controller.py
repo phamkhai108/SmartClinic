@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from smartclinic.core.mailer import EmailResponseDTO, EmailService
 
 

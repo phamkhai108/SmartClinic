@@ -3,7 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { NButton, NCard, NFormItem, NSelect, NUpload, NUploadDragger, type UploadFileInfo, useMessage } from 'naive-ui'
-import { listUsers, uploadFile } from '@/api/admin'
+import { listUsers, uploadFile, waitForFileTerminalStatus } from '@/api/admin'
 import { extractApiError } from '@/api/http'
 import { useAuthStore } from '@/stores/auth'
 import type { UserDTO } from '@/shared/types/api'
@@ -18,6 +18,7 @@ const users = ref<UserDTO[]>([])
 const file = ref<File | null>(null)
 const fileError = ref<string | null>(null)
 const loading = ref(false)
+const processingHint = ref<string | null>(null)
 
 const { handleSubmit, defineField, errors, isSubmitting } = useForm({
   validationSchema: computed(() => toTypedSchema(uploadMetaSchema.value)),
@@ -53,13 +54,23 @@ const onSubmit = handleSubmit(async (values) => {
     return
   }
   loading.value = true
+  processingHint.value = null
   try {
-    const res = await uploadFile(values.userId, file.value)
-    message.success(t('admin.uploaded', { name: res.file_name }))
+    const accepted = await uploadFile(values.userId, file.value)
+    processingHint.value = t('admin.processing', { name: accepted.file_name })
+    message.info(t('admin.accepted', { name: accepted.file_name }))
+
+    const final = await waitForFileTerminalStatus(accepted.id)
+    if (final.status === 'success') {
+      message.success(t('admin.uploaded', { name: final.file_name }))
+    } else {
+      message.error(t('admin.processFailed', { name: final.file_name }))
+    }
   } catch (e) {
     message.error(extractApiError(e))
   } finally {
     loading.value = false
+    processingHint.value = null
   }
 })
 
@@ -89,6 +100,7 @@ onMounted(loadUsers)
           </NUploadDragger>
         </NUpload>
       </NFormItem>
+      <p v-if="processingHint" class="mb-3 text-sm text-slate-600">{{ processingHint }}</p>
       <NButton type="primary" attr-type="submit" :loading="isSubmitting || loading">{{ t('admin.uploadAction') }}</NButton>
     </form>
   </NCard>

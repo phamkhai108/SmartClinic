@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -20,7 +22,11 @@ def get_chat_sessions(
     if user_id != user.id and user.role != "admin":
         raise HTTPException(
             status_code=403,
-            detail={"code": "FORBIDDEN", "message": "Cannot view another user's sessions.", "keys": []},
+            detail={
+                "code": "FORBIDDEN",
+                "message": "Cannot view another user's sessions.",
+                "keys": [],
+            },
         )
     service = HistoryService(db)
     sessions = service.get_user_sessions(user_id)
@@ -44,6 +50,10 @@ def get_chat_history(
     if user.role != "admin" and any(m.user_id != user.id for m in messages):
         raise HTTPException(
             status_code=403,
-            detail={"code": "FORBIDDEN", "message": "Cannot view another user's chat.", "keys": []},
+            detail={
+                "code": "FORBIDDEN",
+                "message": "Cannot view another user's chat.",
+                "keys": [],
+            },
         )
     return messages

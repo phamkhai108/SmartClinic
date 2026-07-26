@@ -17,8 +17,8 @@ from smartclinic.vectordb.protocols import ChunkRepository
 
 def build_chat_model(settings: Settings) -> ChatOpenAI:
     return ChatOpenAI(
-        base_url=settings.openai_api_url,
-        api_key=settings.openai_api_key or "unused",
+        base_url=settings.resolved_llm_api_url,
+        api_key=settings.resolved_llm_api_key or "unused",
         model=settings.model_llm_id,
         temperature=0.2,
         streaming=True,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from fastapi import HTTPException, status
 
 
@@ -12,7 +14,9 @@ def missing_config_error(keys: list[str]) -> HTTPException:
     )
 
 
-def feature_unavailable_error(message: str, code: str = "FEATURE_UNAVAILABLE") -> HTTPException:
+def feature_unavailable_error(
+    message: str, code: str = "FEATURE_UNAVAILABLE"
+) -> HTTPException:
     return HTTPException(
         status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
         detail={"code": code, "message": message, "keys": []},

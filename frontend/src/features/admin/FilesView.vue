@@ -39,7 +39,7 @@ const columns = computed<DataTableColumns<FileInfo>>(() => [
               negativeText: t('common.cancel'),
               onPositiveClick: async () => {
                 try {
-                  await deleteFile(row.file_name)
+                  await deleteFile(row.id)
                   message.success(t('admin.deleted'))
                   await load()
                 } catch (e) {

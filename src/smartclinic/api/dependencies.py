@@ -74,10 +74,10 @@ def require_es_config() -> None:
 def require_llm_config() -> None:
     s = get_settings()
     missing: list[str] = []
-    if not s.openai_api_url:
-        missing.append("SMARTCLINIC_OPENAI_API_URL")
-    if not s.openai_api_key:
-        missing.append("SMARTCLINIC_OPENAI_API_KEY")
+    if not s.resolved_llm_api_url:
+        missing.append("SMARTCLINIC_LLM_API_URL")
+    if not s.resolved_llm_api_key:
+        missing.append("SMARTCLINIC_LLM_API_KEY")
     if not s.model_llm_id:
         missing.append("SMARTCLINIC_MODEL_LLM_ID")
     if missing:
@@ -87,10 +87,10 @@ def require_llm_config() -> None:
 def require_embed_config() -> None:
     s = get_settings()
     missing: list[str] = []
-    if not s.openai_api_url:
-        missing.append("SMARTCLINIC_OPENAI_API_URL")
-    if not s.openai_api_key:
-        missing.append("SMARTCLINIC_OPENAI_API_KEY")
+    if not s.resolved_embed_api_url:
+        missing.append("SMARTCLINIC_EMBED_API_URL")
+    if not s.resolved_embed_api_key:
+        missing.append("SMARTCLINIC_EMBED_API_KEY")
     if not s.model_embed_id:
         missing.append("SMARTCLINIC_MODEL_EMBED_ID")
     if missing:
@@ -128,8 +128,8 @@ def get_embedding_model() -> LLMModel:
     require_embed_config()
     s = get_settings()
     return LLMModel(
-        openai_api_url=s.openai_api_url,
-        openai_api_key=s.openai_api_key,
+        openai_api_url=s.resolved_embed_api_url,
+        openai_api_key=s.resolved_embed_api_key,
         model_id=s.model_embed_id,
     )
 
@@ -138,8 +138,8 @@ def get_llm_model() -> LLMModel:
     require_llm_config()
     s = get_settings()
     return LLMModel(
-        openai_api_url=s.openai_api_url,
-        openai_api_key=s.openai_api_key,
+        openai_api_url=s.resolved_llm_api_url,
+        openai_api_key=s.resolved_llm_api_key,
         model_id=s.model_llm_id,
     )
 
