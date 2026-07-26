@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from openai import OpenAI
 
 
@@ -12,11 +14,34 @@ class LLMModel:
         )
 
     def embed(self, item: str) -> list[float]:
-        result = self.client.embeddings.create(
-            model=self.model_id,
-            input=item,
-        )
-        return result.data[0].embedding
+        return self.embed_many([item])[0]
+
+    def embed_many(self, items: list[str], batch_size: int = 32) -> list[list[float]]:
+        if not items:
+            return []
+        vectors: list[list[float]] = []
+        for start in range(0, len(items), batch_size):
+            batch = items[start : start + batch_size]
+            try:
+                result = self.client.embeddings.create(
+                    model=self.model_id,
+                    input=batch,
+                )
+                ordered = sorted(result.data, key=lambda row: row.index)
+                vectors.extend(list(row.embedding) for row in ordered)
+            except Exception:
+                # Some local OpenAI-compatible servers reject list input.
+                for text in batch:
+                    result = self.client.embeddings.create(
+                        model=self.model_id,
+                        input=text,
+                    )
+                    vectors.append(list(result.data[0].embedding))
+        if len(vectors) != len(items):
+            raise RuntimeError(
+                f"Embedding count mismatch: got {len(vectors)}, expected {len(items)}"
+            )
+        return vectors
 
     def chat(self, messages: list[dict]) -> str:
         completion = self.client.chat.completions.create(
@@ -24,15 +49,3 @@ class LLMModel:
             messages=messages,
         )
         return completion.choices[0].message.content
-
-
-# ollama_nomic = LLMModel(
-#     openai_api_url="http://localhost:11434/v1",
-#     openai_api_key="111",
-#     model_id="karuniaperjuangan/multilingual-e5-small:latest",
-# )
-# ollama_bge = LLMModel(
-#     openai_api_url="http://localhost:11434/v1",
-#     openai_api_key="111",
-#     model_id="yxchia/multilingual-e5-base:Q8_0",
-# )

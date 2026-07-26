@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
@@ -12,7 +14,7 @@ router = APIRouter(tags=["Brain"], prefix="/brain")
 @router.post("/predict_tumor", response_model=PredictBrainResponse)
 async def predict(
     _user: Annotated[CurrentUser, Depends(require_roles("doctor", "admin"))],
-    file: UploadFile = File(...),
+    file: Annotated[UploadFile, File()],
 ):
     if not file.filename or not file.filename.lower().endswith((".jpg", ".jpeg", ".png")):
         raise HTTPException(

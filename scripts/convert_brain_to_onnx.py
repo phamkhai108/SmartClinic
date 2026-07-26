@@ -26,7 +26,7 @@ def main() -> int:
         return 1
 
     try:
-        import tensorflow as tf  # noqa: F401
+        import tensorflow as tf
         import tf2onnx
         from tensorflow.keras.models import load_model
     except ImportError as exc:

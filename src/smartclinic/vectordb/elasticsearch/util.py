@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sklearn.metrics.pairwise import cosine_similarity
 
 from smartclinic.core.llm.llm_service import ollama_bge, ollama_nomic
