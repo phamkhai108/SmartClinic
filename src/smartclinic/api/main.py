@@ -94,9 +94,15 @@ app = FastAPI(
 )
 
 settings = get_settings()
+_cors_origins = settings.cors_origin_list
+if not _cors_origins:
+    logger.warning(
+        "SMARTCLINIC_CORS_ORIGINS empty; defaulting to localhost frontend origins."
+    )
+    _cors_origins = ["http://localhost:5173", "http://localhost:5000"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origin_list or ["*"],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
