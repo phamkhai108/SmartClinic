@@ -12,7 +12,6 @@ dependencies = [
     "docling>=2.114.0",
     "elasticsearch>=8.17.2",
     "fastapi[standard]>=0.115.11",
-    "just>=0.8.162",
     "langchain>=1.0.0",
     "langchain-openai>=1.0.0",
     "numpy>=2.2.4",
@@ -26,6 +25,9 @@ dependencies = [
     "pymupdf>=1.25.5",
     "scikit-learn>=1.6.1",
     "sqlalchemy>=2.0.40",
+    # Direct pins so [tool.uv.sources] applies (uv ignores sources for transitive deps).
+    "torch>=2.2.2",
+    "torchvision>=0.17.0",
     "uvicorn[standard]>=0.34.0",
 ]
 
@@ -37,6 +39,47 @@ build-backend = "hatchling.build"
 dev = [
     "pre-commit>=4.2.0",
     "pytest>=8.3.5",
+    "pytest-cov>=7.1.0",
     "pytest-mock>=3.14.0",
     "ruff>=0.11.2",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+    "--cov=smartclinic",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:htmlcov",
+]
+
+[tool.coverage.run]
+source = ["smartclinic"]
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+precision = 1
+show_missing = true
+skip_empty = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+title = "SmartClinic coverage"
+
+# Docling layout/table models need torch; pin CPU wheels to avoid CUDA/NVIDIA deps.
+# torch/torchvision must be direct deps: uv does not apply sources to transitive deps.
+# https://docling-project.github.io/docling/getting_started/installation/
+# https://docs.astral.sh/uv/guides/integration/pytorch/
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
