@@ -6,7 +6,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 
 from smartclinic.common.base import Settings
-from smartclinic.core.chat.chat_contants import SYSTEM_PROMPT, SYSTEM_PROMPT_NO_SEARCH
+from smartclinic.core.chat.chat_constants import SYSTEM_PROMPT, SYSTEM_PROMPT_NO_SEARCH
 from smartclinic.core.chat.tools.search_documents import (
     SearchRunContext,
     build_search_documents_tool,
