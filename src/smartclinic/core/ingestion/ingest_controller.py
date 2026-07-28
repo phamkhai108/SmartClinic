@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import cast
 
 from fastapi import BackgroundTasks, HTTPException, UploadFile
@@ -15,7 +16,10 @@ from smartclinic.core.ingestion.ingest_service import (
     run_ingest_job,
 )
 from smartclinic.core.llm.llm_service import LLMModel
+from smartclinic.sql.setup_db import User
 from smartclinic.vectordb.protocols import ChunkRepository
+
+logger = logging.getLogger(__name__)
 
 
 def build_ingest_service(
@@ -55,6 +59,10 @@ async def ingest_upload_controller(
     db: Session,
     background_tasks: BackgroundTasks,
 ) -> IngestFileResponseDTO:
+    owner = db.query(User).filter_by(id=user_id).first()
+    if not owner:
+        raise HTTPException(status_code=404, detail="User not found.")
+
     filename = upload.filename or ""
     extension = IngestService.extension_of(filename)
     if extension not in ALLOWED_EXTENSIONS:
@@ -69,18 +77,23 @@ async def ingest_upload_controller(
     if not content:
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
-    # repository / embedding_model validated by Depends before this runs;
-    # accept_upload itself only needs DB + disk.
     service = build_ingest_service(repository, embedding_model, db)
     try:
         file_row = service.accept_upload(content, filename, user_id)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except Exception as exc:
+        logger.exception("Error accepting upload for user_id=%s", user_id)
         raise HTTPException(
             status_code=500,
             detail=f"Error accepting file: {exc}",
         ) from exc
 
+    logger.info(
+        "Upload accepted id=%s user_id=%s file=%s",
+        file_row.id,
+        user_id,
+        filename,
+    )
     background_tasks.add_task(run_ingest_job, str(file_row.id))
     return _to_response(file_row)
