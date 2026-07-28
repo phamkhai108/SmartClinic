@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import datetime
+import logging
 import random
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from smartclinic.core.mailer.emaiil_dto import EmailResponseDTO
+from smartclinic.core.mailer.email_dto import EmailResponseDTO
+
+logger = logging.getLogger(__name__)
 
 
 class EmailService:
@@ -15,14 +18,13 @@ class EmailService:
         self.sender_password = sender_password
 
     def send_verification_email(self, receiver_email: str) -> EmailResponseDTO:
-        code_verify = f"{random.randint(000000, 999999):06d}"
+        code_verify = f"{random.randint(0, 999999):06d}"
 
         message = MIMEMultipart()
         message["From"] = self.sender_email
         message["To"] = receiver_email
-        message["Subject"] = f"SmartClinic: Your Verification Code {code_verify}"
+        message["Subject"] = "SmartClinic: Your Verification Code"
 
-        # Email content in HTML
         html = f"""
         <html>
         <head>
@@ -73,11 +75,9 @@ class EmailService:
         </html>
         """
 
-        # Tạo một phần MIME có chứa nội dung HTML
         part1 = MIMEText(html, "html")
         message.attach(part1)
 
-        # send email
         try:
             with smtplib.SMTP("smtp.gmail.com", 587) as session:
                 session.starttls()
@@ -89,16 +89,18 @@ class EmailService:
                     msg=content_msg,
                 )
 
-            code_verify = EmailResponseDTO(
+            return EmailResponseDTO(
                 email=receiver_email,
                 code_verify=code_verify,
-                received_time=datetime.datetime.now(),
+                received_time=datetime.datetime.now(datetime.UTC),
             )
-            return code_verify
 
         except smtplib.SMTPException:
+            logger.exception(
+                "SMTP failed while sending verification to %s", receiver_email
+            )
             return EmailResponseDTO(
                 email=None,
                 code_verify=None,
-                received_time=datetime.datetime.utcnow(),
+                received_time=datetime.datetime.now(datetime.UTC),
             )
