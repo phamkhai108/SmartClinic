@@ -29,7 +29,7 @@ services:
             dockerfile: docker/smartclinic/Dockerfile
         container_name: smartclinic-api
         ports:
-            - "8000:8000"
+            - "8008:8008"
         env_file:
             - ../../.env
         volumes:
@@ -37,9 +37,9 @@ services:
             - /app/.venv
         networks:
             - elasticnet
-        depends_on:
-            elasticsearch:
-                condition: service_healthy
+        # depends_on:
+        #     elasticsearch:
+        #         condition: service_healthy
         restart: on-failure
 
 volumes:

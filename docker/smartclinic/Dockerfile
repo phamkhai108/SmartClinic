@@ -16,4 +16,4 @@ RUN uv pip install tensorflow
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "src.smartclinic.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "uvicorn", "src.smartclinic.api.main:app", "--host", "0.0.0.0", "--port", "8008"]
