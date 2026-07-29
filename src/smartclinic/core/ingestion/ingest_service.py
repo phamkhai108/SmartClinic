@@ -11,6 +11,7 @@ from docling.document_converter import DocumentConverter
 from sqlalchemy.orm import Session
 
 from smartclinic.core.files.storage import (
+    converted_md_path,
     ensure_upload_root,
     stored_file_path,
 )
@@ -95,8 +96,9 @@ class IngestService:
 
         try:
             content = path.read_bytes()
-            extension = self.extension_of(str(file_row.file_name))
-            chunk_texts = self._parse_and_chunk(content, extension)
+            filename = str(file_row.file_name)
+            extension = self.extension_of(filename)
+            chunk_texts = self._parse_and_chunk(content, extension, file_id, filename)
             if not chunk_texts:
                 raise IngestServiceError("No textual chunks extracted from document.")
 
@@ -140,6 +142,8 @@ class IngestService:
         self,
         content: bytes,
         extension: str,
+        file_id: str,
+        filename: str,
     ) -> list[IngestedChunkText]:
         suffix = f".{extension}"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -149,6 +153,11 @@ class IngestService:
         try:
             result = self._converter.convert(tmp_path)
             dl_doc = result.document
+
+            md_path = converted_md_path(file_id, filename)
+            md_path.write_text(dl_doc.export_to_markdown(), encoding="utf-8")
+            logger.debug("Saved converted markdown to %s", md_path)
+
             chunks: list[IngestedChunkText] = []
             for chunk in self._chunker.chunk(dl_doc):
                 text = self._chunker.contextualize(chunk).strip()
