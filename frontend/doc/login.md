@@ -15,15 +15,11 @@ If you hit a protected link first, you return there after signing in.
 
 ### Screenshot — Sign-in page
 
-<!-- Capture the full sign-in form -->
-
 ![Sign in](./images/01-login.png)
 
 > `frontend/doc/images/01-login.png`
 
 ### Screenshot — Menu after sign-in
-
-<!-- Capture header/sidebar with an active session -->
 
 ![Signed-in menu](./images/01b-signed-in-menu.png)
 
@@ -38,17 +34,11 @@ If you hit a protected link first, you return there after signing in.
 3. Enter the 6-digit code → complete registration.
 4. Sign in with the new account.
 
-### Screenshot — Register step 1
+### Screenshot — Register form
 
-![Register step 1](./images/02-register.png)
+![Register](./images/02-register.png)
 
 > `frontend/doc/images/02-register.png`
-
-### Screenshot — OTP step
-
-![Register OTP](./images/02b-register-otp.png)
-
-> `frontend/doc/images/02b-register-otp.png`
 
 ---
 

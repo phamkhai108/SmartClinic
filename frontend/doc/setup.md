@@ -52,13 +52,11 @@ Restart `npm run dev` after changing this value.
 2. **Sign in** with a demo account ([backend setup](../../doc/setup.md#5-demo-accounts)).  
 3. If you see network/CORS errors: confirm the API is up and `SMARTCLINIC_CORS_ORIGINS` includes `http://localhost:5173`.
 
-### Screenshot — Home (optional)
-
-<!-- Add screenshot -->
+### Screenshot — Home
 
 ![Home](./images/00-home.png)
 
-> Save as `frontend/doc/images/00-home.png`
+> `frontend/doc/images/00-home.png`
 
 ---
 

@@ -94,7 +94,7 @@ def test_process_file_success_path(ingest_service, monkeypatch):
     monkeypatch.setattr(
         service,
         "_parse_and_chunk",
-        lambda _c, _e: [SimpleNamespace(text="chunk-1", headings=())],
+        lambda _c, _e, _fid, _fn: [SimpleNamespace(text="chunk-1", headings=())],
     )
     embed.embed_many = MagicMock(return_value=[[0.1] * VECTOR_DIMS])
     service._embed_many = embed.embed_many
@@ -115,7 +115,7 @@ def test_process_file_dim_mismatch_cleans_up(ingest_service, monkeypatch):
     monkeypatch.setattr(
         service,
         "_parse_and_chunk",
-        lambda _c, _e: [SimpleNamespace(text="chunk-1", headings=())],
+        lambda _c, _e, _fid, _fn: [SimpleNamespace(text="chunk-1", headings=())],
     )
     embed.embed_many = MagicMock(return_value=[[0.1, 0.2]])
     service._embed_many = embed.embed_many

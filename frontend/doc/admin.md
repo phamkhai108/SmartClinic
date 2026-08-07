@@ -32,11 +32,7 @@
 
 > `frontend/doc/images/08-admin-upload.png`
 
-### Screenshot — After accept / success
-
-![Upload done](./images/08b-admin-upload-ok.png)
-
-> `frontend/doc/images/08b-admin-upload-ok.png`
+After submit, follow progress on **Files** (`pending` → `success` / `failed`).
 
 ---
 
