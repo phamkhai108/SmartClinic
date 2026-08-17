@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -10,6 +11,8 @@ from smartclinic.core.breast_cancer.breast_dto import (
     PredictBreastResponse,
 )
 from smartclinic.core.breast_cancer.breast_service import process_prediction
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -25,4 +28,5 @@ def predict(
     except HTTPException:
         raise
     except Exception as e:
+        logger.exception("Breast prediction failed")
         raise HTTPException(status_code=500, detail=str(e)) from e

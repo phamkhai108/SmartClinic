@@ -89,9 +89,11 @@ function logout() {
         </NSpace>
       </NLayoutHeader>
       <div class="p-4 md:p-6">
-        <RouterView v-slot="{ Component }">
+        <RouterView v-slot="{ Component, route }">
           <Transition name="page" mode="out-in">
-            <component :is="Component" />
+            <div :key="route.fullPath">
+              <component :is="Component" />
+            </div>
           </Transition>
         </RouterView>
       </div>

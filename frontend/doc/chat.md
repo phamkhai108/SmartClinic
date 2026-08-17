@@ -31,12 +31,6 @@
 
 > `frontend/doc/images/03b-chat-conversation.png`
 
-### Screenshot — Sources
-
-![Sources](./images/03c-chat-sources.png)
-
-> `frontend/doc/images/03c-chat-sources.png`
-
 ### Screenshot — Sessions sidebar
 
 ![Sessions](./images/03d-chat-sessions.png)

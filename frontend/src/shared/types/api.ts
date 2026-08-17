@@ -13,6 +13,13 @@ export interface ApiErrorDetail {
   keys?: string[]
 }
 
+export interface FastApiValidationError {
+  loc?: Array<string | number>
+  msg?: string
+  type?: string
+}
+
+
 export interface LoginResponse {
   access_token: string
   token_type: string

@@ -25,8 +25,6 @@ from smartclinic.vectordb.protocols import ChunkRepository
 
 logger = logging.getLogger(__name__)
 
-chat_histories: dict[str, list[choiceMessage]] = {}
-
 
 class AgentRunContext:
     def __init__(self) -> None:
@@ -67,18 +65,24 @@ def resolve_optional_search_deps() -> tuple[ChunkRepository | None, LLMModel | N
         return None, None
 
 
+def _history_from_db(
+    history_service: HistoryService,
+    session_id: str,
+) -> list[Message]:
+    rows = history_service.get_session_messages(session_id)
+    messages: list[Message] = []
+    for row in rows:
+        role = "user" if row.sender == "user" else "assistant"
+        messages.append(Message(role=role, content=row.message))
+    return messages
+
+
 def _to_langchain_messages(
-    session_history: list[choiceMessage],
+    session_history: list[Message],
     user_messages: list[Message],
 ) -> list[Any]:
     messages: list[Any] = []
-    for past in session_history:
-        for msg in past.messages:
-            if msg.role == "user":
-                messages.append(HumanMessage(content=msg.content))
-            else:
-                messages.append(AIMessage(content=msg.content))
-    for msg in user_messages:
+    for msg in [*session_history, *user_messages]:
         if msg.role == "user":
             messages.append(HumanMessage(content=msg.content))
         else:
@@ -143,14 +147,12 @@ def _persist_turn(
         timestamp=datetime.now(),
     )
 
-    new_choice = choiceMessage(
+    return choiceMessage(
         messages=[*list(user_messages), bot_reply],
         message_id=str(uuid.uuid4()),
         time_at=datetime.now(),
         finish_reason="stop",
     )
-    chat_histories.setdefault(session_id, []).append(new_choice)
-    return new_choice
 
 
 async def stream_agent_chat(
@@ -182,7 +184,7 @@ async def stream_agent_chat(
         embedding_model=embedding_model,
     )
 
-    session_history = chat_histories.get(payload.session_id, [])
+    session_history = _history_from_db(history_service, payload.session_id)
     lc_messages = _to_langchain_messages(session_history, payload.messages)
 
     assembled: list[str] = []

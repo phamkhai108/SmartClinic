@@ -1,0 +1,31 @@
+---
+description: Python style via Ruff (.ruff.toml) for SmartClinic
+globs: **/*.py
+alwaysApply: false
+---
+
+# Python / Ruff
+
+Follow `.ruff.toml`. Do not weaken rules ad hoc (no `# noqa` unless justified).
+
+## Must
+
+- Put `from __future__ import annotations` at the top of every module (isort `required-imports`).
+- Use Ruff for lint + format (`line-length = 90`, target `py311`).
+- FastAPI uploads/deps: `Annotated[UploadFile, File()]` / `Annotated[..., Depends(...)]` — avoid `= File(...)` defaults (B008).
+- Leave line length to the formatter; do not fight E501 (ignored).
+
+## Avoid
+
+- Extra docstrings/comments that restate the code.
+- Editing under `notebooks/` or `data/` (excluded from Ruff).
+- Duplicating Ruff settings in `pyproject.toml` — config lives in `.ruff.toml` only.
+
+## Hooks
+
+Pre-commit runs `ruff` (`--fix`) then `ruff-format` (see `.pre-commit-config.yaml`).
+
+```bash
+uv run ruff check --fix .
+uv run ruff format .
+```

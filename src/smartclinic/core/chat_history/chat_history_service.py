@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from datetime import UTC, datetime
 from typing import Any
 
@@ -7,6 +8,8 @@ from sqlalchemy.orm import Session
 
 from smartclinic.core.chat_history.chat_history_dto import SessionInfo
 from smartclinic.sql.setup_db import ChatHistory
+
+logger = logging.getLogger(__name__)
 
 
 class HistoryService:
@@ -22,7 +25,6 @@ class HistoryService:
         sender: str,
         timestamp=None,
     ) -> ChatHistory:
-        """Thêm một bản ghi chat mới."""
         chat = ChatHistory(
             session_id=session_id,
             user_id=user_id,
@@ -41,14 +43,13 @@ class HistoryService:
         new_message: Any = None,
         new_conversation_name: Any = None,
     ) -> None:
-        """Cập nhật message và/hoặc conversation_name theo session_id."""
         chats = (
             self.session.query(ChatHistory)
             .filter(ChatHistory.session_id == session_id)
             .all()
         )
         if not chats:
-            print(f"No chats found for session_id={session_id}")
+            logger.info("No chats found for session_id=%s", session_id)
             return
 
         for chat in chats:
@@ -58,17 +59,16 @@ class HistoryService:
                 chat.conversation_name = new_conversation_name
 
         self.session.commit()
-        print(f"Updated {len(chats)} chat(s) for session_id={session_id}")
+        logger.info("Updated %s chat(s) for session_id=%s", len(chats), session_id)
 
     def delete_chat_by_session(self, session_id: str) -> None:
-        """Xóa tất cả chat theo session_id."""
         deleted_count = (
             self.session.query(ChatHistory)
             .filter(ChatHistory.session_id == session_id)
             .delete()
         )
         self.session.commit()
-        print(f"Deleted {deleted_count} chat(s) for session_id={session_id}")
+        logger.info("Deleted %s chat(s) for session_id=%s", deleted_count, session_id)
 
     def get_session_messages(self, session_id: str) -> list[ChatHistory]:
         return (

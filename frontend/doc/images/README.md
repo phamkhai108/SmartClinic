@@ -1,6 +1,6 @@
 # Screenshots — frontend guides
 
-Place screenshots here. Names should match the guides under `frontend/doc/`.
+Screenshots used by the guides under `frontend/doc/`.
 
 | File | Guide |
 | --- | --- |
@@ -8,10 +8,8 @@ Place screenshots here. Names should match the guides under `frontend/doc/`.
 | `01-login.png` | login.md |
 | `01b-signed-in-menu.png` | login.md |
 | `02-register.png` | login.md |
-| `02b-register-otp.png` | login.md |
 | `03-chat.png` | chat.md |
 | `03b-chat-conversation.png` | chat.md |
-| `03c-chat-sources.png` | chat.md |
 | `03d-chat-sessions.png` | chat.md |
 | `03e-chat-widget.png` | chat.md |
 | `04-predict-heart.png` | prediction.md |
@@ -22,7 +20,6 @@ Place screenshots here. Names should match the guides under `frontend/doc/`.
 | `06b-predict-brain-result.png` | prediction.md |
 | `07-admin-dashboard.png` | admin.md |
 | `08-admin-upload.png` | admin.md |
-| `08b-admin-upload-ok.png` | admin.md |
 | `09-admin-files.png` | admin.md |
 | `10-admin-users.png` | admin.md |
 

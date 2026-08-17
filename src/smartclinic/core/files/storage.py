@@ -23,6 +23,11 @@ def stored_file_path(file_id: str, filename: str) -> Path:
     return file_dir(file_id) / safe_filename(filename)
 
 
+def converted_md_path(file_id: str, filename: str) -> Path:
+    stem = Path(safe_filename(filename)).stem
+    return file_dir(file_id) / f"{stem}.md"
+
+
 def ensure_upload_root() -> None:
     UPLOAD_ROOT.mkdir(parents=True, exist_ok=True)
 

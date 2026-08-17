@@ -18,9 +18,12 @@ export interface ChatStreamHandlers {
 
 function parseErrorDetail(data: unknown): string {
   if (!data || typeof data !== 'object') return 'Đã xảy ra lỗi.'
-  const detail = (data as { detail?: string | ApiErrorDetail }).detail
+  const detail = (data as { detail?: string | ApiErrorDetail | Array<{ msg?: string; message?: string }> }).detail
   if (!detail) return 'Đã xảy ra lỗi.'
   if (typeof detail === 'string') return detail
+  if (Array.isArray(detail)) {
+    return detail.map((d) => d.msg || d.message || 'Invalid value').join('; ') || 'Dữ liệu không hợp lệ.'
+  }
   if (detail.code === 'MISSING_CONFIG') {
     const keys = detail.keys?.length ? ` Thiếu: ${detail.keys.join(', ')}` : ''
     return `${detail.message || 'Cấu hình chưa đủ.'}${keys}`

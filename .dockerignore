@@ -1,7 +1,33 @@
+.git
+.github
+.cursor
+.vscode
 .venv
 __pycache__
+**/__pycache__
 *.pyc
 *.pyo
 *.pyd
 .Python
+.ruff_cache
+.coverage
+htmlcov
+.pytest_cache
+.mypy_cache
+
+# Large / unused in image build (bind-mounted at runtime)
+data
+notebooks
+uploaded_files
+frontend
+docker
+doc
+tests
+*.db
+.env
+.env.*
+
+# Misc
 UI
+*.md
+!README.md

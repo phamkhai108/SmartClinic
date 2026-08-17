@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from smartclinic.api.dependencies import get_mailer_service
 from smartclinic.api.deps_auth import CurrentUser, require_roles
-from smartclinic.core.mailer.emaiil_dto import EmailRequestDTO, EmailResponseDTO
-from smartclinic.core.mailer.email_controller import handel_mail
+from smartclinic.core.mailer.email_controller import handle_mail
+from smartclinic.core.mailer.email_dto import EmailRequestDTO, EmailResponseDTO
 from smartclinic.core.mailer.email_service import EmailService
 
 router = APIRouter(prefix="/send_mail", tags=["Mail"])
@@ -19,7 +19,7 @@ def send_mail(
     _admin: Annotated[CurrentUser, Depends(require_roles("admin"))],
     mail_client: Annotated[EmailService, Depends(get_mailer_service)],
 ) -> EmailResponseDTO:
-    email_response = handel_mail(mail_client, email_request.receiver_email)
+    email_response = handle_mail(mail_client, email_request.receiver_email)
     if not email_response.code_verify:
         raise HTTPException(
             status_code=503,

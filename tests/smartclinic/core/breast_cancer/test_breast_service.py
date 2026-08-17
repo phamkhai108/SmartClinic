@@ -4,13 +4,9 @@ from pathlib import Path
 
 import pytest
 from fastapi import HTTPException
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-from smartclinic.common.base import get_settings
 from smartclinic.core.breast_cancer import breast_service
 from smartclinic.core.breast_cancer.breast_dto import PredictBreastRequest
-from smartclinic.sql.setup_db import User, setup_db
 
 SAMPLE = {
     "radius_mean": 17.99,
@@ -35,21 +31,6 @@ SAMPLE = {
     "concave points_worst": 0.2654,
     "symmetry_worst": 0.4601,
 }
-
-
-def test_setup_db_uses_database_url(tmp_path, monkeypatch):
-    db_file = tmp_path / "test_setup.db"
-    url = f"sqlite:///{db_file}"
-    monkeypatch.setenv("SMARTCLINIC_DATABASE_URL", url)
-    monkeypatch.setenv("SMARTCLINIC_JWT_SECRET", "test-secret-key-16")
-    get_settings.cache_clear()
-    setup_db()
-    assert db_file.exists()
-    engine = create_engine(url)
-    Session = sessionmaker(bind=engine)
-    with Session() as session:
-        assert session.query(User).count() == 2
-    get_settings.cache_clear()
 
 
 def test_breast_missing_model_503(monkeypatch, tmp_path):

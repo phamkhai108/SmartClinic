@@ -18,7 +18,3 @@ def client(monkeypatch):
     with TestClient(main_mod.app) as c:
         yield c
     get_settings.cache_clear()
-
-
-def test_health_ok(client: TestClient):
-    assert client.get("/health").json()["status"] == "ok"
