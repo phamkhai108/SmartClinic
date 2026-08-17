@@ -21,3 +21,9 @@ dist/
 
 # .env
 .env
+!.env.example
+
+# Uploaded documents (persisted by file_id)
+uploaded_files/
+!uploaded_files/.gitkeep
+

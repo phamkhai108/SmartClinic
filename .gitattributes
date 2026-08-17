@@ -1,10 +1,10 @@
-# Thiết lập mặc định: mọi file text dùng LF
+# Default setting: all text files use LF
 * text=auto eol=lf
 
-# Cố định file Python luôn là text, LF
+# Ensure Python files are always text and use LF
 *.py text eol=lf
 
-# Cố định các file cấu hình cũng dùng LF
+# Fix configuration files to also use LF
 *.py text eol=lf
 *.toml text eol=lf
 *.ini text eol=lf
@@ -17,7 +17,7 @@
 *.editorconfig text eol=lf
 *.gitattributes text eol=lf
 
-# Không đụng vào file nhị phân (ảnh, exe, v.v.)
+# Do not touch binary files (images, exe, etc.)
 *.png binary
 *.jpg binary
 *.jpeg binary

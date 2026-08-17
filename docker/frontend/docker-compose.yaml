@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    container_name: smartclinic-frontend
+    ports:
+      - "5173:80"

@@ -1,0 +1,37 @@
+target-version = "py311"
+line-length = 90
+extend-exclude = ["notebooks", "data"]
+
+[lint]
+select = [
+    "E",   # pycodestyle (error)
+    "F",   # pyflakes
+    "B",   # bugbear
+    "B9",
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "I",   # isort
+    "UP",  # pyupgrade
+    "PIE", # flake8-pie
+    "PGH", # pygrep-hooks
+    "PYI", # flake8-pyi
+    "RUF",
+]
+ignore = [
+    "B011",
+    "E501",
+    "D100",
+    "D101",
+    "D102",
+    "D103",
+    "D104",
+    "D105",
+    "D106",
+    "D107",
+]
+
+[lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[lint.pydocstyle]
+convention = "google"
