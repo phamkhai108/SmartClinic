@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import numpy as np
 import pytest
 from fastapi import HTTPException
 
@@ -30,6 +32,15 @@ SAMPLE = PredictHeartRequestDto(
 )
 
 
+def test_heart_predict_returns_int_class(monkeypatch):
+    model = MagicMock()
+    model.predict.return_value = np.array([1])
+    monkeypatch.setattr(heart_service, "_get_model", lambda: model)
+    pred = heart_service.process_prediction(SAMPLE)
+    assert pred == 1
+    assert isinstance(pred, int)
+
+
 def test_heart_missing_model_503(monkeypatch, tmp_path):
     monkeypatch.setattr(heart_service, "_MODEL", None)
     monkeypatch.setattr(heart_service, "_MODEL_PATH", tmp_path / "missing.pkl")
@@ -43,4 +54,5 @@ def test_heart_predict_with_real_model():
         pytest.skip("model artifacts not present")
     heart_service._MODEL = None
     pred = heart_service.process_prediction(SAMPLE)
-    assert int(pred) in (0, 1)
+    assert pred in (0, 1)
+    assert isinstance(pred, int)

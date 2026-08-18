@@ -52,12 +52,9 @@ def _get_artifacts():
     return _MODEL, _SCALER
 
 
-def process_prediction(data: PredictBreastRequest) -> tuple[int, str]:
+def process_prediction(data: PredictBreastRequest) -> int:
     model, scaler = _get_artifacts()
     raw = data.model_dump(by_alias=True)
     vector = [raw[name] for name in FEATURE_ORDER]
     scaled = scaler.transform(np.array([vector]))
-    pred = int(model.predict(scaled)[0])
-    if pred == 1:
-        return pred, "Khả năng ác tính (Malignant)"
-    return pred, "Khả năng lành tính (Benign)"
+    return int(model.predict(scaled)[0])

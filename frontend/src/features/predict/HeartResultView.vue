@@ -6,6 +6,7 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { GaugeChart } from 'echarts/charts'
 import VChart from 'vue-echarts'
 import PredictResultShell from './PredictResultShell.vue'
+import { usePredictLabel } from './predictLabel'
 import { loadPredictResult, type PredictResultPayload } from './resultStorage'
 import { useAppI18n } from '@/i18n/useAppI18n'
 
@@ -13,6 +14,7 @@ use([CanvasRenderer, GaugeChart])
 
 const router = useRouter()
 const { t } = useAppI18n()
+const { label } = usePredictLabel()
 const data = ref<PredictResultPayload | null>(null)
 
 onMounted(() => {
@@ -42,6 +44,10 @@ const chartOption = computed(() => ({
   ],
 }))
 
+const resultMessage = computed(() =>
+  label('heart', data.value?.prediction, data.value?.message),
+)
+
 const recommendations = computed(() =>
   data.value?.prediction === 1
     ? [t('predict.rec.heartHigh1'), t('predict.rec.heartHigh2'), t('predict.rec.heartHigh3')]
@@ -53,7 +59,7 @@ const recommendations = computed(() =>
   <PredictResultShell
     v-if="data"
     :title="t('predict.resultHeart')"
-    :message="data.message"
+    :message="resultMessage"
     :tone="tone"
     :recommendations="recommendations"
     :retry-route="data.retryRoute"

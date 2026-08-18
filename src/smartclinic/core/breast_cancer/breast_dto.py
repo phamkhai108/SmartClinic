@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
+from smartclinic.core.predict_labels import (
+    MESSAGE_FIELD_DESCRIPTION,
+    class_index_description,
+)
+
 
 class PredictBreastRequest(BaseModel):
     radius_mean: float
@@ -30,5 +35,5 @@ class PredictBreastRequest(BaseModel):
 
 
 class PredictBreastResponse(BaseModel):
-    prediction: int
-    message: str
+    prediction: int = Field(..., description=class_index_description("breast"))
+    message: str = Field(..., description=MESSAGE_FIELD_DESCRIPTION)

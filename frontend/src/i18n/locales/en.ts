@@ -222,6 +222,28 @@ const en = {
       brain2: 'Do not use AI output as the sole treatment decision.',
       brain3: 'Archive images and results for follow-up.',
     },
+    classes: {
+      heart: {
+        0: 'No heart failure symptoms',
+        1: 'Heart failure symptoms',
+      },
+      lung: {
+        0: 'No cancer risk when age is 0',
+        1: 'Low cancer risk',
+        2: 'Moderate cancer risk',
+        3: 'High cancer risk',
+      },
+      breast: {
+        0: 'Benign',
+        1: 'Malignant',
+      },
+      brain: {
+        0: 'Glioma',
+        1: 'Meningioma',
+        2: 'No tumor',
+        3: 'Pituitary',
+      },
+    },
   },
   admin: {
     title: 'Admin dashboard',

@@ -3,7 +3,12 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from smartclinic.core.predict_labels import (
+    MESSAGE_FIELD_DESCRIPTION,
+    class_index_description,
+)
 
 
 class SexEnum(StrEnum):
@@ -75,5 +80,5 @@ class PredictHeartRequestDto(BaseModel):
 
 
 class PredictResponseDto(BaseModel):
-    prediction: int
-    message: str
+    prediction: int = Field(..., description=class_index_description("heart"))
+    message: str = Field(..., description=MESSAGE_FIELD_DESCRIPTION)

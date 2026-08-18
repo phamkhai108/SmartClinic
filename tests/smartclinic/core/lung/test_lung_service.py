@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import numpy as np
 import pytest
 from fastapi import HTTPException
 
@@ -25,9 +27,8 @@ SAMPLE = PredictLung(
 
 
 def test_lung_age_zero_short_circuits():
-    pred, msg = lung_service.process_prediction(SAMPLE.model_copy(update={"Age": 0}))
+    pred = lung_service.process_prediction(SAMPLE.model_copy(update={"Age": 0}))
     assert pred == 0
-    assert msg
 
 
 def test_lung_missing_model_503(monkeypatch, tmp_path):
@@ -40,6 +41,18 @@ def test_lung_missing_model_503(monkeypatch, tmp_path):
     assert exc.value.status_code == 503
 
 
+@pytest.mark.parametrize("class_idx", [1, 2, 3, 9])
+def test_lung_predict_returns_int_class(monkeypatch, class_idx: int):
+    model = MagicMock()
+    model.predict.return_value = np.array([class_idx])
+    scaler = MagicMock()
+    scaler.transform.side_effect = lambda x: x
+    monkeypatch.setattr(lung_service, "_get_artifacts", lambda: (model, scaler))
+    pred = lung_service.process_prediction(SAMPLE)
+    assert pred == class_idx
+    assert isinstance(pred, int)
+
+
 def test_lung_predict_with_real_model():
     model = Path("models/model_predict/lung_cancer.pkl")
     scaler = Path("models/model_normalize/lung_cancer.pkl")
@@ -47,5 +60,6 @@ def test_lung_predict_with_real_model():
         pytest.skip("model artifacts not present")
     lung_service._MODEL = None
     lung_service._SCALER = None
-    pred, _msg = lung_service.process_prediction(SAMPLE)
+    pred = lung_service.process_prediction(SAMPLE)
     assert pred in (1, 2, 3)
+    assert isinstance(pred, int)
