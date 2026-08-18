@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Annotated
 
 import jwt
@@ -11,6 +12,7 @@ from smartclinic.api.dependencies import get_db
 from smartclinic.common.base import get_settings
 from smartclinic.sql.setup_db import User
 
+logger = logging.getLogger(__name__)
 security = HTTPBearer(auto_error=False)
 
 
@@ -42,6 +44,7 @@ def get_current_user(
             algorithms=["HS256"],
         )
     except jwt.PyJWTError as exc:
+        logger.warning("JWT rejected: %s", type(exc).__name__)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={

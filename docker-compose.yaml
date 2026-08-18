@@ -1,0 +1,32 @@
+services:
+    smartclinic-api:
+        build:
+            context: .
+            dockerfile: docker/smartclinic/Dockerfile
+        container_name: smartclinic-api
+        ports:
+            - "8008:8008"
+        environment:
+            SMARTCLINIC_DATABASE_URL: ${SMARTCLINIC_DATABASE_URL:-sqlite:///./example.db}
+            SMARTCLINIC_JWT_SECRET: ${SMARTCLINIC_JWT_SECRET:-change-me-to-a-long-random-secret}
+            SMARTCLINIC_JWT_EXPIRE_MINUTES: ${SMARTCLINIC_JWT_EXPIRE_MINUTES:-60}
+            SMARTCLINIC_CORS_ORIGINS: ${SMARTCLINIC_CORS_ORIGINS:-http://localhost:5173,http://localhost:5000}
+            SMARTCLINIC_VECTOR_BACKEND: ${SMARTCLINIC_VECTOR_BACKEND:-elasticsearch}
+            SMARTCLINIC_ES_HOST: ${SMARTCLINIC_ES_HOST:-}
+            SMARTCLINIC_MILVUS_URI: ${SMARTCLINIC_MILVUS_URI:-}
+            SMARTCLINIC_MILVUS_TOKEN: ${SMARTCLINIC_MILVUS_TOKEN:-}
+            SMARTCLINIC_SENDER_EMAIL: ${SMARTCLINIC_SENDER_EMAIL:-}
+            SMARTCLINIC_SENDER_PASSWORD: ${SMARTCLINIC_SENDER_PASSWORD:-}
+            SMARTCLINIC_LLM_API_URL: ${SMARTCLINIC_LLM_API_URL:-}
+            SMARTCLINIC_LLM_API_KEY: ${SMARTCLINIC_LLM_API_KEY:-}
+            SMARTCLINIC_MODEL_LLM_ID: ${SMARTCLINIC_MODEL_LLM_ID:-}
+            SMARTCLINIC_EMBED_API_URL: ${SMARTCLINIC_EMBED_API_URL:-}
+            SMARTCLINIC_EMBED_API_KEY: ${SMARTCLINIC_EMBED_API_KEY:-}
+            SMARTCLINIC_MODEL_EMBED_ID: ${SMARTCLINIC_MODEL_EMBED_ID:-}
+        volumes:
+            - .:/app
+            - smartclinic_venv:/app/.venv
+        restart: on-failure
+
+volumes:
+    smartclinic_venv:

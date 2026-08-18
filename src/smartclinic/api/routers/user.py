@@ -34,4 +34,10 @@ def change_user_role(
             id=user.id, user_name=user.user_name, email=user.email, role=user.role
         )
     except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+        detail = str(e)
+        status_code = (
+            status.HTTP_400_BAD_REQUEST
+            if detail == "Invalid role"
+            else status.HTTP_404_NOT_FOUND
+        )
+        raise HTTPException(status_code=status_code, detail=detail) from e

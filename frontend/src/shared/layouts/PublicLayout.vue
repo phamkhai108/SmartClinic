@@ -64,9 +64,11 @@ function go(path: string) {
     </NDrawer>
 
     <main class="flex-1">
-      <RouterView v-slot="{ Component }">
+      <RouterView v-slot="{ Component, route }">
         <Transition name="page" mode="out-in">
-          <component :is="Component" />
+          <div :key="route.fullPath">
+            <component :is="Component" />
+          </div>
         </Transition>
       </RouterView>
     </main>
