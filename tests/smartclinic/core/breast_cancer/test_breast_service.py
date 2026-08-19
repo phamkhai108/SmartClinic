@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import numpy as np
 import pytest
 from fastapi import HTTPException
 
@@ -33,6 +35,17 @@ SAMPLE = {
 }
 
 
+def test_breast_predict_returns_int_class(monkeypatch):
+    model = MagicMock()
+    model.predict.return_value = np.array([1])
+    scaler = MagicMock()
+    scaler.transform.side_effect = lambda x: x
+    monkeypatch.setattr(breast_service, "_get_artifacts", lambda: (model, scaler))
+    pred = breast_service.process_prediction(PredictBreastRequest.model_validate(SAMPLE))
+    assert pred == 1
+    assert isinstance(pred, int)
+
+
 def test_breast_missing_model_503(monkeypatch, tmp_path):
     monkeypatch.setattr(breast_service, "_MODEL", None)
     monkeypatch.setattr(breast_service, "_SCALER", None)
@@ -48,8 +61,6 @@ def test_breast_predict_with_real_model():
         pytest.skip("model artifacts not present")
     breast_service._MODEL = None
     breast_service._SCALER = None
-    pred, msg = breast_service.process_prediction(
-        PredictBreastRequest.model_validate(SAMPLE)
-    )
+    pred = breast_service.process_prediction(PredictBreastRequest.model_validate(SAMPLE))
     assert pred in (0, 1)
-    assert msg
+    assert isinstance(pred, int)

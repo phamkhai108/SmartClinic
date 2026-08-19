@@ -220,6 +220,28 @@ const vi = {
       brain2: 'Không dùng kết quả AI làm quyết định điều trị duy nhất.',
       brain3: 'Lưu trữ ảnh và kết quả để theo dõi diễn tiến.',
     },
+    classes: {
+      heart: {
+        0: 'Không mắc triệu chứng suy tim',
+        1: 'Triệu chứng suy tim',
+      },
+      lung: {
+        0: 'Không có khả năng bị ung thư khi tuổi là 0',
+        1: 'Khả năng bị ung thư thấp',
+        2: 'Khả năng ung thư ở mức độ vừa phải',
+        3: 'Khả năng cao mắc bệnh ung thư',
+      },
+      breast: {
+        0: 'Khả năng lành tính (Benign)',
+        1: 'Khả năng ác tính (Malignant)',
+      },
+      brain: {
+        0: 'U tế bào thần kinh đệm (Glioma)',
+        1: 'U màng não (Meningioma)',
+        2: 'Không phát hiện u',
+        3: 'U tuyến yên (Pituitary)',
+      },
+    },
   },
   admin: {
     title: 'Bảng quản trị',

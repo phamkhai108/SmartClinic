@@ -25,7 +25,7 @@ def _get_model():
     return _MODEL
 
 
-def process_prediction(data: PredictHeartRequestDto):
+def process_prediction(data: PredictHeartRequestDto) -> int:
     loaded_model = _get_model()
     feature_vector = [
         data.Age,
@@ -42,4 +42,4 @@ def process_prediction(data: PredictHeartRequestDto):
     ]
     input_data = np.array([feature_vector])
     y_pred = loaded_model.predict(input_data)
-    return y_pred[0]
+    return int(y_pred[0])

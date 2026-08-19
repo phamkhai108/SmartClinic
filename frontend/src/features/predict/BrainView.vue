@@ -36,7 +36,8 @@ async function submit() {
     const res = await predictBrain(file.value)
     savePredictResult({
       kind: 'brain',
-      message: `${res.predicted_class} · ${res.confidence}%`,
+      prediction: res.prediction,
+      message: res.message,
       predicted_class: res.predicted_class,
       confidence: res.confidence,
       imagePreview: preview.value || undefined,

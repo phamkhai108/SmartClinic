@@ -2,11 +2,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import PredictResultShell from './PredictResultShell.vue'
+import { usePredictLabel } from './predictLabel'
 import { loadPredictResult, type PredictResultPayload } from './resultStorage'
 import { useAppI18n } from '@/i18n/useAppI18n'
 
 const router = useRouter()
 const { t } = useAppI18n()
+const { label } = usePredictLabel()
 const data = ref<PredictResultPayload | null>(null)
 
 onMounted(() => {
@@ -20,13 +22,17 @@ const recommendations = computed(() =>
     ? [t('predict.rec.breastHigh1'), t('predict.rec.breastHigh2'), t('predict.rec.breastHigh3')]
     : [t('predict.rec.breastLow1'), t('predict.rec.breastLow2'), t('predict.rec.breastLow3')],
 )
+
+const resultMessage = computed(() =>
+  label('breast', data.value?.prediction, data.value?.message),
+)
 </script>
 
 <template>
   <PredictResultShell
     v-if="data"
     :title="t('predict.resultBreast')"
-    :message="data.message"
+    :message="resultMessage"
     :tone="tone"
     :recommendations="recommendations"
     :retry-route="data.retryRoute"

@@ -1,6 +1,11 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from smartclinic.core.predict_labels import (
+    MESSAGE_FIELD_DESCRIPTION,
+    class_index_description,
+)
 
 
 class PredictLung(BaseModel):
@@ -16,3 +21,8 @@ class PredictLung(BaseModel):
     Chest_Pain: int
     Coughing_of_Blood: int
     Clubbing_of_Finger_Nails: int
+
+
+class PredictLungResponse(BaseModel):
+    prediction: int = Field(..., description=class_index_description("lung"))
+    message: str = Field(..., description=MESSAGE_FIELD_DESCRIPTION)

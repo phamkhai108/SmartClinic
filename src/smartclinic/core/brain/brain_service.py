@@ -9,6 +9,7 @@ from PIL import Image
 
 from smartclinic.common.errors import feature_unavailable_error
 from smartclinic.core.brain.brain_dto import PredictBrainResponse
+from smartclinic.core.predict_labels import BRAIN_MESSAGES
 
 _SESSION = None
 _INPUT_NAME: str | None = None
@@ -95,7 +96,10 @@ async def predict_image_class(file) -> PredictBrainResponse:
     predicted_class_idx = int(np.argmax(predictions))
     confidence = float(predictions[predicted_class_idx])
 
+    predicted_class = class_labels[predicted_class_idx]
     return PredictBrainResponse(
-        predicted_class=class_labels[predicted_class_idx],
+        prediction=predicted_class_idx,
+        predicted_class=predicted_class,
         confidence=round(confidence * 100, 2),
+        message=BRAIN_MESSAGES.get(predicted_class_idx, predicted_class),
     )

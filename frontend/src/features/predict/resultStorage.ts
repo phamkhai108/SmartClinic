@@ -3,7 +3,7 @@ export type PredictKind = 'heart' | 'lung' | 'brain' | 'breast'
 export interface PredictResultPayload {
   kind: PredictKind
   prediction?: number
-  message: string
+  message?: string
   predicted_class?: string
   confidence?: number
   imagePreview?: string

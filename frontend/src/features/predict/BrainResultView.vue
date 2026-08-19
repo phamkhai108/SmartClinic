@@ -7,6 +7,7 @@ import { PieChart } from 'echarts/charts'
 import { TooltipComponent } from 'echarts/components'
 import VChart from 'vue-echarts'
 import PredictResultShell from './PredictResultShell.vue'
+import { usePredictLabel } from './predictLabel'
 import { loadPredictResult, type PredictResultPayload } from './resultStorage'
 import { useAppI18n } from '@/i18n/useAppI18n'
 
@@ -14,6 +15,7 @@ use([CanvasRenderer, PieChart, TooltipComponent])
 
 const router = useRouter()
 const { t } = useAppI18n()
+const { label } = usePredictLabel()
 const data = ref<PredictResultPayload | null>(null)
 
 onMounted(() => {
@@ -26,6 +28,10 @@ onUnmounted(() => {
 })
 
 const conf = computed(() => data.value?.confidence ?? 0)
+const classLabel = computed(() =>
+  label('brain', data.value?.prediction, data.value?.predicted_class ?? data.value?.message),
+)
+const resultMessage = computed(() => `${classLabel.value} · ${conf.value}%`)
 const chartOption = computed(() => ({
   tooltip: { trigger: 'item' },
   series: [
@@ -33,7 +39,7 @@ const chartOption = computed(() => ({
       type: 'pie',
       radius: ['45%', '70%'],
       data: [
-        { name: data.value?.predicted_class || 'Result', value: conf.value },
+        { name: classLabel.value, value: conf.value },
         { name: 'Other', value: Math.max(0, 100 - conf.value) },
       ],
     },
@@ -51,7 +57,7 @@ const recommendations = computed(() => [
   <PredictResultShell
     v-if="data"
     :title="t('predict.resultBrain')"
-    :message="`${data.predicted_class} · ${data.confidence}%`"
+    :message="resultMessage"
     tone="info"
     :recommendations="recommendations"
     :retry-route="data.retryRoute"
