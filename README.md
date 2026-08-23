@@ -10,6 +10,48 @@
 
 ---
 
+## Overview
+
+<p align="center">
+  <img src="frontend/doc/images/00-home.png" alt="SmartClinic home" width="840" />
+  <br/>
+  <em>Home — an overview of SmartClinic's features.</em>
+</p>
+
+### 🤖 AI chat grounded in your clinic's documents
+
+<p align="center">
+  <img src="frontend/doc/images/03-chat.png" alt="AI chat grounded in clinic documents" width="840" />
+  <br/>
+  <em>Ask questions answered from your clinic's own documents.</em>
+</p>
+
+### 🫀 Risk screening (heart, lung, breast cancer)
+
+<p align="center">
+  <img src="frontend/doc/images/04-predict-heart.png" alt="Heart failure risk screening form" width="840" />
+  <br/>
+  <em>Screen for heart failure / lung cancer / breast cancer risk.</em>
+</p>
+
+### 🧠 Brain tumor classification from MRI images
+
+<p align="center">
+  <img src="frontend/doc/images/06-predict-brain.png" alt="Brain tumor MRI upload" width="840" />
+  <br/>
+  <em>Upload an MRI image to classify brain tumors.</em>
+</p>
+
+### 🛠️ Administration
+
+<p align="center">
+  <img src="frontend/doc/images/07-admin-dashboard.png" alt="Admin dashboard" width="840" />
+  <br/>
+  <em>Admin dashboard: users, documents, and records.</em>
+</p>
+
+---
+
 ## What SmartClinic offers
 
 | Capability | Who it’s for |
